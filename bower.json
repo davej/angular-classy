@@ -15,6 +15,9 @@
     "controller"
   ],
   "license": "MIT",
+  "dependencies": {
+    "angular": ">=1"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
