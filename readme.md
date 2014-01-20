@@ -218,7 +218,7 @@ class extends todomvc.classyController
 ```JavaScript
 todomvc = angular.module('todomvc', ['classy']);
 
-todomvc.classyController.create('TodoCtrl3', ['$scope', '$location', 'todoStorage', 'filterFilter'], {
+todomvc.classyController.create('TodoCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter'], {
 
   init: function() {
     this.todos = this.$scope.todos = this.todoStorage.get();
