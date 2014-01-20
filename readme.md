@@ -311,3 +311,8 @@ todomvc.classyController.create('TodoCtrl3', ['$scope', '$location', 'todoStorag
 * Better documentation (and a github.io site)
 * Performance testing
 * Investigate other Classy Angular stuff (especially services and directives)
+
+## Thanks
+
+@elado and [this gist](https://gist.github.com/elado/8138516).
+@ahmednuaman and his project [Radian](https://github.com/ahmednuaman/radian).
