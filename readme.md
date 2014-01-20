@@ -141,7 +141,27 @@ _onTodoChange: function (newValue, oldValue) {
 }
 ```
 
-## I've seen the features now show me what a Classy controller looks like
+## Install
+
+Install with `bower`:
+
+```shell
+bower install angular-classy
+```
+
+Add a `<script>` to your `index.html`:
+
+```html
+<script src="/bower_components/angular-classy/angular-classy.js"></script>
+```
+
+Add `classy` to your application module:
+
+```JavaScript
+var app = angular.module('todomvc', ['classy']);
+```
+
+## So what does a Classy controller look like?
 
 Yes sir/madame! I've taken the angular controller from the [TodoMVC](http://todomvc.com/) project and made it classy. Here is what the controller looks like, first in Coffeescript then in Javascript:
 
@@ -216,7 +236,7 @@ class extends todomvc.classyController
 ### Javascript
 
 ```JavaScript
-todomvc = angular.module('todomvc', ['classy']);
+var todomvc = angular.module('todomvc', ['classy']);
 
 todomvc.classyController.create('TodoCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter'], {
 
