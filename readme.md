@@ -158,7 +158,7 @@ Add a `<script>` to your `index.html`:
 Add `classy` to your application module:
 
 ```JavaScript
-var app = angular.module('todomvc', ['classy']);
+var app = angular.module('app', ['classy']);
 ```
 
 ## So what does a Classy controller look like?
