@@ -327,7 +327,7 @@ todomvc.classyController.create('TodoCtrl', ['$scope', '$location', 'todoStorage
 ## What's next
 
 * Tests (these are pretty much done, I just need to package them correctly)
-* Make it work with Bower
+* ~~Make it work with Bower~~
 * Better documentation (and a github.io site)
 * Performance testing
 * Investigate other Classy Angular stuff (especially services and directives)
