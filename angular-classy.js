@@ -5,6 +5,7 @@ Dave Jeffery, @DaveJ
 License: MIT
 */
 
+
 /*
 Why use angular-classy?
   1. It's class-based, classes are a nice way to organize your code
@@ -15,15 +16,17 @@ Why use angular-classy?
   6. It uses a lovely `watch` object for setting up your watchers without polluting the `init` method
 */
 
+
 /* global angular*/
 
-var __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function() {
   'use strict';
-  var classFns, origMethod;
+  var classFns, origMethod,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   classFns = {
     construct: function(parent, args) {
       this.bindDependancies(parent, args);
@@ -146,7 +149,9 @@ var __hasProp = {}.hasOwnProperty,
       return c;
     }
   };
+
   origMethod = angular.module;
+
   angular.module = function(name, reqs, configFn) {
     /*
     # We have to override the `angular.module` method to see if 'classy' has been specified
@@ -177,5 +182,7 @@ var __hasProp = {}.hasOwnProperty,
     }
     return module;
   };
-  return angular.module('classy', []);
-})();
+
+  angular.module('classy', []);
+
+}).call(this);
