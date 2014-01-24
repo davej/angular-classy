@@ -22,7 +22,7 @@ classFns =
   construct: (parent, args) ->
     @bindDependancies(parent, args)
     @addFnsToScope(parent)
-    parent.init?()
+    (parent.init || parent.initialize)?()
     if angular.isObject(parent.watch) then @registerWatchers(parent)
 
   addFnsToScope: (parent) ->
