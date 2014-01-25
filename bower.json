@@ -1,7 +1,7 @@
 {
   "name": "angular-classy",
   "main": "angular-classy.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/davej/angular-classy",
   "authors": [
     "Dave Jeffery <dave@davejeffery.com>"
@@ -23,6 +23,8 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "examples"
+    ".travis.yml"
   ]
 }
