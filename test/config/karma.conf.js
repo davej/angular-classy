@@ -11,7 +11,7 @@ module.exports = function(config) {
 		  'test/unit/*.js'
     ],
     autoWatch: true,
-    browsers: ['Chrome']
+    browsers: ['Firefox']
   });
 };
 
