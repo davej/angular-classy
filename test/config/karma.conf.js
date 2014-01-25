@@ -3,10 +3,9 @@ module.exports = function(config) {
     basePath: '../../',
     frameworks: ['jasmine'],
     files: [
-  	  'examples/todomvc/bower_components/angular/angular.js',
+	    'test/bower_components/angular/angular.js',
+	    'test/bower_components/angular-mocks/angular-mocks.js',
 		  'angular-classy.js',
-		  'bower_components/angular/angular.js',
-		  'examples/todomvc/bower_components/angular-mocks/angular-mocks.js',
 		  'examples/todomvc/js/app.js',
 		  'examples/todomvc/js/*/*.js',
 		  'test/unit/*.js'
