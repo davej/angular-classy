@@ -30,7 +30,7 @@ classFns =
     for key, fn of parent.constructor.prototype
       continue unless angular.isFunction(fn)
       continue if key in ['constructor', 'init', 'watch'] or key[0] is '_'
-      parent.$scope[key] = parent.constructor.prototype[key] = angular.bind(parent, fn)
+      parent.$scope[key] = angular.bind(parent, fn)
 
   bindDependancies: (parent, args) ->
     # Takes the `$inject` dependancies and assigns a class-wide (`@`) variable to each one.
