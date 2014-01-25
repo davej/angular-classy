@@ -7,7 +7,8 @@
     "karma-jasmine": ""
   },
   "scripts": {
-    "test": "karma start config/karma.conf.js"
+    "testChrome": "karma start config/karma.conf.js",
+    "test": "karma start --browsers Firefox --single-run"
   },
   "dependencies": {}
 }
