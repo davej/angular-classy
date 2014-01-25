@@ -103,13 +103,13 @@ angular.module = (name, reqs, configFn) ->
       # this is because I suspect that performance is better this way.
       # TODO: Test performance to see if this is the best way to do it.
 
-      @register: (name, deps, newModule) ->
+      @register: (name, deps) ->
         # Registers controller and `$inject`s dependancies
-        classFns.register(newModule or module, name, deps, @)
+        classFns.register(module, name, deps, @)
 
       @create: (name, deps, proto) ->
         # This method allows for nicer syntax for those not using CoffeeScript
-        classFns.create(appInstance, name, deps, proto, @)
+        classFns.create(module, name, deps, proto, @)
 
       constructor: ->
         # Where the magic happens
