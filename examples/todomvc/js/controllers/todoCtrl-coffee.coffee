@@ -67,5 +67,5 @@ class extends todomvc.classyController
       @todos.filter (val) -> !val.completed
 
   markAll: (completed) ->
-    @todos.forEach (todo) ->
+    for todo in @todos
       todo.completed = completed      
