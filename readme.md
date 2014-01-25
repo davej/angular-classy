@@ -1,6 +1,6 @@
 # Angular Classy
 
-[![Build Status](https://travis-ci.org/davej/angulat-classy.png)](https://travis-ci.org/davej/angulat-classy)
+[![Build Status](https://travis-ci.org/davej/angular-classy.png)](https://travis-ci.org/davej/angular-classy)
 
 #### Cleaner class-based controllers with Angular
 
