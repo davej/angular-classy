@@ -4,7 +4,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
   	  'examples/todomvc/bower_components/angular/angular.js',
-		  'examples/todomvc/bower_components/angular-classy/angular-classy.js',
+		  'angular-classy.js',
 		  'examples/todomvc/bower_components/angular-mocks/angular-mocks.js',
 		  'examples/todomvc/js/app.js',
 		  'examples/todomvc/js/*/*.js',
