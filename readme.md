@@ -1,5 +1,7 @@
 # Angular Classy
 
+[![Build Status](https://travis-ci.org/davej/angulat-classy.png)](https://travis-ci.org/davej/angulat-classy)
+
 #### Cleaner class-based controllers with Angular
 
 Angular Classy makes it easy to do class-based controllers with [AngularJS](http://angularjs.org).
@@ -326,7 +328,7 @@ todomvc.classyController.create('TodoCtrl', ['$scope', '$location', 'todoStorage
 
 ## What's next
 
-* Tests (these are pretty much done, I just need to package them correctly)
+* ~~Tests~~
 * ~~Make it work with Bower~~
 * Better documentation (and a github.io site)
 * Performance testing
