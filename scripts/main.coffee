@@ -1,15 +1,13 @@
-window.app = app = {}
-
-app.currentLanguage = "coffeescript"
-app.otherlanguage = 
+currentLanguage = "coffeescript"
+otherlanguage = 
   coffeescript: 'javascript'
   javascript: 'coffeescript'
 
-app.switchLanguage = (language) ->
+switchLanguage = (language) ->
   if language then language = language.toLowerCase()
-  else language = app.otherlanguage[app.currentLanguage]
+  else language = otherlanguage[currentLanguage]
 
-  app.currentLanguage = language
+  currentLanguage = language
 
   elClass = (className, action, modifyClass) ->
     elements = document.getElementsByClassName(className)
@@ -17,12 +15,12 @@ app.switchLanguage = (language) ->
         el.classList[action](modifyClass)
 
 
-  elClass("#{app.otherlanguage[language]}-code", 'add', 'hide')
+  elClass("#{otherlanguage[language]}-code", 'add', 'hide')
   elClass("#{language}-code", 'remove', 'hide')
 
 document.getElementById('select-language').onchange = (event) ->
-  app.switchLanguage(event.target.value)
+  switchLanguage(event.target.value)
 
 document.getElementById('toggle-language').onclick= (event) ->
   event.preventDefault()
-  app.switchLanguage()
+  switchLanguage()

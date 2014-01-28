@@ -1,23 +1,21 @@
 (function() {
-  var app;
+  var currentLanguage, otherlanguage, switchLanguage;
 
-  window.app = app = {};
+  currentLanguage = "coffeescript";
 
-  app.currentLanguage = "coffeescript";
-
-  app.otherlanguage = {
+  otherlanguage = {
     coffeescript: 'javascript',
     javascript: 'coffeescript'
   };
 
-  app.switchLanguage = function(language) {
+  switchLanguage = function(language) {
     var elClass;
     if (language) {
       language = language.toLowerCase();
     } else {
-      language = app.otherlanguage[app.currentLanguage];
+      language = otherlanguage[currentLanguage];
     }
-    app.currentLanguage = language;
+    currentLanguage = language;
     elClass = function(className, action, modifyClass) {
       var el, elements, _i, _len, _results;
       elements = document.getElementsByClassName(className);
@@ -28,17 +26,17 @@
       }
       return _results;
     };
-    elClass("" + app.otherlanguage[language] + "-code", 'add', 'hide');
+    elClass("" + otherlanguage[language] + "-code", 'add', 'hide');
     return elClass("" + language + "-code", 'remove', 'hide');
   };
 
   document.getElementById('select-language').onchange = function(event) {
-    return app.switchLanguage(event.target.value);
+    return switchLanguage(event.target.value);
   };
 
   document.getElementById('toggle-language').onclick = function(event) {
     event.preventDefault();
-    return app.switchLanguage();
+    return switchLanguage();
   };
 
 }).call(this);
