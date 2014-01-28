@@ -152,15 +152,7 @@ body > header {
   padding-left: 2%;
   border-top: 2px #cc0000 solid; }
   body > header h1 {
-    height: 149px;
-    width: 362px;
-    width: 40%;
-    max-width: 560px;
-    color: transparent;
-    font: 0/0 a;
-    text-shadow: none;
-    background: url('../images/logo2.png') no-repeat left;
-    position: relative; }
+    margin: 0 auto; }
 
 .main-content {
   background-image: -webkit-linear-gradient( #ccc, #f5f5f5);
@@ -169,7 +161,7 @@ body > header {
   border-top: 2px rgba(0, 0, 0, 0.15) solid;
   border-bottom: 2px #bbb solid;
   padding: 40px 10px;
-  margin-top: -33px;
+  margin-top: -41px;
   box-shadow: inset 0px 1px 0px 1px rgba(255, 255, 255, 0.3); }
   .main-content h2 {
     font-family: 'Signika', sans-serif;
@@ -480,17 +472,18 @@ footer {
     display: none; }
   body > header h1 {
     width: 95%;
-    max-width: 95%;
-    background-size: contain; }
+    max-width: 680px;
+    background-size: contain;
+    margin: 0 auto; }
   .main-content h2 {
     font-size: 32px;
     width: 95%;
-    max-width: 95%;
+    max-width: 680px;
     margin: 0 auto; }
   .code-editor-container {
     position: static;
     width: 95%;
-    max-width: 95%;
+    max-width: 680px;
     margin: 0;
     right: 0;
     margin-top: 20px;
@@ -505,7 +498,7 @@ footer {
       margin: 20px 0; }
   .features {
     width: 95%;
-    max-width: 95%;
+    max-width: 680px;
     margin-top: 0;
     margin: 0 auto;
     display: block; }

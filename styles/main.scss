@@ -140,14 +140,7 @@ body > header {
   border-top: 2px rgb(204, 0, 0) solid;
 
   h1 {
-    height: 149px;
-    width: 362px;
-    width: $content-width;
-    max-width: $content-max-width;
-    @include hide-text;
-    background: url('../images/logo2.png') no-repeat left;
-    // margin: 0 auto;
-    position: relative;
+    margin: 0 auto;
   }
 }
 
@@ -157,7 +150,7 @@ body > header {
   border-top: 2px rgba(0, 0, 0, 0.15) solid;
   border-bottom: 2px #bbb solid;
   padding: 40px 10px;
-  margin-top: -33px;
+  margin-top: -41px;
   // padding-bottom: 200px;
   box-shadow: inset 0px 1px 0px 1px rgba(255,255,255,0.3);
 
@@ -560,14 +553,18 @@ footer {
 }
 
 @media screen and (max-width: 960px) {
+  $content-width: 95%;
+  $content-max-width: 680px;
+
   .code-editor {
     display: none;
   }
 
   body > header h1 {
-    width: 95%;
-    max-width: 95%;
+    width: $content-width;
+    max-width: $content-max-width;
     background-size: contain;
+    margin: 0 auto;
   }
 
   .main-content {
@@ -575,16 +572,16 @@ footer {
 
     h2 {
       font-size: 32px;
-      width: 95%;
-      max-width: 95%;
+      width: $content-width;
+      max-width: $content-max-width;
       margin: 0 auto;
     }
   }
 
   .code-editor-container {
     position: static;
-    width: 95%;
-    max-width: 95%;
+    width: $content-width;
+    max-width: $content-max-width;
     margin: 0;
     right: 0;
     margin-top: 20px;
@@ -603,8 +600,8 @@ footer {
   }
 
   .features {
-    width: 95%;
-    max-width: 95%;
+    width: $content-width;
+    max-width: $content-max-width;
     margin-top: 0;
     margin: 0 auto;
     display: block;

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="361px" height="149px" viewBox="0 0 361 149" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>logo</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <text id="Classy" sketch:type="MSTextLayer" font-family="Mission Script" font-size="100" font-weight="normal" sketch:alignment="middle" letter-spacing="0.320855588" fill="#222222">
+            <tspan x="162" y="116">Classy</tspan>
+        </text>
+        <g id="AngularJS-Shield" sketch:type="MSLayerGroup">
+            <path d="M69.2777648,0 L0,24.5052017 L10.9472219,115.735315 L69.3511689,148 L128.056378,115.298023 L139,24.0716217 L69.2777648,0 Z" id="Fill-1" fill="#B3B3B3" sketch:type="MSShapeGroup"></path>
+            <path d="M133,29.4976647 L70,8 L70,140 L122.79692,110.760948 L133,29.4976647 Z" id="Fill-3" fill="#A51C25" sketch:type="MSShapeGroup"></path>
+            <path d="M8,29.8881018 L17.4813522,111.149286 L70,140 L70,8 L8,29.8881018 Z" id="Fill-4" fill="#D91B2A" sketch:type="MSShapeGroup"></path>
+            <path d="M83,74 L68.6412028,44 L56,74 L83,74 Z M88.8355622,87.0608139 L50.5176407,87.0608139 L41.9452739,108.702785 L26,109 L68.7549151,13 L113,109 L98.2210366,109 L88.8355622,87.0608139 Z" id="Fill-5" fill="#F2F2F2" sketch:type="MSShapeGroup"></path>
+            <path d="M70,13 L70.1148687,43.6881971 L84.6445877,74.0886985 L70.0327306,74.0886985 L70,86.8185957 L90.2048864,86.8382881 L99.6483283,108.714975 L115,109 L70,13 Z" id="Fill-6" fill="#B3B3B3" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
