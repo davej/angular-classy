@@ -398,8 +398,8 @@ body > header {
 .code-tip {
   position: absolute;
   right: 25px;
-  height: 94%;
-  top: 3%;
+  height: 100%;
+  top: 0;
   opacity: 0;
   display: -webkit-flexbox;
   display: -ms-flexbox;
@@ -429,12 +429,12 @@ body > header {
       width: 0;
       height: 0;
       position: absolute;
-      border-top: 13px solid rgba(0, 0, 0, 0);
-      border-bottom: 13px solid rgba(0, 0, 0, 0);
-      border-right: 13px solid rgba(255, 255, 255, 0.95);
-      left: -13px;
+      border-top: 11px solid rgba(0, 0, 0, 0);
+      border-bottom: 11px solid rgba(0, 0, 0, 0);
+      border-right: 11px solid rgba(255, 255, 255, 0.95);
+      left: -11px;
       top: 0;
-      top: calc(50% - 12px); }
+      top: calc(50% - 11px); }
   .code-tip code {
     font-size: 14px !important; }
 

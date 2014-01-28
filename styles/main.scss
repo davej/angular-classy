@@ -450,8 +450,8 @@ body > header {
   right: 25px;
 
 
-  height: 94%;
-  top: 3%;
+  height: 100%;
+  top: 0;
 
 
 
@@ -485,6 +485,8 @@ body > header {
     max-width: 310px;
     white-space: normal;
     border-radius: 3px;
+    // border-top-left-radius: 2px;
+    // border-bottom-left-radius: 2px;
 
     border-right: 2px rgb(204, 204, 204) solid;
     border-bottom: 1px rgb(204, 204, 204) solid;
@@ -498,12 +500,12 @@ body > header {
       width: 0;
       height: 0;
       position: absolute;
-      border-top: 13px solid rgba(0, 0, 0, 0);
-      border-bottom: 13px solid rgba(0, 0, 0, 0);
-      border-right: 13px solid rgba(255, 255, 255, 0.95);
-      left: -13px;
+      border-top: 11px solid rgba(0, 0, 0, 0);
+      border-bottom: 11px solid rgba(0, 0, 0, 0);
+      border-right: 11px solid rgba(255, 255, 255, 0.95);
+      left: -11px;
       top: 0;
-      top: calc(50% - 12px);
+      top: calc(50% - 11px);
     }
   }
 
