@@ -211,13 +211,12 @@
 
 <pre class="javascript-code hide"><code><section><span class="highlight"><span class="fn">var</span> <span class="var">todomvc</span> = <span class="var">angular.module</span>('<span class="string">todomvc</span>', ['<span class="string">classy</span>']);</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
 
-<section><span class="highlight">todomvc.classyController.<span class="class">create</span>(
-  '<span class="string">TodoCtrl</span>',
-
-  ['<span class="string">$scope</span>',
+<section><span class="highlight">todomvc.classyController.<span class="class">create</span>('<span class="string">TodoCtrl</span>', [
+   '<span class="string">$scope</span>',
    '<span class="string">$location</span>',
    '<span class="string">todoStorage</span>',
-   '<span class="string">filterFilter</span>'], {</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
+   '<span class="string">filterFilter</span>'
+  ], {</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
 
       <section>   <span class="highlight"><span class="fn">init</span>: <span class="class">function()</span> {</span>
      this.todos = this.$scope.todos = this.todoStorage.get();
