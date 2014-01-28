@@ -91,7 +91,7 @@
    },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>this</code> symbol.</div></div></section>
 
   <section>  <span class="highlight"><span class="var">watch:</span> {</span>
-  <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
+    <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
       this.$scope.statusFilter == (path === '/active') ?
         { completed: false } : (path === '/completed') ?
         { completed: true };
