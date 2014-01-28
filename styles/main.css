@@ -129,7 +129,8 @@ code .comment {
   display: block;
   color: #fff;
   background: #494f57;
-  padding: 5px 10px; }
+  padding: 5px 10px;
+  overflow: scroll; }
   .block-code code {
     margin: 0;
     padding: 0; }
@@ -479,8 +480,10 @@ footer {
     display: none; }
   body > header h1 {
     width: 95%;
-    max-width: 95%; }
+    max-width: 95%;
+    background-size: contain; }
   .main-content h2 {
+    font-size: 32px;
     width: 95%;
     max-width: 95%;
     margin: 0 auto; }

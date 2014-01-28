@@ -109,6 +109,7 @@ code {
   color: #fff;
   background: #494f57;
   padding: 5px 10px;
+  overflow: scroll;
 
   code {
     margin: 0;
@@ -566,12 +567,14 @@ footer {
   body > header h1 {
     width: 95%;
     max-width: 95%;
+    background-size: contain;
   }
 
   .main-content {
     // margin: 0;
 
     h2 {
+      font-size: 32px;
       width: 95%;
       max-width: 95%;
       margin: 0 auto;
