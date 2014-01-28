@@ -27,146 +27,6 @@
         <div class="main-content">
             <h2>Cleaner class-based controllers for AngularJS</h2>
 
-            <div class="code-editor-container">
-                <div class="code-editor">
-                    <div class="toolbar">
-                        <div class="close"></div>
-                        <div class="minimize"></div>
-                        <div class="zoom"></div>
-                        todo-controller<span class="coffeescript-code">.coffee</span><span class="javascript-code hide">.js</span>
-                        <span class="sub-title">—
-                            <select id="select-language">
-                                <option name="coffeescript">Coffeescript</option>
-                                <option name="coffeescript">Javascript</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="editor">
-    <pre class="coffeescript-code"><code><section><span class="highlight"><span class="var">todomvc</span> = <span class="var">angular.module</span> '<span class="string">todomvc</span>', ['<span class="string">classy</span>']</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
-
-    <section><span class="highlight"><span class="class">class</span> <span class="keyword">extends</span> todomvc.classyController</span>
-<span class="highlight">  <span class="var">@register</span> '<span class="string">TodoCtrl</span>', [
-    '<span class="string">$scope</span>'
-    '<span class="string">$location</span>'
-    '<span class="string">todoStorage</span>'
-    '<span class="string">filterFilter</span>'
-  ]</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
-
-    <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
-    @todos = @$scope.todos = @todoStorage.get()
-    @$scope.newTodo = ''
-    @$scope.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>@</code> symbol.</div></div></section>
-
-    <section>  <span class="highlight"><span class="var">watch:</span></span>
-    <span class="highlight">'<span class="string">location.path()</span>': (path) <span class="class">-></span></span>
-      @$scope.statusFilter =
-        if (path is '/active') then completed: false
-        else if (path is '/completed') then completed: true
-
-    <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span><div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
-
-    <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="class">-></span></span>
-    newTodo = @$scope.newTodo.trim()
-    @todos.push
-      title: newTodo
-      completed: false<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your <code>$scope</code> so you can easily access it using directives like ng-click</div></div></section>
-
-    <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: (newValue, oldValue) <span class="class">-></span></span>
-    @$scope.remainingCount = @filterFilter(@todos, { completed: false }).length<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
-
-</code></pre>
-
-<pre class="javascript-code hide"><code><section><span class="highlight"><span class="fn">var</span> <span class="var">todomvc</span> = <span class="var">angular.module</span>('<span class="string">todomvc</span>', ['<span class="string">classy</span>']);</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
-
-<section><span class="highlight">todomvc.classyController.<span class="class">create</span>(
-  '<span class="string">TodoCtrl</span>',
-
-  ['<span class="string">$scope</span>',
-   '<span class="string">$location</span>',
-   '<span class="string">todoStorage</span>',
-   '<span class="string">filterFilter</span>'], {</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
-
-      <section>   <span class="highlight"><span class="fn">init</span>: <span class="class">function()</span> {</span>
-     this.todos = this.$scope.todos = this.todoStorage.get();
-     this.$scope.newTodo = '';
-     this.$scope.location = this.$location;
-   },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>this</code> symbol.</div></div></section>
-
-  <section>  <span class="highlight"><span class="var">watch:</span> {</span>
-    <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
-      this.$scope.statusFilter == (path === '/active') ?
-        { completed: false } : (path === '/completed') ?
-        { completed: true };
-    },
-
-    <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span>
-  }<div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
-
-     <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="class">function()</span> {</span>
-    newTodo = this.$scope.newTodo.trim();
-    this.todos.push({
-      title: newTodo,
-      completed: false
-    )};
-  },<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click</div></div></section>
-
-  <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: <span class="class">function(</span>newValue, oldValue<span class="class">)</span> {</span>
-    this.$scope.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
-  }<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
-
-});
-
-</code></pre>
-
-                    </div>
-                </div>
-
-            <section class="installation">
-                <h3><i class="icon-download-cloud"></i> Installation</h3>
-                <ol>
-                    <li>
-                        <div><a href="https://github.com/davej/angular-classy/zipball/master/">Download the latest release</a>.</div>
-                        <div style="margin-top:5px;">Or install with bower: <code class="inline-code">bower install angular-classy</code></div>
-                    </li>
-
-                    <li>
-                        Reference Classy <em>after</em> the reference to Angular<br>
-<pre class="block-code"><code>&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;
-&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular-classy.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;</code></pre>
-                    </li>
-
-                    <li>
-                        Add Classy to your application module
-<pre class="block-code coffeescript-code"><code><span class="var">app</span> = <span class="var">angular.module</span> '<span class="string">app</span>', ['<span class="string">classy</span>']</span></code></pre>
-
-<pre class="block-code javascript-code hide"><code><span class="fn">var</span> <span class="var">app</span> = <span class="var">angular.module</span>('<span class="string">app</span>', ['<span class="string">classy</span>']);</code></pre>
-                    </li>
-
-                    <li>That's it, you can create a Classy <code class="inline-code">class</code> like so:
-<pre class="block-code coffeescript-code"><code><span class="class">class</span> <span class="keyword">extends</span> app.classyController
-  <span class="var">@register</span> '<span class="string">MyCtrl</span>', ['<span class="string">$scope</span>']
-</code></pre>
-
-<pre class="block-code javascript-code hide"><code>app.classyController.<span class="class">create</span>('<span class="string">MyCtrl</span>', ['<span class="string">$scope</span>'], {
-
-});</code></pre>
-                </ol>
-            </section>
-
-           <section class="more-info">
-                <h3><i class="icon-info"></i> More Info</h3>
-                <ul>
-                    <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
-                    <li>Test status:
-                        <a href="https://travis-ci.org/davej/angular-classy">
-                            <img src="https://travis-ci.org/davej/angular-classy.png">
-                        </a>
-                    </li>
-                    <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a>
-            </section>
-
-            </div>
-
             <div class="features">
                 <h3><i class="icon-align-left"></i> Class-based</h3>
                 <p>As your Angular controller grows, it can start to get unwieldy and difficult to structure.</p>
@@ -297,6 +157,147 @@
                 <p>it's super tiny so you don't have to worry about it adding weight to your application. Next up, I'm going to performance test it against standard (non-Classy) Angular controllers (initial testing seems to indicate that they perform roughly the same).</p>
 
                 <hr>
+
+            </div>
+
+            <div class="code-editor-container">
+                <div class="code-editor">
+                    <div class="toolbar">
+                        <div class="close"></div>
+                        <div class="minimize"></div>
+                        <div class="zoom"></div>
+                        todo-controller<span class="coffeescript-code">.coffee</span><span class="javascript-code hide">.js</span>
+                        <span class="sub-title">—
+                            <select id="select-language">
+                                <option name="coffeescript">Coffeescript</option>
+                                <option name="coffeescript">Javascript</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="editor">
+    <pre class="coffeescript-code"><code><section><span class="highlight"><span class="var">todomvc</span> = <span class="var">angular.module</span> '<span class="string">todomvc</span>', ['<span class="string">classy</span>']</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
+
+    <section><span class="highlight"><span class="class">class</span> <span class="keyword">extends</span> todomvc.classyController</span>
+<span class="highlight">  <span class="var">@register</span> '<span class="string">TodoCtrl</span>', [
+    '<span class="string">$scope</span>'
+    '<span class="string">$location</span>'
+    '<span class="string">todoStorage</span>'
+    '<span class="string">filterFilter</span>'
+  ]</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
+
+    <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
+    @todos = @$scope.todos = @todoStorage.get()
+    @$scope.newTodo = ''
+    @$scope.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>@</code> symbol.</div></div></section>
+
+    <section>  <span class="highlight"><span class="var">watch:</span></span>
+    <span class="highlight">'<span class="string">location.path()</span>': (path) <span class="class">-></span></span>
+      @$scope.statusFilter =
+        if (path is '/active') then completed: false
+        else if (path is '/completed') then completed: true
+
+    <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span><div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
+
+    <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="class">-></span></span>
+    newTodo = @$scope.newTodo.trim()
+    @todos.push
+      title: newTodo
+      completed: false<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your <code>$scope</code> so you can easily access it using directives like ng-click</div></div></section>
+
+    <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: (newValue, oldValue) <span class="class">-></span></span>
+    @$scope.remainingCount = @filterFilter(@todos, { completed: false }).length<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
+
+</code></pre>
+
+<pre class="javascript-code hide"><code><section><span class="highlight"><span class="fn">var</span> <span class="var">todomvc</span> = <span class="var">angular.module</span>('<span class="string">todomvc</span>', ['<span class="string">classy</span>']);</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
+
+<section><span class="highlight">todomvc.classyController.<span class="class">create</span>(
+  '<span class="string">TodoCtrl</span>',
+
+  ['<span class="string">$scope</span>',
+   '<span class="string">$location</span>',
+   '<span class="string">todoStorage</span>',
+   '<span class="string">filterFilter</span>'], {</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
+
+      <section>   <span class="highlight"><span class="fn">init</span>: <span class="class">function()</span> {</span>
+     this.todos = this.$scope.todos = this.todoStorage.get();
+     this.$scope.newTodo = '';
+     this.$scope.location = this.$location;
+   },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>this</code> symbol.</div></div></section>
+
+  <section>  <span class="highlight"><span class="var">watch:</span> {</span>
+    <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
+      this.$scope.statusFilter == (path === '/active') ?
+        { completed: false } : (path === '/completed') ?
+        { completed: true };
+    },
+
+    <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span>
+  }<div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
+
+     <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="class">function()</span> {</span>
+    newTodo = this.$scope.newTodo.trim();
+    this.todos.push({
+      title: newTodo,
+      completed: false
+    )};
+  },<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click</div></div></section>
+
+  <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: <span class="class">function(</span>newValue, oldValue<span class="class">)</span> {</span>
+    this.$scope.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
+  }<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
+
+});
+
+</code></pre>
+
+                    </div>
+                </div>
+
+            <section class="installation">
+                <h3><i class="icon-download-cloud"></i> Installation</h3>
+                <ol>
+                    <li>
+                        <div><a href="https://github.com/davej/angular-classy/zipball/master/">Download the latest release</a>.</div>
+                        <div style="margin-top:5px;">Or install with bower: <code class="inline-code">bower install angular-classy</code></div>
+                    </li>
+
+                    <li>
+                        Reference Classy <em>after</em> the reference to Angular<br>
+<pre class="block-code"><code>&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;
+&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular-classy.min.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;</code></pre>
+                    </li>
+
+                    <li>
+                        Add Classy to your application module
+<pre class="block-code coffeescript-code"><code><span class="var">app</span> = <span class="var">angular.module</span> '<span class="string">app</span>', ['<span class="string">classy</span>']</span></code></pre>
+
+<pre class="block-code javascript-code hide"><code><span class="fn">var</span> <span class="var">app</span> = <span class="var">angular.module</span>('<span class="string">app</span>', ['<span class="string">classy</span>']);</code></pre>
+                    </li>
+
+                    <li>That's it, you can create a Classy <code class="inline-code">class</code> like so:
+<pre class="block-code coffeescript-code"><code><span class="class">class</span> <span class="keyword">extends</span> app.classyController
+  <span class="var">@register</span> '<span class="string">MyCtrl</span>', ['<span class="string">$scope</span>']
+</code></pre>
+
+<pre class="block-code javascript-code hide"><code>app.classyController.<span class="class">create</span>('<span class="string">MyCtrl</span>', ['<span class="string">$scope</span>'], {
+
+});</code></pre>
+                </ol>
+            </section>
+
+           <section class="more-info">
+                <h3><i class="icon-info"></i> More Info</h3>
+                <ul>
+                    <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
+                    <li>Test status:
+                        <a href="https://travis-ci.org/davej/angular-classy">
+                            <img src="https://travis-ci.org/davej/angular-classy.png">
+                        </a>
+                    </li>
+                    <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
+                </ul>
+            </section>
 
             </div>
 
