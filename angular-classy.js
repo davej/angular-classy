@@ -10,7 +10,7 @@ Why use angular-classy?
   1. It's class-based, classes are a nice way to organize your code
   2. You can use Coffeescript `Class` syntax, or if you prefer, use the convenient `classyController.create` Javascript function
   3. It's only 2KB (gzipped and minified)
-  4. No need to annotate your dependancies to play nicely with minifiers, it just works
+  4. No need to annotate your dependencies to play nicely with minifiers, it just works
   5. Functions are automatically added to the controller's `$scope`, if you want the function to remain private just add a `_` to the function name
   6. It uses a lovely `watch` object for setting up your watchers without polluting the `init` method
 */
@@ -28,7 +28,7 @@ Why use angular-classy?
 
   classFns = {
     construct: function(parent, args) {
-      this.bindDependancies(parent, args);
+      this.bindDependencies(parent, args);
       this.addFnsToScope(parent);
       if (typeof parent.init === "function") {
         parent.init();
@@ -53,7 +53,7 @@ Why use angular-classy?
       }
       return _results;
     },
-    bindDependancies: function(parent, args) {
+    bindDependencies: function(parent, args) {
       var i, key, _i, _len, _ref, _results;
       _ref = parent.constructor.$inject;
       _results = [];

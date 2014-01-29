@@ -9,7 +9,7 @@ Why use angular-classy?
   1. It's class-based, classes are a nice way to organize your code
   2. You can use Coffeescript `Class` syntax, or if you prefer, use the convenient `classyController.create` Javascript function
   3. It's only 2KB (gzipped and minified)
-  4. No need to annotate your dependancies to play nicely with minifiers, it just works
+  4. No need to annotate your dependencies to play nicely with minifiers, it just works
   5. Functions are automatically added to the controller's `$scope`, if you want the function to remain private just add a `_` to the function name
   6. It uses a lovely `watch` object for setting up your watchers without polluting the `init` method
 ###
@@ -20,7 +20,7 @@ Why use angular-classy?
 
 classFns =
   construct: (parent, args) ->
-    @bindDependancies(parent, args)
+    @bindDependencies(parent, args)
     @addFnsToScope(parent)
     parent.init?()
     if angular.isObject(parent.watch) then @registerWatchers(parent)
@@ -32,8 +32,8 @@ classFns =
       continue if key in ['constructor', 'init', 'watch'] or key[0] is '_'
       parent.$scope[key] = angular.bind(parent, fn)
 
-  bindDependancies: (parent, args) ->
-    # Takes the `$inject` dependancies and assigns a class-wide (`@`) variable to each one.
+  bindDependencies: (parent, args) ->
+    # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
     for key, i in parent.constructor.$inject
       parent[key] = args[i]
 
@@ -104,7 +104,7 @@ angular.module = (name, reqs, configFn) ->
       # TODO: Test performance to see if this is the best way to do it.
 
       @register: (name, deps) ->
-        # Registers controller and `$inject`s dependancies
+        # Registers controller and `$inject`s dependencies
         classFns.register(module, name, deps, @)
 
       @create: (name, deps, proto) ->
