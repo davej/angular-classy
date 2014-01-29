@@ -45,9 +45,9 @@
 
                 <hr>
 
-                <h3><i class="icon-pencil"></i> No more annotating your dependancies</h3>
+                <h3><i class="icon-pencil"></i> No more annotating your dependencies</h3>
 
-                <p>This is a big-ee. Angular veterans will know that if you want your Angular code to work with minifiers then you have to annotate your dependancies (i.e. list your dependancies twice), like so (<strong>without Classy</strong>):</p>
+                <p>This is a big-ee. Angular veterans will know that if you want your Angular code to work with minifiers then you have to annotate your dependencies (i.e. list your dependencies twice), like so (<strong>without Classy</strong>):</p>
 
                 <pre class="block-code coffeescript-code"><code>app.<span class="class">controller</span> '<span class="string">AppCtrl</span>',
   ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">$http</span>',
@@ -63,7 +63,7 @@
 
 
 
-                <p>Annotating your dependancies is annoying and also it's just not very DRY. If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
+                <p>Annotating your dependencies is annoying and also it's just not very DRY. If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
 
                 <p>In <strong>Classy</strong> you don't need to do that, it works with minifiers and your code remains DRY. Here's what it looks like <strong>with Classy</strong>:</p>
                                 <pre class="block-code coffeescript-code"><code><span class="class">class</span> <span class="keyword">extends</span> app.classyController</span>
@@ -183,12 +183,12 @@
     '<span class="string">$location</span>'
     '<span class="string">todoStorage</span>'
     '<span class="string">filterFilter</span>'
-  ]</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
+  ]</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.</div></div></section>
 
     <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
     @todos = @$scope.todos = @todoStorage.get()
     @$scope.newTodo = ''
-    @$scope.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>@</code> symbol.</div></div></section>
+    @$scope.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>@</code> symbol.</div></div></section>
 
     <section>  <span class="highlight"><span class="var">watch:</span></span>
     <span class="highlight">'<span class="string">location.path()</span>': (path) <span class="class">-></span></span>
@@ -216,13 +216,13 @@
    '<span class="string">$location</span>',
    '<span class="string">todoStorage</span>',
    '<span class="string">filterFilter</span>'
-  ], {</span><div class="code-tip"><div>Register your controller and inject your dependancies. Injecting dependancies with Classy plays nice with minifiers, you don't need to annotate your dependancies (i.e. list dependancies twice) and your code remains DRY.</div></div></section>
+  ], {</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.</div></div></section>
 
       <section>   <span class="highlight"><span class="fn">init</span>: <span class="class">function()</span> {</span>
      this.todos = this.$scope.todos = this.todoStorage.get();
      this.$scope.newTodo = '';
      this.$scope.location = this.$location;
-   },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependancies using the class-wide <code>this</code> symbol.</div></div></section>
+   },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>this</code> symbol.</div></div></section>
 
   <section>  <span class="highlight"><span class="var">watch:</span> {</span>
     <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
