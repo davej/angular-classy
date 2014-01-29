@@ -226,7 +226,7 @@
 
   <section>  <span class="highlight"><span class="var">watch:</span> {</span>
     <span class="highlight">'<span class="string">location.path()</span>': <span class="class">function(</span>path<span class="class">)</span> {</span>
-      this.$scope.statusFilter == (path === '/active') ?
+      this.$scope.statusFilter = (path === '/active') ?
         { completed: false } : (path === '/completed') ?
         { completed: true };
     },
