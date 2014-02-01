@@ -67,10 +67,10 @@
 
                 <p>In <strong>Classy</strong> you don't need to do that, it works with minifiers and your code remains DRY. Here's what it looks like <strong>with Classy</strong>:</p>
                                 <pre class="block-code coffeescript-code"><code><span class="class">class</span> <span class="keyword">extends</span> app.classyController</span>
-<span class="highlight">  <span class="var">@register</span> '<span class="string">TodoCtrl</span>'
+<span class="highlight">  <span class="var">@register</span> '<span class="string">AppCtrl</span>'
   <span class="var">@inject</span> '<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">$http</span>'</code></pre>
 
-                <pre class="block-code javascript-code hide"><code>app.classyController.<span class="class">create</span>('<span class="string">TodoCtrl</span>',
+                <pre class="block-code javascript-code hide"><code>app.classyController.<span class="class">create</span>('<span class="string">AppCtrl</span>',
   ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">$http</span>'], {
 
 });</code></pre>
