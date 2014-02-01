@@ -24,7 +24,8 @@ Why use angular-classy?
   var classFns, origMethod,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    __slice = [].slice;
 
   classFns = {
     construct: function(parent, args) {
@@ -121,9 +122,14 @@ Why use angular-classy?
       }
       return _results;
     },
+    inject: function(parent, deps) {
+      return parent.$inject = deps;
+    },
     register: function(appInstance, name, deps, parent) {
-      parent.$inject = deps;
-      return appInstance.controller(name, parent);
+      appInstance.controller(name, parent);
+      if (angular.isArray(deps)) {
+        return this.inject(parent, deps);
+      }
     },
     create: function(module, name, deps, proto, parent) {
       var c, key, value, _ref;
@@ -164,6 +170,12 @@ Why use angular-classy?
       classyController = (function() {
         classyController.register = function(name, deps) {
           return classFns.register(module, name, deps, this);
+        };
+
+        classyController.inject = function() {
+          var deps;
+          deps = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+          return classFns.inject(this, deps);
         };
 
         classyController.create = function(name, deps, proto) {

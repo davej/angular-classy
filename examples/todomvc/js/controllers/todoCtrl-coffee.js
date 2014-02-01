@@ -20,7 +20,9 @@ var _ref,
     return _ref;
   }
 
-  _Class.register('TodoCoffeeCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter']);
+  _Class.register('TodoCoffeeCtrl');
+
+  _Class.inject('$scope', '$location', 'todoStorage', 'filterFilter');
 
   _Class.prototype.init = function() {
     this.todos = this.$scope.todos = this.todoStorage.get();

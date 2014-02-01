@@ -70,13 +70,16 @@ classFns =
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then watchTypes.normal.fnCall(parent, expression, fn)
 
-
-  register: (appInstance, name, deps, parent) ->
-    # Inject the `deps`.
+  inject: (parent, deps) ->
+    # Add the `deps` to the controller's $inject annotations.
     parent.$inject = deps
 
-    # Register the controller.
+  register: (appInstance, name, deps, parent) ->
+    # Register the controller
     appInstance.controller name, parent
+
+    # Inject the `deps` if it's passed in as an array
+    if angular.isArray(deps) then @inject(parent, deps)
 
   create: (module, name, deps, proto, parent) ->
     # Helper function that allows us to use an object literal instead of coffeescript classes (or prototype messiness)
@@ -104,8 +107,12 @@ angular.module = (name, reqs, configFn) ->
       # TODO: Test performance to see if this is the best way to do it.
 
       @register: (name, deps) ->
-        # Registers controller and `$inject`s dependencies
+        # Registers controller and optionally inject dependencies
         classFns.register(module, name, deps, @)
+
+      @inject: (deps...) ->
+        # Injectsthe `dep`s
+        classFns.inject(@, deps)
 
       @create: (name, deps, proto) ->
         # This method allows for nicer syntax for those not using CoffeeScript

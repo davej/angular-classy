@@ -9,7 +9,8 @@
 ###
 
 class extends todomvc.classyController
-  @register 'TodoCoffeeCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter']
+  @register 'TodoCoffeeCtrl'
+  @inject '$scope', '$location', 'todoStorage', 'filterFilter'
 
   init: ->
     @todos = @$scope.todos = @todoStorage.get()
