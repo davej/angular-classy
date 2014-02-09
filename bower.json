@@ -6,11 +6,12 @@
   "authors": [
     "Dave Jeffery <dave@davejeffery.com>"
   ],
-  "description": "Cleaner class-based controllers with Angular",
+  "description": "Cleaner class-based controllers for AngularJS",
   "keywords": [
     "angular",
     "angularjs",
     "class",
+    "clsasy",
     "coffeescript",
     "controller"
   ],
