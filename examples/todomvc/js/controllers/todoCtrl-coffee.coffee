@@ -8,7 +8,7 @@
 # - exposes the model to the template and provides event handlers
 ###
 
-class extends todomvc.classyController
+class extends todomvc.cC
   @register 'TodoCoffeeCtrl'
   @inject '$scope', '$location', 'todoStorage', 'filterFilter'
 

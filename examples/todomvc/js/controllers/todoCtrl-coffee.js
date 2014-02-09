@@ -110,4 +110,4 @@ var _ref,
 
   return _Class;
 
-})(todomvc.classyController);
+})(todomvc.cC);

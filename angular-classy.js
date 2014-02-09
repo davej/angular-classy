@@ -189,7 +189,7 @@ Why use angular-classy?
         return classyController;
 
       })();
-      module.classyController = classyController;
+      module.cC = module.classyController = classyController;
     }
     return module;
   };

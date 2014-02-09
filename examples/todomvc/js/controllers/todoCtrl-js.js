@@ -6,7 +6,7 @@
  * - retrieves and persists the model via the todoStorage service
  * - exposes the model to the template and provides event handlers
  */
-todomvc.classyController.create('TodoJsCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter'], {
+todomvc.cC.create('TodoJsCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter'], {
 
 	init: function() {
 		this.todos = this.$scope.todos = this.todoStorage.get();

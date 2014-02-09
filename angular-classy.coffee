@@ -122,7 +122,7 @@ angular.module = (name, reqs, configFn) ->
         # Where the magic happens
         classFns.construct(@, arguments)
 
-    module.classyController = classyController
+    module.cC = module.classyController = classyController
 
   return module
 
