@@ -39,7 +39,7 @@
 
                 <h3><i class="icon-coffee"></i> Plays nicely with Coffeescript <em>and</em> Javascript</h3>
 
-                <p>Classy works nicely with Coffeescript's <code class="inline-code">class</code> and <code class="inline-code">extends</code> syntax. Not everybody likes to party with Coffeescript though, for vanilla Javascript folks there's a convenient <code class="inline-code">classyController.create</code> Javascript method. Whoop, everybody is invited to the party!</p>
+                <p>Classy works nicely with Coffeescript's <code class="inline-code">class</code> and <code class="inline-code">extends</code> syntax. Not everybody likes to party with Coffeescript though, for vanilla Javascript folks there's a convenient <code class="inline-code">classyController.create</code> (or <code class="inline-code">cC.create</code> if you prefer) Javascript method. Whoop, everybody is invited to the party!</p>
 
                 <p><a href="#" id="toggle-language">Switch code examples to <span class="coffeescript-code">Javascript</span> <span class="javascript-code hide">Coffeescript</span></a></p>
 
@@ -179,7 +179,8 @@
 
     <section><span class="highlight"><span class="class">class</span> <span class="keyword">extends</span> todomvc.classyController</span>
 <span class="highlight">  <span class="var">@register</span> '<span class="string">TodoCtrl</span>'
-  <span class="var">@inject</span> '<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>'</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.</div></div></section>
+  <span class="var">@inject</span> '<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>'</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
+  By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classyController</code> if you prefer.</div></div></section>
 
     <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
     @todos = @$scope.todos = @todoStorage.get()
@@ -212,7 +213,8 @@
    '<span class="string">$location</span>',
    '<span class="string">todoStorage</span>',
    '<span class="string">filterFilter</span>'
-  ], {</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.</div></div></section>
+  ], {</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
+  By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classyController</code> if you prefer.</div></div></section>
 
       <section>   <span class="highlight"><span class="fn">init</span>: <span class="class">function()</span> {</span>
      this.todos = this.$scope.todos = this.todoStorage.get();
