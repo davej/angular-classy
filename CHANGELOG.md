@@ -12,3 +12,9 @@
 
 ## 1.1.1
 * Added shortcut to `module.classyController`, you can now use `module.cC` if you prefer.
+
+## 2.0
+* Coffeescript `class extends` syntax is no longer supported
+* classyController now maps to classyController.create
+* The previous `JS` API (classyController.create) is now the universal API
+* Create a classy controller with app.classyController(controllerName, classObj)
