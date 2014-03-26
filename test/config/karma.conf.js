@@ -5,7 +5,7 @@ module.exports = function(config) {
     files: [
 	    'test/bower_components/angular/angular.js',
 	    'test/bower_components/angular-mocks/angular-mocks.js',
-		  'angular-classy.min.js',
+		  'angular-classy.js',
 		  'examples/todomvc/js/app.js',
 		  'examples/todomvc/js/*/*.js',
 		  'test/unit/*.js'

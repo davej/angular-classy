@@ -1,17 +1,7 @@
 ###
-Angular Classy 1.0
+Angular Classy 1.1.1
 Dave Jeffery, @DaveJ
 License: MIT
-###
-
-###
-Why use angular-classy?
-  1. It's class-based, classes are a nice way to organize your code
-  2. You can use Coffeescript `Class` syntax, or if you prefer, use the convenient `classyController.create` Javascript function
-  3. It's only 2KB (gzipped and minified)
-  4. No need to annotate your dependencies to play nicely with minifiers, it just works
-  5. Functions are automatically added to the controller's `$scope`, if you want the function to remain private just add a `_` to the function name
-  6. It uses a lovely `watch` object for setting up your watchers without polluting the `init` method
 ###
 
 ### global angular ###
@@ -19,6 +9,8 @@ Why use angular-classy?
 'use strict';
 
 classFns =
+  selectorControllerCount: 0
+
   construct: (parent, args) ->
     @bindDependencies(parent, args)
     @addFnsToScope(parent)
@@ -27,38 +19,47 @@ classFns =
 
   addFnsToScope: (parent) ->
     # Adds controller functions (unless they have a `_` prefix) to the `$scope`
-    for key, fn of parent.constructor.prototype
+    $scope = parent[parent.constructor::__classyControllerScopeName]
+    for key, fn of parent.constructor::
       continue unless angular.isFunction(fn)
       continue if key in ['constructor', 'init', 'watch'] or key[0] is '_'
-      parent.$scope[key] = angular.bind(parent, fn)
+      $scope[key] = angular.bind(parent, fn)
 
   bindDependencies: (parent, args) ->
+    injectObject = parent.__classyControllerInjectObject
+    injectObjectMode = !!injectObject
+
     # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
     for key, i in parent.constructor.$inject
-      parent[key] = args[i]
+      if injectObjectMode and (injectName = injectObject[key]) and injectName != '.'
+        parent[injectName] = args[i]
+      else
+        parent[key] = args[i]
 
   registerWatchers: (parent) ->
     # Iterates over the watch object and creates the appropriate `$scope.$watch` listener
+    $scope = parent[parent.constructor::__classyControllerScopeName]
+
     watchTypes =
       normal:
         keywords: []
         fnCall: (parent, expression, fn) ->
-          parent.$scope.$watch(expression, angular.bind(parent, fn))
+          $scope.$watch(expression, angular.bind(parent, fn))
       objectEquality:
         keywords: ['{object}', '{deep}']
         fnCall: (parent, expression, fn) ->
-          parent.$scope.$watch(expression, angular.bind(parent, fn), true)
+          $scope.$watch(expression, angular.bind(parent, fn), true)
       collection:
         keywords: ['{collection}', '{shallow}']
         fnCall: (parent, expression, fn) ->
-          parent.$scope.$watchCollection(expression, angular.bind(parent, fn))
+          $scope.$watchCollection(expression, angular.bind(parent, fn))
 
     for expression, fn of parent.watch
       if angular.isString(fn) then fn = parent[fn]
       if angular.isString(expression) and angular.isFunction(fn)
         watchRegistered = false
 
-        # Search for keywords that identify it is a non-standard watch 
+        # Search for keywords that identify it is a non-standard watch
         for watchType of watchTypes
           if watchRegistered then break
           for keyword in watchTypes[watchType].keywords
@@ -71,15 +72,46 @@ classFns =
         if !watchRegistered then watchTypes.normal.fnCall(parent, expression, fn)
 
   inject: (parent, deps) ->
+    if angular.isObject deps[0]
+      parent::__classyControllerInjectObject = injectObject = deps[0]
+      deps = (service for service, name of injectObject)
+
+      if injectObject?['$scope'] and injectObject['$scope'] != '.'
+        parent::__classyControllerScopeName = injectObject['$scope']
+
     # Add the `deps` to the controller's $inject annotations.
     parent.$inject = deps
 
+  # compileController: (el, controllerName) ->
+  #   el.setAttribute('data-ng-controller', controllerName);
+  #   window.setTimeout ->
+  #     angular.element(document).injector().invoke ($compile) ->
+  #       scope = angular.element(el).scope()
+  #       $compile(el)(scope)
+  #   , 0
+
+  registerSelector: (appInstance, selectorString, parent) ->
+    @selectorControllerCount++
+    controllerName =
+      "#{selectorString.replace(/\W/g, '')}ClassySelector#{@selectorControllerCount}Controller"
+    appInstance.controller controllerName, parent
+
+    els = window.jQuery?(selectorString) or document.querySelectorAll(selectorString)
+    el.setAttribute('data-ng-controller', controllerName) for el in els
+
   register: (appInstance, name, deps, parent) ->
-    # Register the controller
-    appInstance.controller name, parent
+    if name.indexOf('$') is 0
+      # If first character of `name` is '$' then treat it as a selector
+      @registerSelector(appInstance, name.slice(1), parent)
+    else
+      # Register the controller
+      appInstance.controller name, parent
 
     # Inject the `deps` if it's passed in as an array
     if angular.isArray(deps) then @inject(parent, deps)
+
+    # If `deps` is object: Wrap object in array and then inject
+    else if angular.isObject(deps) then @inject(parent, [deps])
 
   create: (module, name, deps, proto, parent) ->
     # Helper function that allows us to use an object literal instead of coffeescript classes (or prototype messiness)
@@ -106,12 +138,14 @@ angular.module = (name, reqs, configFn) ->
       # this is because I suspect that performance is better this way.
       # TODO: Test performance to see if this is the best way to do it.
 
+      __classyControllerScopeName: '$scope'
+
       @register: (name, deps) ->
         # Registers controller and optionally inject dependencies
         classFns.register(module, name, deps, @)
 
       @inject: (deps...) ->
-        # Injectsthe `dep`s
+        # Injects the `dep`s
         classFns.inject(@, deps)
 
       @create: (name, deps, proto) ->
