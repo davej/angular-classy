@@ -82,6 +82,14 @@ classFns =
     # Add the `deps` to the controller's $inject annotations.
     parent.$inject = deps
 
+  # compileController: (el, controllerName) ->
+  #   el.setAttribute('data-ng-controller', controllerName);
+  #   window.setTimeout ->
+  #     angular.element(document).injector().invoke ($compile) ->
+  #       scope = angular.element(el).scope()
+  #       $compile(el)(scope)
+  #   , 0
+
   registerSelector: (appInstance, selectorString, parent) ->
     @selectorControllerCount++
     controllerName =
@@ -105,10 +113,10 @@ classFns =
     # If `deps` is object: Wrap object in array and then inject
     else if angular.isObject(deps) then @inject(parent, [deps])
 
-  create: (module, name, proto, parent) ->
-    # Helper function that allows us to use an object instead of coffeescript classes (or JS prototypes)
+  create: (module, name, deps, proto, parent) ->
+    # Helper function that allows us to use an object literal instead of coffeescript classes (or prototype messiness)
     c = class extends parent
-      @register(name, proto.inject, module)
+      @register(name, deps, module)
     for own key,value of proto
       c::[key] = value
     return c
@@ -132,15 +140,23 @@ angular.module = (name, reqs, configFn) ->
 
       __classyControllerScopeName: '$scope'
 
-      @create: (name, proto) ->
+      @register: (name, deps) ->
+        # Registers controller and optionally inject dependencies
+        classFns.register(module, name, deps, @)
+
+      @inject: (deps...) ->
+        # Injects the `dep`s
+        classFns.inject(@, deps)
+
+      @create: (name, deps, proto) ->
         # This method allows for nicer syntax for those not using CoffeeScript
-        classFns.create(module, name, proto, @)
+        classFns.create(module, name, deps, proto, @)
 
       constructor: ->
         # Where the magic happens
         classFns.construct(@, arguments)
 
-    module.cC = module.classyController = classyController.create
+    module.cC = module.classyController = classyController
 
   return module
 
