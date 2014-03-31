@@ -8,22 +8,19 @@
 # - exposes the model to the template and provides event handlers
 ###
 
-class extends todomvc.cC
-  @register 'TodoCoffeeCtrl'
-  @inject '$scope', '$location', 'todoStorage', 'filterFilter'
-
+todoFuncs =
   init: ->
-    @todos = @$scope.todos = @todoStorage.get()
+    @todos = @$.todos = @todoStorage.get()
 
-    @$scope.newTodo = ''
-    @$scope.editedTodo = null
+    @$.newTodo = ''
+    @$.editedTodo = null
 
-    if @$location.path() is '' then @$location.path('/')
-    @$scope.location = @$location
+    if @$loc.path() is '' then @$loc.path('/')
+    @$.location = @$loc
 
   watch:
     'location.path()': (path) ->
-      @$scope.statusFilter =
+      @$.statusFilter =
         if (path is '/active') then completed: false
         else if (path is '/completed') then completed: true
         else null
@@ -31,42 +28,53 @@ class extends todomvc.cC
     '{object}todos': '_onTodoChange'
 
   _onTodoChange: (newValue, oldValue) ->
-    @$scope.remainingCount = @filterFilter(@todos, { completed: false }).length
-    @$scope.completedCount = @todos.length - @$scope.remainingCount
-    @$scope.allChecked = !@$scope.remainingCount
+    @$.remainingCount = @fF(@todos, { completed: false }).length
+    @$.completedCount = @todos.length - @$.remainingCount
+    @$.allChecked = !@$.remainingCount
     if newValue != oldValue # This prevents unneeded calls to the local storage
       @todoStorage.put(@todos)
 
   addTodo: ->
-    newTodo = @$scope.newTodo.trim()
+    newTodo = @$.newTodo.trim()
     if !newTodo.length then return
     @todos.push
       title: newTodo
       completed: false
 
-    @$scope.newTodo = ""
+    @$.newTodo = ""
 
   editTodo: (todo) ->
-    @$scope.editedTodo = todo
+    @$.editedTodo = todo
     # Clone the original todo to restore it on demand.
-    @$scope.originalTodo = angular.extend({}, todo)
+    @$.originalTodo = angular.extend({}, todo)
 
   doneEditing: (todo) ->
-    @$scope.editedTodo = null
+    @$.editedTodo = null
     todo.title = todo.title.trim()
-    @$scope.removeTodo todo unless todo.title
+    @$.removeTodo todo unless todo.title
 
   revertEditing: (todo) ->
-    @todos[@todos.indexOf(todo)] = @$scope.originalTodo
-    @$scope.doneEditing @$scope.originalTodo
+    @todos[@todos.indexOf(todo)] = @$.originalTodo
+    @$.doneEditing @$.originalTodo
 
   removeTodo: (todo) ->
     @todos.splice @todos.indexOf(todo), 1
 
   clearCompletedTodos: ->
-    @$scope.todos = @todos =
+    @$.todos = @todos =
       @todos.filter (val) -> !val.completed
 
   markAll: (completed) ->
     for todo in @todos
-      todo.completed = completed      
+      todo.completed = completed
+
+todomvc.cC angular.extend todoFuncs,
+  name: 'ThisDoesNotMapToNgController'
+  el: '#todoapp'
+
+  inject:
+    $scope: '$'
+    $location: '$loc'
+    todoStorage: '.'
+    filterFilter: 'fF'
+
