@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	describe('Todo Javascript Classy Controller', function () {
+	describe('Todo Coffee Classy Controller', function () {
 		var ctrl, scope;
 		var todoList;
 		var todoStorage = {
@@ -14,7 +14,7 @@
 				this.storage = value;
 			}
 		};
-		var ctrlName = 'TodoJsCtrl';
+		var ctrlName = 'ThisDoesNotMapToNgController';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
 		beforeEach(module('todomvc'));

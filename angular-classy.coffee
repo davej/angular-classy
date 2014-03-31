@@ -82,44 +82,42 @@ classFns =
     # Add the `deps` to the controller's $inject annotations.
     parent.$inject = deps
 
-  # compileController: (el, controllerName) ->
-  #   el.setAttribute('data-ng-controller', controllerName);
-  #   window.setTimeout ->
-  #     angular.element(document).injector().invoke ($compile) ->
-  #       scope = angular.element(el).scope()
-  #       $compile(el)(scope)
-  #   , 0
-
-  registerSelector: (appInstance, selectorString, parent) ->
+  registerSelector: (appInstance, selector, parent) ->
     @selectorControllerCount++
-    controllerName =
-      "#{selectorString.replace(/\W/g, '')}ClassySelector#{@selectorControllerCount}Controller"
+    controllerName = "ClassySelector#{@selectorControllerCount}Controller"
     appInstance.controller controllerName, parent
 
-    els = window.jQuery?(selectorString) or document.querySelectorAll(selectorString)
-    el.setAttribute('data-ng-controller', controllerName) for el in els
+    if angular.isElement(selector)
+      selector.setAttribute('data-ng-controller', controllerName)
+      return
 
-  register: (appInstance, name, deps, parent) ->
-    if name.indexOf('$') is 0
-      # If first character of `name` is '$' then treat it as a selector
-      @registerSelector(appInstance, name.slice(1), parent)
-    else
-      # Register the controller
-      appInstance.controller name, parent
+    if angular.isString(selector)
+      # Query the dom using jQuery if available, otherwise fallback to qSA
+      els = window.jQuery?(selector) or document.querySelectorAll(selector)
+    else if angular.isArray(selector)
+      els = selector
+    else return
+
+    for el in els
+      if angular.isElement(el)
+        el.setAttribute('data-ng-controller', controllerName)
+
+  create: (appInstance, classObj, parent) ->
+    if classObj.el || classObj.selector
+      # Register the controller using selector
+      @registerSelector(appInstance, classObj.el || classObj.selector, parent)
+
+    if angular.isString(classObj.name)
+      # Register the controller using name
+      appInstance.controller classObj.name, parent
+
+    deps = classObj.inject
 
     # Inject the `deps` if it's passed in as an array
     if angular.isArray(deps) then @inject(parent, deps)
 
     # If `deps` is object: Wrap object in array and then inject
     else if angular.isObject(deps) then @inject(parent, [deps])
-
-  create: (module, name, deps, proto, parent) ->
-    # Helper function that allows us to use an object literal instead of coffeescript classes (or prototype messiness)
-    c = class extends parent
-      @register(name, deps, module)
-    for own key,value of proto
-      c::[key] = value
-    return c
 
 
 origMethod = angular.module
@@ -133,30 +131,26 @@ angular.module = (name, reqs, configFn) ->
 
   # If this module has required 'classy' then we're going to add `classyController`
   if reqs and 'classy' in reqs
-    class classyController
-      # `classyController` is only a set of proxy functions for `classFns`,
-      # this is because I suspect that performance is better this way.
-      # TODO: Test performance to see if this is the best way to do it.
+    module.cC = module.classyController = (classObj) ->
+      c = class classyController
+        # `classyController` is only a set of proxy functions for `classFns`,
+        # this is because I suspect that performance is better this way.
+        # TODO: Test performance to see if this is the most performant way to do it.
 
-      __classyControllerScopeName: '$scope'
+        __classyControllerScopeName: '$scope'
 
-      @register: (name, deps) ->
-        # Registers controller and optionally inject dependencies
-        classFns.register(module, name, deps, @)
+        # Create the Classy Controller
+        classFns.create(module, classObj, @)
 
-      @inject: (deps...) ->
-        # Injects the `dep`s
-        classFns.inject(@, deps)
+        constructor: ->
+          # Where the magic happens
+          classFns.construct(@, arguments)
 
-      @create: (name, deps, proto) ->
-        # This method allows for nicer syntax for those not using CoffeeScript
-        classFns.create(module, name, deps, proto, @)
+      for own key,value of classObj
+        c::[key] = value
 
-      constructor: ->
-        # Where the magic happens
-        classFns.construct(@, arguments)
+      return c
 
-    module.cC = module.classyController = classyController
 
   return module
 
