@@ -1,6 +1,6 @@
 
 /*
-Angular Classy 1.1.1
+Angular Classy 0.3
 Dave Jeffery, @DaveJ
 License: MIT
  */
