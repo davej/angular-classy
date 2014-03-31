@@ -508,6 +508,12 @@ footer {
   .hide-on-small-devices {
     display: none; } }
 
+.browsehappy {
+  z-index: 999;
+  position: relative;
+  background: #fff;
+  padding: 2em; }
+
 @font-face {
   font-family: 'classy';
   src: url('font/classy.eot?52707110');
@@ -549,6 +555,14 @@ footer {
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */ }
 
+.icon-emo-happy:before {
+  content: '\e80a'; }
+
+/* '' */
+.icon-wristwatch:before {
+  content: '\e806'; }
+
+/* '' */
 .icon-download-cloud:before {
   content: '\e802'; }
 
@@ -565,10 +579,10 @@ footer {
   content: '\e805'; }
 
 /* '' */
-.icon-coffee:before {
-  content: '\e804'; }
+.icon-star:before {
+  content: '\e80b'; }
 
-/* '' */
+/* '' */
 .icon-github:before {
   content: '\e800'; }
 
@@ -585,7 +599,7 @@ footer {
   content: '\e807'; }
 
 /* '' */
-.icon-wristwatch:before {
-  content: '\e806'; }
+.icon-coffee:before {
+  content: '\e804'; }
 
-/* '' */
+/* '' */

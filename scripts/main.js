@@ -1,7 +1,7 @@
 (function() {
   var currentLanguage, otherlanguage, switchLanguage;
 
-  currentLanguage = "coffeescript";
+  currentLanguage = "javascript";
 
   otherlanguage = {
     coffeescript: 'javascript',
@@ -32,11 +32,6 @@
 
   document.getElementById('select-language').onchange = function(event) {
     return switchLanguage(event.target.value);
-  };
-
-  document.getElementById('toggle-language').onclick = function(event) {
-    event.preventDefault();
-    return switchLanguage();
   };
 
 }).call(this);

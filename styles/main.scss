@@ -618,5 +618,16 @@ footer {
   }
 }
 
+// .coffeescript-code {
+//   display: none;
+// }
+
+
+.browsehappy {
+  z-index: 999;
+  position: relative;
+  background: #fff;
+  padding: 2em;
+}
 
 @import 'icon-font';

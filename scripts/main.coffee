@@ -1,5 +1,5 @@
-currentLanguage = "coffeescript"
-otherlanguage = 
+currentLanguage = "javascript"
+otherlanguage =
   coffeescript: 'javascript'
   javascript: 'coffeescript'
 
@@ -20,7 +20,3 @@ switchLanguage = (language) ->
 
 document.getElementById('select-language').onchange = (event) ->
   switchLanguage(event.target.value)
-
-document.getElementById('toggle-language').onclick= (event) ->
-  event.preventDefault()
-  switchLanguage()
