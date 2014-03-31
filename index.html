@@ -159,6 +159,25 @@
                 <h4>Named dependencies</h4>
 
                 <p>Classy allows you to name dependencies whatever you like, simply pass in an object instead of an array. Use a '.' value if you wish to use the original name for a dependency.</p>
+
+                <pre class="block-code coffeescript-code hide"><code>app.<span class="class">classyController</span>
+  <span class="var">name</span>: '<span class="string">MyCtrl</span>'
+  <span class="var">inject</span>:
+    <span class="var">$scope</span>: '<span class="string">$</span>'
+    <span class="var">filterFilter</span>: '<span class="string">filter</span>'
+    <span class="var">$location</span>: '<span class="string">.</span>'
+
+  <span class="fn">init</span>: <span class="class">-></span>
+    <span class="comment"># Check if dependencies are defined</span>
+    console.log <span class="keyword">@</span>$ <span class="comment"># ✔ ChildScope {}</span>
+    console.log <span class="keyword">@</span>$scope <span class="comment"># ✘ undefined</span>
+    console.log <span class="keyword">@</span>$location <span class="comment"># ✔ LocationHashbangUrl {}</span>
+
+    <span class="comment"># Use a dependency</span>
+    console.log <span class="keyword">@</span><span class="class">filter</span>(<span class="keyword">@</span>$.todos, <span class="var">completed</span>: <span class="keyword">true</span>)
+    <span class="comment"># -> [{"title":"Learn Angular","completed":true}]</span>
+  </code></pre>
+
                 <pre class="block-code javascript-code"><code>app.<span class="class">classyController</span>({
   <span class="var">name</span>: '<span class="string">MyCtrl</span>',
   <span class="var">inject</span>: {
@@ -284,10 +303,10 @@ app.<span class="class">classyController</span>({
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>'],</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
   By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classyController</code> if you prefer.</div></div></section>
       <section>  <span class="highlight"><span class="fn">init</span>: <span class="keyword">function()</span> {</span>
-     this.todos = this.$scope.todos = this.todoStorage.get();
-     this.$scope.newTodo = '';
-     this.$scope.location = this.$location;
-   },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>this</code> symbol.</div></div></section>
+    this.todos = this.$scope.todos = this.todoStorage.get();
+    this.$scope.newTodo = '';
+    this.$scope.location = this.$location;
+  },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>this</code> symbol.</div></div></section>
   <section>  <span class="highlight"><span class="var">watch</span>: {</span>
     <span class="highlight">'<span class="string">location.path()</span>': <span class="keyword">function(</span>path<span class="keyword">)</span> {</span>
       this.$scope.statusFilter = (path === '/active') ?
