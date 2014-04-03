@@ -43,10 +43,10 @@ License: MIT
           controller: {}
         },
         controller: function(classObj) {
-          var c, classyController, key, options, value;
-          options = angular.extend({}, defaults.controller, module.classy.options.controller, classObj.__options);
+          var c, classyController, key, value;
+          classObj.__options = angular.extend({}, defaults.controller, module.classy.options.controller, classObj.__options);
           c = classyController = (function() {
-            classyController.prototype.__options = options;
+            classyController.prototype.__options = classObj.__options;
 
             classFns.create(module, classObj, classyController);
 

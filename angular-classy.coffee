@@ -34,14 +34,13 @@ angular.module = (name, reqs, configFn) ->
         controller: {}
 
       controller: (classObj) ->
-        options = angular.extend {}, defaults.controller, module.classy.options.controller, classObj.__options
-
+        classObj.__options = angular.extend {}, defaults.controller, module.classy.options.controller, classObj.__options
         c = class classyController
           # `classyController` contains only a set of proxy functions for `classFns`,
           # this is because I suspect that performance is better this way.
           # TODO: Test performance to see if this is the most performant way to do it.
 
-          __options: options
+          __options: classObj.__options
 
           # Create the Classy Controller
           classFns.create(module, classObj, @)
