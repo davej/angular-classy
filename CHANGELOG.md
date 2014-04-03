@@ -6,14 +6,14 @@
 ## 0.1.1
 * Fixes in javascript version and a few code cleanups
 
-## 0.2
+## 0.2 (1/Feb/2014)
 * Now supports and prefers standalone `@inject`, so you can inject seperately from the `@register` method.
 * Old `@register` syntax is still supported
 
-## 0.2.1
+## 0.2.1 (9/Feb/2014)
 * Added shortcut to `module.classyController`, you can now use `module.cC` if you prefer.
 
-## 0.3
+## 0.3 (31/Mar/2014)
 * Coffeescript `class extends` syntax is no longer supported
 * classyController now maps to classyController.create
 * The previous `JS` API (classyController.create) is now the universal API
