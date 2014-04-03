@@ -1,0 +1,30 @@
+{
+  "name": "angular-classy",
+  "main": "angular-classy.js",
+  "version": "1.0.1",
+  "homepage": "https://github.com/davej/angular-classy",
+  "authors": [
+    "Dave Jeffery <dave@davejeffery.com>"
+  ],
+  "description": "Cleaner class-based controllers with Angular",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "class",
+    "coffeescript",
+    "controller"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.2"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "examples",
+    ".travis.yml"
+  ]
+}
