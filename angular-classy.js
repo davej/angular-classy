@@ -44,7 +44,7 @@ License: MIT
         },
         controller: function(classObj) {
           var c, classyController, key, options, value;
-          options = angular.extend(defaults.controller, this.options.controller, classObj.__options);
+          options = angular.extend({}, defaults.controller, module.classy.options.controller, classObj.__options);
           c = classyController = (function() {
             classyController.prototype.__options = options;
 

@@ -7,14 +7,14 @@
  * - exposes the model to the template and provides event handlers
  */
 
-todomvc.classy.options.controller = {
-	addFnsToScope: false
-}
 
 todomvc.classy.controller({
-	name: 'TodoCtrl',
+	name: 'TodoAsControllerCtrl',
 	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
-	
+	__options: {
+		addFnsToScope: false
+	},
+
 	init: function() {
 		this.todos = this.todoStorage.get();
 

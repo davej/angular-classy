@@ -34,7 +34,7 @@ angular.module = (name, reqs, configFn) ->
         controller: {}
 
       controller: (classObj) ->
-        options = angular.extend defaults.controller, @options.controller, classObj.__options
+        options = angular.extend {}, defaults.controller, module.classy.options.controller, classObj.__options
 
         c = class classyController
           # `classyController` contains only a set of proxy functions for `classFns`,
