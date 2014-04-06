@@ -1,5 +1,5 @@
 ###
-Angular Classy 0.3
+Angular Classy 0.4
 Dave Jeffery, @DaveJ
 License: MIT
 ###
