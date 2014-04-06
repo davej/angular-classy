@@ -19,3 +19,12 @@
 * The previous `JS` API (classyController.create) is now the universal API
 * Create a classy controller with app.classyController(controllerName, classObj)
 * Moved version numbers to pre-1.0 because API stability is not important for the moment and test coverage isn't as good as I'd like it to be.
+
+## 0.4 (6/Apr/2014)
+* Namespace is now `module.classy.controller`, this would be consistent with other classy helpers (e.g. `module.classy.service`) but you can still use module.cC or module.classyController if you prefer
+* Added options (`addFnsToScope`, `watchObject`, `_scopeName` and `_watchKeywords`)
+* Options can be changed at the module level
+    app.classy.options.controller = {
+        addFnsToScope: false
+    };
+* ... or at the class level using the `__options` property

@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
   	"angular": "~1.2",
-    "angular-classy": "",
     "todomvc-common": "~0.1.4"
   },
   "devDependencies": {

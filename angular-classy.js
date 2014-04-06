@@ -1,6 +1,6 @@
 
 /*
-Angular Classy 0.3
+Angular Classy 0.4
 Dave Jeffery, @DaveJ
 License: MIT
  */
@@ -10,25 +10,87 @@ License: MIT
 
 (function() {
   'use strict';
-  var classFns, origMethod,
+  var classFns, defaults, origMethod,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     __hasProp = {}.hasOwnProperty;
+
+  defaults = {
+    controller: {
+      addFnsToScope: true,
+      watchObject: true,
+      _scopeName: '$scope',
+      _watchKeywords: {
+        objectEquality: ['{object}', '{deep}'],
+        collection: ['{collection}', '{shallow}']
+      }
+    }
+  };
+
+  origMethod = angular.module;
+
+  angular.module = function(name, reqs, configFn) {
+
+    /*
+     * We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
+     * as a requirement. We also need the module name to we can register our classy controllers.
+     * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
+     */
+    var module;
+    module = origMethod(name, reqs, configFn);
+    if (reqs && __indexOf.call(reqs, 'classy') >= 0) {
+      module.classy = {
+        options: {
+          controller: {}
+        },
+        controller: function(classObj) {
+          var c, classyController, key, value;
+          classObj.__options = angular.extend({}, defaults.controller, module.classy.options.controller, classObj.__options);
+          c = classyController = (function() {
+            classyController.prototype.__options = classObj.__options;
+
+            classFns.create(module, classObj, classyController);
+
+            function classyController() {
+              classFns.construct(this, arguments);
+            }
+
+            return classyController;
+
+          })();
+          for (key in classObj) {
+            if (!__hasProp.call(classObj, key)) continue;
+            value = classObj[key];
+            c.prototype[key] = value;
+          }
+          return c;
+        }
+      };
+      module.cC = module.classyController = module.classy.controller;
+    }
+    return module;
+  };
+
+  angular.module('classy', []);
 
   classFns = {
     selectorControllerCount: 0,
     construct: function(parent, args) {
+      var options;
+      options = parent.constructor.prototype.__options;
       this.bindDependencies(parent, args);
-      this.addFnsToScope(parent);
+      if (options.addFnsToScope) {
+        this.addFnsToScope(parent);
+      }
       if (typeof parent.init === "function") {
         parent.init();
       }
-      if (angular.isObject(parent.watch)) {
+      if (options.watchObject && angular.isObject(parent.watch)) {
         return this.registerWatchers(parent);
       }
     },
     addFnsToScope: function(parent) {
       var $scope, fn, key, _ref, _results;
-      $scope = parent[parent.constructor.prototype.__classyControllerScopeName];
+      $scope = parent[parent.constructor.prototype.__options._scopeName];
       _ref = parent.constructor.prototype;
       _results = [];
       for (key in _ref) {
@@ -60,8 +122,12 @@ License: MIT
       return _results;
     },
     registerWatchers: function(parent) {
-      var $scope, expression, fn, keyword, watchRegistered, watchType, watchTypes, _i, _len, _ref, _ref1, _results;
-      $scope = parent[parent.constructor.prototype.__classyControllerScopeName];
+      var $scope, expression, fn, keyword, watchKeywords, watchRegistered, watchType, watchTypes, _i, _len, _ref, _ref1, _results;
+      $scope = parent[parent.constructor.prototype.__options._scopeName];
+      if (!$scope) {
+        throw new Error("You need to inject `$scope` to use the watch object");
+      }
+      watchKeywords = parent.constructor.prototype.__options._watchKeywords;
       watchTypes = {
         normal: {
           keywords: [],
@@ -70,13 +136,13 @@ License: MIT
           }
         },
         objectEquality: {
-          keywords: ['{object}', '{deep}'],
+          keywords: watchKeywords.objectEquality,
           fnCall: function(parent, expression, fn) {
             return $scope.$watch(expression, angular.bind(parent, fn), true);
           }
         },
         collection: {
-          keywords: ['{collection}', '{shallow}'],
+          keywords: watchKeywords.collection,
           fnCall: function(parent, expression, fn) {
             return $scope.$watchCollection(expression, angular.bind(parent, fn));
           }
@@ -119,7 +185,7 @@ License: MIT
       return _results;
     },
     inject: function(parent, deps) {
-      var injectObject, name, service;
+      var injectObject, name, scopeName, service;
       if (angular.isObject(deps[0])) {
         parent.prototype.__classyControllerInjectObject = injectObject = deps[0];
         deps = (function() {
@@ -131,8 +197,9 @@ License: MIT
           }
           return _results;
         })();
-        if ((injectObject != null ? injectObject['$scope'] : void 0) && injectObject['$scope'] !== '.') {
-          parent.prototype.__classyControllerScopeName = injectObject['$scope'];
+        scopeName = parent.prototype.__options._scopeName;
+        if ((injectObject != null ? injectObject[scopeName] : void 0) && injectObject[scopeName] !== '.') {
+          parent.prototype.__options._scopeName = injectObject[scopeName];
         }
       }
       return parent.$inject = deps;
@@ -180,44 +247,5 @@ License: MIT
       }
     }
   };
-
-  origMethod = angular.module;
-
-  angular.module = function(name, reqs, configFn) {
-
-    /*
-     * We have to override the `angular.module` method to see if 'classy' has been specified
-     * as a requirement. We also need the module name to we can register our classy controllers.
-     * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
-     */
-    var module;
-    module = origMethod(name, reqs, configFn);
-    if (reqs && __indexOf.call(reqs, 'classy') >= 0) {
-      module.cC = module.classyController = function(classObj) {
-        var c, classyController, key, value;
-        c = classyController = (function() {
-          classyController.prototype.__classyControllerScopeName = '$scope';
-
-          classFns.create(module, classObj, classyController);
-
-          function classyController() {
-            classFns.construct(this, arguments);
-          }
-
-          return classyController;
-
-        })();
-        for (key in classObj) {
-          if (!__hasProp.call(classObj, key)) continue;
-          value = classObj[key];
-          c.prototype[key] = value;
-        }
-        return c;
-      };
-    }
-    return module;
-  };
-
-  angular.module('classy', []);
 
 }).call(this);
