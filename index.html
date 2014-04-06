@@ -60,12 +60,12 @@
                 <p>Annotating your dependencies is annoying and also it's just not very DRY. If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
 
                 <p>In <strong>Classy</strong> you don't need to do that, it works with minifiers and your code remains DRY. Here's what it looks like <strong>with Classy</strong>:</p>
-                                <pre class="block-code coffeescript-code hide"><code>app.<span class="class">classyController</span>
+                                <pre class="block-code coffeescript-code hide"><code>app.<span class="class">classy.controller</span>
   <span class="var">name</span>: '<span class="string">AppCtrl</span>'
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">$http</span>']
   <span class="comment">//...</span></code></pre>
 
-                <pre class="block-code javascript-code"><code>app.<span class="class">classyController</span>({
+                <pre class="block-code javascript-code"><code>app.<span class="class">classy.controller</span>({
   <span class="var">name</span>: '<span class="string">AppCtrl</span>',
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">$http</span>'],
   <span class="comment">//...</span>
@@ -160,7 +160,7 @@
 
                 <p>Classy allows you to name dependencies whatever you like, simply pass in an object instead of an array. Use a '.' value if you wish to use the original name for a dependency.</p>
 
-                <pre class="block-code coffeescript-code hide"><code>app.<span class="class">classyController</span>
+                <pre class="block-code coffeescript-code hide"><code>app.<span class="class">classy.controller</span>
   <span class="var">name</span>: '<span class="string">MyCtrl</span>'
   <span class="var">inject</span>:
     <span class="var">$scope</span>: '<span class="string">$</span>'
@@ -178,7 +178,7 @@
     <span class="comment"># -> [{"title":"Learn Angular","completed":true}]</span>
   </code></pre>
 
-                <pre class="block-code javascript-code"><code>app.<span class="class">classyController</span>({
+                <pre class="block-code javascript-code"><code>app.<span class="class">classy.controller</span>({
   <span class="var">name</span>: '<span class="string">MyCtrl</span>',
   <span class="var">inject</span>: {
     <span class="var">$scope</span>: '<span class="string">$</span>',
@@ -208,7 +208,7 @@
 &lt;<span class="var">div</span> id=&quot;<span class="string">footer</span>&quot; ng-controller=&quot;<span class="string">FooterCtrl</span>&quot;&gt;&lt;/<span class="var">div</span>&gt;
 
 <span class="comment"># In your JS</span>
-app.<span class="class">classyController</span>
+app.<span class="class">classy.controller</span>
   <span class="var">name</span>: '<span class="string">FooterCtrl</span>'
   <span class="comment">#...</span></code></pre>
 
@@ -216,7 +216,7 @@ app.<span class="class">classyController</span>
 &lt;<span class="var">div</span> id=&quot;<span class="string">footer</span>&quot; ng-controller=&quot;<span class="string">FooterCtrl</span>&quot;&gt;&lt;/<span class="var">div</span>&gt;
 
 <span class="comment">// In your JS</span>
-app.<span class="class">classyController</span>({
+app.<span class="class">classy.controller</span>({
   <span class="var">name</span>: '<span class="string">FooterCtrl</span>',
   <span class="comment">//...</span>
 });</code></pre>
@@ -227,7 +227,7 @@ app.<span class="class">classyController</span>({
 &lt;<span class="var">div</span> id=&quot;<span class="string">footer</span>&quot;&gt;&lt;/<span class="var">div</span>&gt;
 
 <span class="comment"># In your JS</span>
-app.<span class="class">classyController</span>
+app.<span class="class">classy.controller</span>
   <span class="var">el</span>: '<span class="string">#footer</span>'
   <span class="comment">#...</span></code></pre>
 
@@ -235,7 +235,7 @@ app.<span class="class">classyController</span>
 &lt;<span class="var">div</span> id=&quot;<span class="string">footer</span>&quot;&gt;&lt;/<span class="var">div</span>&gt;
 
 <span class="comment">// In your JS</span>
-app.<span class="class">classyController</span>({
+app.<span class="class">classy.controller</span>({
   <span class="var">el</span>: '<span class="string">#footer</span>',
   <span class="comment">//...</span>
 });</code></pre>
@@ -267,12 +267,12 @@ app.<span class="class">classyController</span>({
                     </div>
                     <div class="editor">
     <pre class="coffeescript-code hide"><code><section><span class="highlight"><span class="var">app</span> = <span class="var">angular.module</span> '<span class="string">app</span>', ['<span class="string">classy</span>']</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
-    <section><span class="highlight">app.<span class="class">classyController</span>
+    <section><span class="highlight">app.<span class="class">classy.controller</span>
 
   <span class="var">name</span>: '<span class="string">TodoCtrl</span>'
 
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>']</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
-  By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classyController</code> if you prefer.</div></div></section>
+  By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classy.controller</code> if you prefer.</div></div></section>
     <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
     @todos = @$scope.todos = @todoStorage.get()
     @$scope.newTodo = ''
@@ -296,12 +296,12 @@ app.<span class="class">classyController</span>({
 
 <pre class="javascript-code"><code><section><span class="highlight"><span class="fn">var</span> <span class="var">app</span> = <span class="var">angular.module</span>('<span class="string">app</span>', ['<span class="string">classy</span>']);</span><div class="code-tip"><div>Add 'classy' to your app modules</div></div></section>
 
-<section><span class="highlight">app.<span class="class">classyController</span>({
+<section><span class="highlight">app.<span class="class">classy.controller</span>({
 
   <span class="var">name</span>: '<span class="string">TodoCtrl</span>',
 
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>'],</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
-  By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classyController</code> if you prefer.</div></div></section>
+  By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</div></div></section>
       <section>  <span class="highlight"><span class="fn">init</span>: <span class="keyword">function()</span> {</span>
     this.todos = this.$scope.todos = this.todoStorage.get();
     this.$scope.newTodo = '';
@@ -355,13 +355,13 @@ app.<span class="class">classyController</span>({
 <pre class="block-code javascript-code"><code><span class="fn">var</span> <span class="var">app</span> = <span class="var">angular.module</span>('<span class="string">app</span>', ['<span class="string">classy</span>']);</code></pre>
                     </li>
 
-                    <li>That's it, you can create a <code class="inline-code">classyController</code> like so:
-<pre class="block-code coffeescript-code hide"><code>app.<span class="class">classyController</span>
+                    <li>That's it, you can create a <code class="inline-code">classy.controller</code> like so:
+<pre class="block-code coffeescript-code hide"><code>app.<span class="class">classy.controller</span>
   <span class="var">name</span>: '<span class="string">MyCtrl</span>'
   <span class="var">inject</span>: ['<span class="string">$scope</span>']
   <span class="fn">init</span>: <span class="class">-></span></code></pre>
 
-<pre class="block-code javascript-code"><code>app.<span class="class">classyController</span>({
+<pre class="block-code javascript-code"><code>app.<span class="class">classy.controller</span>({
   <span class="var">name</span>: '<span class="string">MyCtrl</span>',
   <span class="var">inject</span>: ['<span class="string">$scope</span>'],
   <span class="fn">init</span>: <span class="keyword">function()</span> { }
