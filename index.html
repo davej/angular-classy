@@ -247,7 +247,64 @@ app.<span class="class">classy.controller</span>({
 
                 <h3><i class="icon-emo-happy"></i> Classy all-the-things</h3>
 
-                <p>I'm interested in bringing <strong>Classy</strong> to services, directives and filters too! Join me on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github Issues</a> if you're interested in contributing or you have any ideas about what these might look like.</p>
+                <p>I'm interested in bringing <strong>Classy</strong> to services, directives and filters too! Join me on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github issues</a> if you're interested in contributing or you have any ideas about what these might look like.</p>
+
+                <hr>
+
+                <h3><i class="icon-help"></i> FAQs</h3>
+
+                <p>Click the questions below to expand the answers.</p>
+
+                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive?</a></h4>
+                <div class="hide-this">
+                  <p>You use them the same way you normally would, except you don't need to give the controller a name because the controller does not need to be registered outside of Angular.</p>
+                  <pre class="block-code"><code>app.<span class="class">directive</span>('<span class="string">classyDirective</span>', <span class="keyword">function</span>() {
+  return {
+    <span class="var">controller</span>: <span class="class">app.classy.controller</span>({
+      <span class="var">inject</span>: ['<span class="string">$scope</span>'],
+      <span class="var">init</span>: <span class="keyword">function</span>() {
+        this.$scope.testing = '<span class="string">worked</span>';
+      }
+    })
+  };
+});</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route?</a></h4>
+                <div class="hide-this">
+
+                  <p>Classy controllers are registered just like normal controllers in Angular so you can reference them the same way (it works in ui-router too).</p>
+                  <pre class="block-code"><code>.<span class="class">when</span>('<span class="string">/classy</span>', {
+  <span class="var">controller</span>: '<span class="string">myClassyController</span>',
+  <span class="var">templateUrl</span>: '<span class="string">classy.html</span>'
+});</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax?</a></h4>
+                <div class="hide-this">
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <pre class="block-code"><code><span class="class">app.classy.options.controller</span> = {
+    <span class="var">addFnsToScope</span>: false
+};
+<span class="comment">// Classy controllers will no longer automatically add functions to the `$scope`</span></code></pre>
+
+                  <p>or on a per-controller basis:</p>
+                  <pre class="block-code"><code><span class="class">app.classy.controller</span>({
+    <span class="var">name</span>: '<span class="string">TodoCtrl</span>',
+    <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">filterFilter</span>'],
+    <span class="var">__options</span>: {
+        <span class="var">addFnsToScope</span>: false
+    }
+    <span class="comment">// ...</span>
+});</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here?</a></h4>
+
+                <div class="hide-this">
+                  <p>Open an issue on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github issues</a> and I'll do my best :-)</p>
+                </div>
+
 
             </div>
 
@@ -344,8 +401,8 @@ app.<span class="class">classy.controller</span>({
 
                     <li>
                         Reference Classy <em>after</em> the reference to Angular<br>
-<pre class="block-code"><code>&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;
-&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">assets/js/angular-classy.min.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;</code></pre>
+<pre class="block-code"><code>&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">bower_components/angular/angular.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;
+&lt;<span class="var">script</span> <span class="fn">src</span>=&quot;<span class="string">bower_components/angular-classy/angular-classy.min.js</span>&quot;&gt;&lt;/<span class="var">script</span>&gt;</code></pre>
                     </li>
 
                     <li>
@@ -379,7 +436,13 @@ app.<span class="class">classy.controller</span>({
                             <img src="https://api.travis-ci.org/davej/angular-classy.png" width="77" height="19">
                         </a>
                     </li>
+                    <li>License: MIT</li>
                     <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
+                    <li>Find Angular Classy useful? <a href="#">Share it on twitter</a> or tip me some &mu; bitcoins: <code>13h1eiarnq8nimBrVwruMbwzq8GpKKqJeT</code> <small>(<a href="#" id="bitcoin-qrcode-link">Show QR code</a>)</small>
+                    <span class="hide" id="bitcoin-qrcode">
+                      <img src="http://i.imgur.com/uLuXXow.png" width="250" height="250">
+                    </span>
+                    </li>
                 </ul>
             </section>
 

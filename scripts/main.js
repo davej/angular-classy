@@ -1,5 +1,5 @@
 (function() {
-  var currentLanguage, otherlanguage, switchLanguage;
+  var currentLanguage, el, otherlanguage, switchLanguage, _i, _len, _ref;
 
   currentLanguage = "javascript";
 
@@ -33,5 +33,24 @@
   document.getElementById('select-language').onchange = function(event) {
     return switchLanguage(event.target.value);
   };
+
+  document.getElementById("bitcoin-qrcode-link").onclick = function(event) {
+    event.preventDefault();
+    return document.getElementById("bitcoin-qrcode").className = '';
+  };
+
+  _ref = document.getElementsByClassName('toggle-section');
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    el = _ref[_i];
+    el.onclick = function(event) {
+      var target;
+      event.preventDefault();
+      target = event.target.parentNode.nextSibling;
+      while (target && target.nodeType !== 1) {
+        target = target.nextSibling;
+      }
+      return target.classList.toggle('hide-this');
+    };
+  }
 
 }).call(this);

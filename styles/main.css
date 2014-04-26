@@ -514,10 +514,13 @@ footer {
   background: #fff;
   padding: 2em; }
 
+div.hide-this {
+  display: none; }
+
 @font-face {
   font-family: 'classy';
-  src: url('font/classy.eot?52707110');
-  src: url('font/classy.eot?52707110#iefix') format('embedded-opentype'), url('font/classy.woff?52707110') format('woff'), url('font/classy.ttf?52707110') format('truetype'), url('font/classy.svg?52707110#classy') format('svg');
+  src: url('font/classy.eot?92462613');
+  src: url('font/classy.eot?92462613#iefix') format('embedded-opentype'), url('font/classy.woff?92462613') format('woff'), url('font/classy.ttf?92462613') format('truetype'), url('font/classy.svg?92462613#classy') format('svg');
   font-weight: normal;
   font-style: normal; }
 
@@ -527,7 +530,7 @@ footer {
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'classy';
-    src: url('../font/classy.svg?52707110#classy') format('svg');
+    src: url('../font/classy.svg?92462613#classy') format('svg');
   }
 }
 */
@@ -591,6 +594,10 @@ footer {
   content: '\e801'; }
 
 /* '' */
+.icon-help:before {
+  content: '\e80c'; }
+
+/* '' */
 .icon-info:before {
   content: '\e803'; }
 
