@@ -73,7 +73,9 @@
 
                 <hr>
 
-                <h3><i class="icon-code"></i> Functions are automatically added to the controller's <code>$scope</code></h3>
+                <h3><i class="icon-code"></i> <code>$scope</code> convenience</h3>
+
+                <h4>Functions are automatically added to the controller's <code>$scope</code></h4>
 
                 <p>Most of the time when you add a function to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here's how it used to look <strong>without Classy</strong>:</p>
 
@@ -92,6 +94,9 @@
 
 
                 <p>If you don't want the function to be on the <code class="inline-code">$scope</code> then just prefix it with an underscore character (<code>_</code>).</p>
+
+                <h4>Handy shortcut for <code>$scope</code></h4>
+                <p>To access the <code>$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code>this.$scope</code> if you prefer.
 
                 <hr>
 
@@ -263,7 +268,7 @@ app.<span class="class">classy.controller</span>({
     <span class="var">controller</span>: <span class="class">app.classy.controller</span>({
       <span class="var">inject</span>: ['<span class="string">$scope</span>'],
       <span class="var">init</span>: <span class="keyword">function</span>() {
-        this.$scope.testing = '<span class="string">worked</span>';
+        this.$.testing = '<span class="string">worked</span>';
       }
     })
   };
@@ -331,23 +336,23 @@ app.<span class="class">classy.controller</span>({
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>']</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
   By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classy.controller</code> if you prefer.</div></div></section>
     <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
-    @todos = @$scope.todos = @todoStorage.get()
-    @$scope.newTodo = ''
-    @$scope.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>@</code> symbol.</div></div></section>
+    @todos = @$.todos = @todoStorage.get()
+    @$.newTodo = ''
+    @$.location = @$location<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>@</code> symbol.<br> The $scope is available using <code>@$</code> (or you can use <code>@$scope</code> if you prefer).</div></div></section>
     <section>  <span class="highlight"><span class="var">watch:</span></span>
     <span class="highlight">'<span class="string">location.path()</span>': (path) <span class="class">-></span></span>
-      @$scope.statusFilter =
+      @$.statusFilter =
         if (path is '/active') then completed: false
         else if (path is '/completed') then completed: true
 
     <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span><div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
     <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="class">-></span></span>
-    newTodo = @$scope.newTodo.trim()
+    newTodo = @$.newTodo.trim()
     @todos.push
       title: newTodo
       completed: false<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your <code>$scope</code> so you can easily access it using directives like ng-click</div></div></section>
     <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: (newValue, oldValue) <span class="class">-></span></span>
-    @$scope.remainingCount = @filterFilter(@todos, completed: false).length<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
+    @$.remainingCount = @filterFilter(@todos, completed: false).length<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
 
 </code></pre>
 
@@ -360,13 +365,13 @@ app.<span class="class">classy.controller</span>({
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>'],</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
   By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</div></div></section>
       <section>  <span class="highlight"><span class="fn">init</span>: <span class="keyword">function()</span> {</span>
-    this.todos = this.$scope.todos = this.todoStorage.get();
-    this.$scope.newTodo = '';
-    this.$scope.location = this.$location;
-  },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>this</code> symbol.</div></div></section>
+    this.todos = this.$.todos = this.todoStorage.get();
+    this.$.newTodo = '';
+    this.$.location = this.$location;
+  },<div class="code-tip"><div>An init method for your initialization code. Who'd have thunk it?<br>You can access your dependencies using the class-wide <code>this</code> symbol.<br>The $scope is available using <code>this.$</code> (or you can use <code>this.$scope</code> if you prefer).</div></div></section>
   <section>  <span class="highlight"><span class="var">watch</span>: {</span>
     <span class="highlight">'<span class="string">location.path()</span>': <span class="keyword">function(</span>path<span class="keyword">)</span> {</span>
-      this.$scope.statusFilter = (path === '/active') ?
+      this.$.statusFilter = (path === '/active') ?
         { completed: false } : (path === '/completed') ?
         { completed: true };
     },
@@ -374,14 +379,14 @@ app.<span class="class">classy.controller</span>({
     <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span>
   }<div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
      <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="keyword">function()</span> {</span>
-    newTodo = this.$scope.newTodo.trim();
+    newTodo = this.$.newTodo.trim();
     this.todos.push({
       title: newTodo,
       completed: false
     )};
   },<div class="code-tip"><div>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>. Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click</div></div></section>
   <section>  <span class="highlight"><span class="fn">_onTodoChange</span>: <span class="keyword">function(</span>newValue, oldValue<span class="keyword">)</span> {</span>
-    this.$scope.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
+    this.$.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
   }<div class="code-tip"><div>Prefix the function name with an underscore and Classy wont add it to the <code>$scope</code>.</div></div></section>
 
 });
@@ -429,7 +434,7 @@ app.<span class="class">classy.controller</span>({
            <section class="more-info">
                 <h3><i class="icon-info"></i> More Info</h3>
                 <ul>
-                  <li>Version: 0.4 (<a href="https://github.com/davej/angular-classy/blob/master/CHANGELOG.md">Changelog</a>)</li>
+                  <li>Version: 0.4.1 (<a href="https://github.com/davej/angular-classy/blob/master/CHANGELOG.md">Changelog</a>)</li>
                     <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
                     <li>Test status:
                         <a href="https://travis-ci.org/davej/angular-classy">

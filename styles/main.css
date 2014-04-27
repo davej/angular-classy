@@ -140,6 +140,12 @@ code .comment {
   .block-code.show {
     display: block; }
 
+.inline-code.hide {
+  display: none; }
+
+.inline-code.show {
+  display: inline; }
+
 .build-status {
   display: none;
   position: absolute;
