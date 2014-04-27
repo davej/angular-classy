@@ -30,3 +30,6 @@ app.classy.options.controller = {
 };
 ```
 * ... or at the class level using the `__options` property
+
+## 0.4.1 (27/Apr/2014)
+* Added shortcut for `this.$scope`. You can now reference the $scope with `this.$`, although `this.$scope` still works fine

@@ -1,5 +1,5 @@
 ###
-Angular Classy 0.4
+Angular Classy 0.4.1
 Dave Jeffery, @DaveJ
 License: MIT
 ###
@@ -13,6 +13,8 @@ defaults =
     addFnsToScope: true
     watchObject: true
     _scopeName: '$scope'
+    _scopeShortcut: true
+    _scopeShortcutName: '$'
     _watchKeywords:
       objectEquality: ['{object}', '{deep}']
       collection: ['{collection}', '{shallow}']
@@ -83,6 +85,7 @@ classFns =
   bindDependencies: (parent, args) ->
     injectObject = parent.__classyControllerInjectObject
     injectObjectMode = !!injectObject
+    options = parent.constructor::__options
 
     # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
     for key, i in parent.constructor.$inject
@@ -90,6 +93,10 @@ classFns =
         parent[injectName] = args[i]
       else
         parent[key] = args[i]
+
+        if key is options._scopeName and options._scopeShortcut
+          # Add a shortcut to the $scope (by default `this.$`)
+          parent[options._scopeShortcutName] = parent[key]
 
   registerWatchers: (parent) ->
     # Iterates over the watch object and creates the appropriate `$scope.$watch` listener

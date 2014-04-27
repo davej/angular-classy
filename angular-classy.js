@@ -1,6 +1,6 @@
 
 /*
-Angular Classy 0.4
+Angular Classy 0.4.1
 Dave Jeffery, @DaveJ
 License: MIT
  */
@@ -19,6 +19,8 @@ License: MIT
       addFnsToScope: true,
       watchObject: true,
       _scopeName: '$scope',
+      _scopeShortcut: true,
+      _scopeShortcutName: '$',
       _watchKeywords: {
         objectEquality: ['{object}', '{deep}'],
         collection: ['{collection}', '{shallow}']
@@ -106,9 +108,10 @@ License: MIT
       return _results;
     },
     bindDependencies: function(parent, args) {
-      var i, injectName, injectObject, injectObjectMode, key, _i, _len, _ref, _results;
+      var i, injectName, injectObject, injectObjectMode, key, options, _i, _len, _ref, _results;
       injectObject = parent.__classyControllerInjectObject;
       injectObjectMode = !!injectObject;
+      options = parent.constructor.prototype.__options;
       _ref = parent.constructor.$inject;
       _results = [];
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
@@ -116,7 +119,12 @@ License: MIT
         if (injectObjectMode && (injectName = injectObject[key]) && injectName !== '.') {
           _results.push(parent[injectName] = args[i]);
         } else {
-          _results.push(parent[key] = args[i]);
+          parent[key] = args[i];
+          if (key === options._scopeName && options._scopeShortcut) {
+            _results.push(parent[options._scopeShortcutName] = parent[key]);
+          } else {
+            _results.push(void 0);
+          }
         }
       }
       return _results;
