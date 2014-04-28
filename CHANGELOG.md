@@ -24,7 +24,12 @@
 * Namespace is now `module.classy.controller`, this would be consistent with other classy helpers (e.g. `module.classy.service`) but you can still use module.cC or module.classyController if you prefer
 * Added options (`addFnsToScope`, `watchObject`, `_scopeName` and `_watchKeywords`)
 * Options can be changed at the module level
-    app.classy.options.controller = {
-        addFnsToScope: false
-    };
+```javascript
+app.classy.options.controller = {
+    addFnsToScope: false
+};
+```
 * ... or at the class level using the `__options` property
+
+## 0.4.1 (27/Apr/2014)
+* Added shortcut for `this.$scope`. You can now reference the $scope with `this.$`, although `this.$scope` still works fine

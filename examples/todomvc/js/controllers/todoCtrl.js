@@ -12,20 +12,20 @@ todomvc.classy.controller({
 	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
 
 	init: function() {
-		this.todos = this.$scope.todos = this.todoStorage.get();
+		this.todos = this.$.todos = this.todoStorage.get();
 
 		this.$scope.newTodo = '';
-		this.$scope.editedTodo = null;
+		this.$.editedTodo = null;
 
 		if (this.$location.path() === '') {
 			this.$location.path('/');
 		}
-		this.$scope.location = this.$location;
+		this.$.location = this.$location;
 	},
 
 	watch: {
 		'location.path()': function(path) {
-			this.$scope.statusFilter = (path === '/active') ?
+			this.$.statusFilter = (path === '/active') ?
 				{ completed: false } : (path === '/completed') ?
 				{ completed: true } : null;
 		},
@@ -34,16 +34,16 @@ todomvc.classy.controller({
 
 
 	_onTodoChange: function (newValue, oldValue) {
-		this.$scope.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
-		this.$scope.completedCount = this.todos.length - this.$scope.remainingCount;
-		this.$scope.allChecked = !this.$scope.remainingCount;
+		this.$.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
+		this.$.completedCount = this.todos.length - this.$scope.remainingCount;
+		this.$.allChecked = !this.$.remainingCount;
 		if (newValue !== oldValue) { // This prevents unneeded calls to the local storage
 			this.todoStorage.put(this.todos);
 		}
 	},
 
 	addTodo: function () {
-		var newTodo = this.$scope.newTodo.trim();
+		var newTodo = this.$.newTodo.trim();
 		if (!newTodo.length) {
 			return;
 		}
@@ -53,21 +53,21 @@ todomvc.classy.controller({
 			completed: false
 		});
 
-		this.$scope.newTodo = '';
+		this.$.newTodo = '';
 	},
 
 	editTodo: function (todo) {
-		this.$scope.editedTodo = todo;
+		this.$.editedTodo = todo;
 		// Clone the original todo to restore it on demand.
-		this.$scope.originalTodo = angular.extend({}, todo);
+		this.$.originalTodo = angular.extend({}, todo);
 	},
 
 	doneEditing: function (todo) {
-		this.$scope.editedTodo = null;
+		this.$.editedTodo = null;
 		todo.title = todo.title.trim();
 
 		if (!todo.title) {
-			this.$scope.removeTodo(todo);
+			this.$.removeTodo(todo);
 		}
 	},
 
