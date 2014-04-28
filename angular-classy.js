@@ -100,10 +100,15 @@ License: MIT
         if (!angular.isFunction(fn)) {
           continue;
         }
-        if ((key === 'constructor' || key === 'init' || key === 'watch') || key[0] === '_') {
+        if (key === 'constructor' || key === 'init' || key === 'watch') {
           continue;
         }
-        _results.push($scope[key] = angular.bind(parent, fn));
+        parent[key] = angular.bind(parent, fn);
+        if (key[0] !== '_') {
+          _results.push($scope[key] = parent[key]);
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     },
