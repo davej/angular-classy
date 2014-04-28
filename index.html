@@ -377,7 +377,7 @@ app.<span class="class">classy.controller</span>({
     },
 
     <span class="highlight">'<span class="string">{object}todos</span>': '<span class="string">_onTodoChange</span>'</span>
-  }<div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
+  },<div class="code-tip"><div>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead. If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</div></div></section>
      <section>  <span class="highlight"><span class="fn">addTodo</span>: <span class="keyword">function()</span> {</span>
     newTodo = this.$.newTodo.trim();
     this.todos.push({
