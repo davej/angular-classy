@@ -334,7 +334,7 @@ app.<span class="class">classy.controller</span>({
   <span class="var">name</span>: '<span class="string">TodoCtrl</span>'
 
   <span class="var">inject</span>: ['<span class="string">$scope</span>', '<span class="string">$location</span>', '<span class="string">todoStorage</span>', '<span class="string">filterFilter</span>']</span><div class="code-tip"><div>Register your controller and inject your dependencies. Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate your dependencies (i.e. list dependencies twice) and your code remains DRY.<br><br>
-  By the way you can use the shortcut <code>todomvc.cC</code> instead of <code>todomvc.classy.controller</code> if you prefer.</div></div></section>
+  By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</div></div></section>
     <section>  <span class="highlight"><span class="fn">init</span>: <span class="class">-></span></span>
     @todos = @$.todos = @todoStorage.get()
     @$.newTodo = ''
