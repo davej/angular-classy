@@ -1,5 +1,5 @@
 ###
-Angular Classy 0.4.1
+Angular Classy 0.4.2
 Dave Jeffery, @DaveJ
 License: MIT
 ###
