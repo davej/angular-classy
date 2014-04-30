@@ -18,6 +18,7 @@ defaults =
     _watchKeywords:
       objectEquality: ['{object}', '{deep}']
       collection: ['{collection}', '{shallow}']
+      event: ['{event}']
 
 
 origMethod = angular.module
@@ -121,6 +122,10 @@ classFns =
         keywords: watchKeywords.collection
         fnCall: (parent, expression, fn) ->
           $scope.$watchCollection(expression, angular.bind(parent, fn))
+      event:
+        keywords: watchKeywords.event
+        fnCall: (parent, expression, fn) ->
+          $scope.$on(expression, angular.bind(parent, fn))
 
     for expression, fn of parent.watch
       if angular.isString(fn) then fn = parent[fn]
