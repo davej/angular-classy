@@ -8,153 +8,108 @@ License: MIT
 
 'use strict';
 
-defaults =
-  controller:
-    addFnsToScope: true
-    watchObject: true
-    _scopeName: '$scope'
-    _scopeShortcut: true
-    _scopeShortcutName: '$'
-    _watchKeywords:
-      objectEquality: ['{object}', '{deep}']
-      collection: ['{collection}', '{shallow}']
-
-
-origMethod = angular.module
+origModuleMethod = angular.module
 angular.module = (name, reqs, configFn) ->
   ###
   # We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
   # as a requirement. We also need the module name to we can register our classy controllers.
   # Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
   ###
-  module = origMethod(name, reqs, configFn)
+  module = origModuleMethod(name, reqs, configFn)
 
-  # If this module has required 'classy' then we're going to add `classyController`
-  if reqs and 'classy' in reqs
-    module.classy =
-      options:
-        controller: {}
+  # This is super messy.
+  # TODO: Clean this up and test the logic flow properly before moving to master
+  if reqs
+    for req in reqs
+      for pluginName, plugin of availablePlugins
+        if pluginName is req
+          enabledPlugins[pluginName] = plugin
+          if plugin.options
+            defaults.controller[plugin.name] = plugin.options
 
-      controller: (classObj) ->
-        classObj.__options = angular.extend {}, defaults.controller, module.classy.options.controller, classObj.__options
-        c = class classyController
+    if 'classy-core' in reqs or 'classy' in reqs
+      module.classy = {}
+
+      module.classy.plugin =
+        controller: (plugin) -> availablePlugins[name] = plugin
+
+      module.classy.options =
+          controller: {}
+
+      module.cC = module.classy.controller = (classObj) ->
+
+        class classyController
           # `classyController` contains only a set of proxy functions for `classFns`,
           # this is because I suspect that performance is better this way.
           # TODO: Test performance to see if this is the most performant way to do it.
 
-          __options: classObj.__options
+          # Pre-initialisation (before instance is created)
+          classFns.preInit(@, classObj, module)
 
-          # Create the Classy Controller
-          classFns.create(module, classObj, @)
-
-          constructor: ->
-            # Where the magic happens
-            classFns.construct(@, arguments)
-
-        for own key,value of classObj
-          c::[key] = value
-
-        return c
-
-    module.cC = module.classyController = module.classy.controller
-
+          # Initialisation (after instance is created)
+          constructor: -> classFns.init(@, arguments, module)
 
   return module
 
-angular.module('classy', []);
+defaults =
+  controller: {}
+
+selectorControllerCount = 0
+availablePlugins = {}
+enabledPlugins = {}
+
+utils =
+  extendDeep: (dst) ->
+    for obj in arguments
+      if obj isnt dst
+        for key, value of obj
+          if dst[key] and dst[key].constructor and dst[key].constructor is Object
+            @extendDeep dst[key], value
+          else
+            dst[key] = value
+    dst
 
 classFns =
-  selectorControllerCount: 0
+  preInit: (classConstructor, classObj, module) ->
+    for own key,value of classObj
+      classConstructor::[key] = value
 
-  construct: (parent, args) ->
-    options = parent.constructor::__options
-    @bindDependencies(parent, args)
-    if options.addFnsToScope then @addFnsToScope(parent)
-    parent.init?()
-    if options.watchObject and angular.isObject(parent.watch)
-      @registerWatchers(parent)
+    classConstructor.__options = options =
+      utils.extendDeep {}, defaults.controller, module.classy.options.controller, classConstructor.__options
 
-  addFnsToScope: (parent) ->
-    # Adds controller functions (unless they have a `_` prefix) to the `$scope`
-    $scope = parent[parent.constructor::__options._scopeName]
-    for key, fn of parent.constructor::
-      continue unless angular.isFunction(fn)
-      continue if key in ['constructor', 'init', 'watch']
-      parent[key] = angular.bind(parent, fn)
-      if key[0] isnt '_'
-        $scope[key] = parent[key]
+    for pluginName, plugin of enabledPlugins
+      if options[plugin.name]
+        plugin.options = options[plugin.name]
+      plugin.preInit?(classConstructor, classObj, module)
 
-  bindDependencies: (parent, args) ->
-    injectObject = parent.__classyControllerInjectObject
-    injectObjectMode = !!injectObject
-    options = parent.constructor::__options
+  init: (klass, args, module) ->
+    options = klass.constructor.__options
+    deps = @getDependencies(klass, args)
 
-    # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
-    for key, i in parent.constructor.$inject
-      if injectObjectMode and (injectName = injectObject[key]) and injectName != '.'
-        parent[injectName] = args[i]
-      else
-        parent[key] = args[i]
+    for pluginName, plugin of enabledPlugins
+      plugin.init?(klass, deps, module)
 
-        if key is options._scopeName and options._scopeShortcut
-          # Add a shortcut to the $scope (by default `this.$`)
-          parent[options._scopeShortcutName] = parent[key]
+    klass.init?()
 
-  registerWatchers: (parent) ->
-    # Iterates over the watch object and creates the appropriate `$scope.$watch` listener
-    $scope = parent[parent.constructor::__options._scopeName]
+  getDependencies: (klass, args) ->
+    deps = {}
+    deps[key] = args[i] for key, i in klass.constructor.$inject
+    deps
 
-    if !$scope
-      throw new Error "You need to inject `$scope` to use the watch object"
+angular.module('classy-core', [])
 
-    watchKeywords = parent.constructor::__options._watchKeywords
-    watchTypes =
-      normal:
-        keywords: []
-        fnCall: (parent, expression, fn) ->
-          $scope.$watch(expression, angular.bind(parent, fn))
-      objectEquality:
-        keywords: watchKeywords.objectEquality
-        fnCall: (parent, expression, fn) ->
-          $scope.$watch(expression, angular.bind(parent, fn), true)
-      collection:
-        keywords: watchKeywords.collection
-        fnCall: (parent, expression, fn) ->
-          $scope.$watchCollection(expression, angular.bind(parent, fn))
+angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
+  name: 'register'
 
-    for expression, fn of parent.watch
-      if angular.isString(fn) then fn = parent[fn]
-      if angular.isString(expression) and angular.isFunction(fn)
-        watchRegistered = false
+  preInit: (classConstructor, classObj, module) ->
+    if classObj.el || classObj.selector
+      # Register the controller using selector
+      @registerSelector(module, classObj.el || classObj.selector, classConstructor)
 
-        # Search for keywords that identify it is a non-standard watch
-        for watchType of watchTypes
-          if watchRegistered then break
-          for keyword in watchTypes[watchType].keywords
-            if watchRegistered then break
-            if expression.indexOf(keyword) isnt -1
-              watchTypes[watchType].fnCall(parent, expression.replace(keyword, ''), fn)
-              watchRegistered = true
-
-        # If no keywords have been found then register it as a normal watch
-        if !watchRegistered then watchTypes.normal.fnCall(parent, expression, fn)
-
-  inject: (parent, deps) ->
-    if angular.isObject deps[0]
-      parent::__classyControllerInjectObject = injectObject = deps[0]
-      deps = (service for service, name of injectObject)
-
-      scopeName = parent::__options._scopeName
-      if injectObject?[scopeName] and injectObject[scopeName] != '.'
-        parent::__options._scopeName = injectObject[scopeName]
-
-    # Add the `deps` to the controller's $inject annotations.
-    parent.$inject = deps
-
-  registerSelector: (appInstance, selector, parent) ->
-    @selectorControllerCount++
-    controllerName = "ClassySelector#{@selectorControllerCount}Controller"
-    appInstance.controller controllerName, parent
+  registerSelector: (module, selector, classConstructor) ->
+    selectorControllerCount++
+    controllerName = "ClassySelector#{selectorControllerCount}Controller"
+    module.controller controllerName, classConstructor
 
     if angular.isElement(selector)
       selector.setAttribute('data-ng-controller', controllerName)
@@ -171,19 +126,130 @@ classFns =
       if angular.isElement(el)
         el.setAttribute('data-ng-controller', controllerName)
 
-  create: (appInstance, classObj, parent) ->
-    if classObj.el || classObj.selector
-      # Register the controller using selector
-      @registerSelector(appInstance, classObj.el || classObj.selector, parent)
+angular.module('classy-register', ['classy-core']).classy.plugin.controller
+  name: 'registerSelector'
 
+  preInit: (classConstructor, classObj, module) ->
     if angular.isString(classObj.name)
       # Register the controller using name
-      appInstance.controller classObj.name, parent
+      module.controller classObj.name, classConstructor
 
+angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
+  name: 'bindDependencies'
+
+  options:
+    enabled: true
+    scopeShortcut: '$'
+    useExistingNameString: '.'
+
+  preInit: (classConstructor, classObj, module) ->
     deps = classObj.inject
 
     # Inject the `deps` if it's passed in as an array
-    if angular.isArray(deps) then @inject(parent, deps)
+    if angular.isArray(deps) then @inject(classConstructor, deps)
 
     # If `deps` is object: Wrap object in array and then inject
-    else if angular.isObject(deps) then @inject(parent, [deps])
+    else if angular.isObject(deps) then @inject(classConstructor, [deps], classObj)
+
+  inject: (classConstructor, deps, classObj) ->
+    if angular.isObject deps[0]
+      classConstructor.__classyControllerInjectObject = injectObject = deps[0]
+      deps = (service for service, name of injectObject)
+
+    # Add the `deps` to the controller's $inject annotations.
+    classConstructor.$inject = deps
+
+  init: (klass, deps, module) ->
+    if @options.enabled
+      injectObject = klass.constructor.__classyControllerInjectObject
+      injectObjectMode = !!injectObject
+
+      # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
+      for key, i in klass.constructor.$inject
+        dependency = deps[key]
+
+        # If the named dependency is assigned a name that is different from the original name
+        if (injectObjectMode and (injectName = injectObject[key]) and
+            injectName != @options.useExistingNameString)
+          klass[injectName] = dependency
+        else
+          klass[key] = dependency
+
+          if key is '$scope' and @options.scopeShortcut
+            # Add a shortcut to the $scope (by default `this.$`)
+            klass[@options.scopeShortcut] = klass[key]
+
+angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller
+  name: 'addFnsToScope'
+
+  options:
+    enabled: true
+    privateMethodPrefix: '_'
+    ignore: ['constructor', 'init']
+
+  hasPrivateMethodPrefix: (string) ->
+    prefix = @options.privateMethodPrefix
+    string.slice(0, prefix.length) != prefix
+
+  init: (klass, deps, module) ->
+    # Adds controller functions (unless they have a `_` prefix) to the `$scope`
+    if @options.enabled
+      for key, fn of klass.constructor::
+        if angular.isFunction(fn) and !(key in @options.ignore)
+          klass[key] = angular.bind(klass, fn)
+          if @hasPrivateMethodPrefix(key)
+            deps.$scope[key] = klass[key]
+
+angular.module('classy-watch', ['classy-core']).classy.plugin.controller
+  name: 'watch'
+
+  options:
+    enabled: true
+    _watchKeywords:
+      normal: []
+      objectEquality: ['{object}', '{deep}']
+      collection: ['{collection}', '{shallow}']
+
+  isActive: (klass, deps) ->
+    if !deps.$scope
+      throw new Error "You need to inject `$scope` to use the watch object"
+
+    return @options.enabled and angular.isObject(klass.watch) and deps.$scope
+
+  watchFns:
+    normal: (klass, expression, fn, deps) ->
+        deps.$scope.$watch(expression, angular.bind(klass, fn))
+    objectEquality: (klass, expression, fn, deps) ->
+        deps.$scope.$watch(expression, angular.bind(klass, fn), true)
+    collection: (klass, expression, fn, deps) ->
+        deps.$scope.$watchCollection(expression, angular.bind(klass, fn))
+
+  init: (klass, deps, module) ->
+    if !@isActive(klass, deps) then return
+
+    watchKeywords = @options._watchKeywords
+
+    for expression, fn of klass.watch
+      if angular.isString(fn) then fn = klass[fn]
+      if angular.isString(expression) and angular.isFunction(fn)
+        watchRegistered = false
+
+        # Search for keywords that identify it is a non-standard watch
+        for watchType, watchFn of @watchFns
+          if watchRegistered then break
+          for keyword in watchKeywords[watchType]
+            if expression.indexOf(keyword) isnt -1
+              watchFn(klass, expression.replace(keyword, ''), fn, deps)
+              watchRegistered = true
+              break
+
+        # If no keywords have been found then register it as a normal watch
+        if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
+
+angular.module 'classy',  [
+                            'classy-bindDependencies',
+                            'classy-addFnsToScope',
+                            'classy-watch',
+                            'classy-registerSelector',
+                            'classy-register'
+                          ]
