@@ -82,18 +82,18 @@ classFns =
         plugin.options = options[plugin.name]
       plugin.preInit?(classConstructor, classObj, module)
 
-  init: (klass, args, module) ->
+  init: (klass, $inject, module) ->
     options = klass.constructor.__options
-    deps = @getDependencies(klass, args)
+    deps = @getDependencies(klass, $inject)
 
     for pluginName, plugin of enabledPlugins
       plugin.init?(klass, deps, module)
 
     klass.init?()
 
-  getDependencies: (klass, args) ->
+  getDependencies: (klass, $inject) ->
     deps = {}
-    deps[key] = args[i] for key, i in klass.constructor.$inject
+    deps[key] = $inject[i] for key, i in klass.constructor.$inject
     deps
 
 angular.module('classy-core', [])

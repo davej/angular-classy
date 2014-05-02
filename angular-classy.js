@@ -115,10 +115,10 @@ License: MIT
       }
       return _results;
     },
-    init: function(klass, args, module) {
+    init: function(klass, $inject, module) {
       var deps, options, plugin, pluginName;
       options = klass.constructor.__options;
-      deps = this.getDependencies(klass, args);
+      deps = this.getDependencies(klass, $inject);
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
         if (typeof plugin.init === "function") {
@@ -127,13 +127,13 @@ License: MIT
       }
       return typeof klass.init === "function" ? klass.init() : void 0;
     },
-    getDependencies: function(klass, args) {
+    getDependencies: function(klass, $inject) {
       var deps, i, key, _i, _len, _ref;
       deps = {};
       _ref = klass.constructor.$inject;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         key = _ref[i];
-        deps[key] = args[i];
+        deps[key] = $inject[i];
       }
       return deps;
     }
