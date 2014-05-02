@@ -12,7 +12,9 @@ todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
 	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
 	__options: {
-		addFnsToScope: false
+		addFnsToScope: {
+			enabled: false
+		}
 	},
 
 	init: function() {
