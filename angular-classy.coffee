@@ -75,7 +75,7 @@ classFns =
       classConstructor::[key] = value
 
     classConstructor.__options = options =
-      utils.extendDeep {}, defaults.controller, module.classy.options.controller, classConstructor.__options
+      extendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
 
     for pluginName, plugin of enabledPlugins
       if options[plugin.name]

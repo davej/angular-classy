@@ -104,7 +104,7 @@ License: MIT
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
-      classConstructor.__options = options = utils.extendDeep({}, defaults.controller, module.classy.options.controller, classConstructor.__options);
+      classConstructor.__options = options = extendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
       _results = [];
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
