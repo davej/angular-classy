@@ -211,10 +211,12 @@ angular.module('classy-watch', ['classy-core']).classy.plugin.controller
       collection: ['{collection}', '{shallow}']
 
   isActive: (klass, deps) ->
-    if !deps.$scope
-      throw new Error "You need to inject `$scope` to use the watch object"
+    if @options.enabled and angular.isObject(klass.watch)
+      if !deps.$scope
+        throw new Error "You need to inject `$scope` to use the watch object"
+        return false
 
-    return @options.enabled and angular.isObject(klass.watch) and deps.$scope
+      return true
 
   watchFns:
     normal: (klass, expression, fn, deps) ->

@@ -290,10 +290,13 @@ License: MIT
       }
     },
     isActive: function(klass, deps) {
-      if (!deps.$scope) {
-        throw new Error("You need to inject `$scope` to use the watch object");
+      if (this.options.enabled && angular.isObject(klass.watch)) {
+        if (!deps.$scope) {
+          throw new Error("You need to inject `$scope` to use the watch object");
+          return false;
+        }
+        return true;
       }
-      return this.options.enabled && angular.isObject(klass.watch) && deps.$scope;
     },
     watchFns: {
       normal: function(klass, expression, fn, deps) {
