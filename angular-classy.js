@@ -10,61 +10,9 @@ License: MIT
 
 (function() {
   'use strict';
-  var availablePlugins, classFns, defaults, enabledPlugins, origModuleMethod, selectorControllerCount, utils,
+  var availablePlugins, classFns, copyAndExtendDeep, defaults, enablePlugins, enabledPlugins, origModuleMethod, selectorControllerCount,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     __hasProp = {}.hasOwnProperty;
-
-  origModuleMethod = angular.module;
-
-  angular.module = function(name, reqs, configFn) {
-
-    /*
-     * We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
-     * as a requirement. We also need the module name to we can register our classy controllers.
-     * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
-     */
-    var module, plugin, pluginName, req, _i, _len;
-    module = origModuleMethod(name, reqs, configFn);
-    if (reqs) {
-      for (_i = 0, _len = reqs.length; _i < _len; _i++) {
-        req = reqs[_i];
-        for (pluginName in availablePlugins) {
-          plugin = availablePlugins[pluginName];
-          if (pluginName === req) {
-            enabledPlugins[pluginName] = plugin;
-            if (plugin.options) {
-              defaults.controller[plugin.name] = plugin.options;
-            }
-          }
-        }
-      }
-      if (__indexOf.call(reqs, 'classy-core') >= 0 || __indexOf.call(reqs, 'classy') >= 0) {
-        module.classy = {};
-        module.classy.plugin = {
-          controller: function(plugin) {
-            return availablePlugins[name] = plugin;
-          }
-        };
-        module.classy.options = {
-          controller: {}
-        };
-        module.cC = module.classy.controller = function(classObj) {
-          var classyController;
-          return classyController = (function() {
-            classFns.preInit(classyController, classObj, module);
-
-            function classyController() {
-              classFns.init(this, arguments, module);
-            }
-
-            return classyController;
-
-          })();
-        };
-      }
-    }
-    return module;
-  };
 
   defaults = {
     controller: {}
@@ -76,24 +24,92 @@ License: MIT
 
   enabledPlugins = {};
 
-  utils = {
-    extendDeep: function(dst) {
-      var key, obj, value, _i, _len;
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        obj = arguments[_i];
-        if (obj !== dst) {
-          for (key in obj) {
-            value = obj[key];
-            if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
-              this.extendDeep(dst[key], value);
+  enablePlugins = function(reqs) {
+    var plugin, pluginName, req, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = reqs.length; _i < _len; _i++) {
+      req = reqs[_i];
+      _results.push((function() {
+        var _results1;
+        _results1 = [];
+        for (pluginName in availablePlugins) {
+          plugin = availablePlugins[pluginName];
+          if (pluginName === req) {
+            enabledPlugins[pluginName] = plugin;
+            if (plugin.options) {
+              _results1.push(defaults.controller[plugin.name] = angular.copy(plugin.options));
             } else {
-              dst[key] = value;
+              _results1.push(void 0);
             }
+          } else {
+            _results1.push(void 0);
+          }
+        }
+        return _results1;
+      })());
+    }
+    return _results;
+  };
+
+  copyAndExtendDeep = function(dst) {
+    var key, obj, value, _i, _len;
+    for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+      obj = arguments[_i];
+      if (obj !== dst) {
+        for (key in obj) {
+          value = obj[key];
+          if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
+            copyAndExtendDeep(dst[key], value);
+          } else {
+            dst[key] = angular.copy(value);
           }
         }
       }
-      return dst;
     }
+    return dst;
+  };
+
+  origModuleMethod = angular.module;
+
+  angular.module = function(name, reqs, configFn) {
+
+    /*
+     * We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
+     * as a requirement. We also need the module name to we can register our classy controllers.
+     * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
+     */
+    var module;
+    module = origModuleMethod(name, reqs, configFn);
+    if (reqs) {
+      enablePlugins(reqs);
+      if (__indexOf.call(reqs, 'classy-core') >= 0 || __indexOf.call(reqs, 'classy') >= 0) {
+        module.classy = {
+          plugin: {
+            controller: function(plugin) {
+              return availablePlugins[name] = plugin;
+            }
+          },
+          options: {
+            controller: {}
+          },
+          controller: function(classObj) {
+            var classyController;
+            return classyController = (function() {
+              classFns.preInit(classyController, classObj, module);
+
+              function classyController() {
+                classFns.init(this, arguments, module);
+              }
+
+              return classyController;
+
+            })();
+          }
+        };
+        module.cC = module.classy.controller;
+      }
+    }
+    return module;
   };
 
   classFns = {
@@ -104,21 +120,23 @@ License: MIT
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
-      classConstructor.__options = options = extendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
+      options = copyAndExtendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
       _results = [];
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
-        if (options[plugin.name]) {
-          plugin.options = options[plugin.name];
-        }
+        plugin.options = options[plugin.name] || {};
         _results.push(typeof plugin.preInit === "function" ? plugin.preInit(classConstructor, classObj, module) : void 0);
       }
       return _results;
     },
     init: function(klass, $inject, module) {
-      var deps, options, plugin, pluginName;
-      options = klass.constructor.__options;
-      deps = this.getDependencies(klass, $inject);
+      var deps, i, key, plugin, pluginName, _i, _len, _ref;
+      deps = {};
+      _ref = klass.constructor.$inject;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        key = _ref[i];
+        deps[key] = $inject[i];
+      }
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
         if (typeof plugin.init === "function") {
@@ -126,16 +144,6 @@ License: MIT
         }
       }
       return typeof klass.init === "function" ? klass.init() : void 0;
-    },
-    getDependencies: function(klass, $inject) {
-      var deps, i, key, _i, _len, _ref;
-      deps = {};
-      _ref = klass.constructor.$inject;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        key = _ref[i];
-        deps[key] = $inject[i];
-      }
-      return deps;
     }
   };
 

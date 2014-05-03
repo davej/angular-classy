@@ -8,6 +8,21 @@ License: MIT
 
 'use strict';
 
+defaults =
+  controller: {}
+
+selectorControllerCount = 0
+availablePlugins = {}
+enabledPlugins = {}
+
+enablePlugins = (reqs) ->
+  for req in reqs
+    for pluginName, plugin of availablePlugins
+      if pluginName is req
+        enabledPlugins[pluginName] = plugin
+        if plugin.options
+          defaults.controller[plugin.name] = angular.copy(plugin.options)
+
 copyAndExtendDeep = (dst) ->
   for obj in arguments
     if obj isnt dst
@@ -17,6 +32,7 @@ copyAndExtendDeep = (dst) ->
         else
           dst[key] = angular.copy(value)
   dst
+
 origModuleMethod = angular.module
 angular.module = (name, reqs, configFn) ->
   ###
@@ -29,54 +45,34 @@ angular.module = (name, reqs, configFn) ->
   # This is super messy.
   # TODO: Clean this up and test the logic flow properly before moving to master
   if reqs
-    for req in reqs
-      for pluginName, plugin of availablePlugins
-        if pluginName is req
-          enabledPlugins[pluginName] = plugin
-          if plugin.options
-            defaults.controller[plugin.name] = plugin.options
+    enablePlugins(reqs)
 
     if 'classy-core' in reqs or 'classy' in reqs
-      module.classy = {}
+      module.classy =
+        plugin:
+          controller: (plugin) -> availablePlugins[name] = plugin
+              
 
-      module.classy.plugin =
-        controller: (plugin) -> availablePlugins[name] = plugin
-
-      module.classy.options =
+        options:
           controller: {}
 
-      module.cC = module.classy.controller = (classObj) ->
+        controller: (classObj) ->
 
-        class classyController
-          # `classyController` contains only a set of proxy functions for `classFns`,
-          # this is because I suspect that performance is better this way.
-          # TODO: Test performance to see if this is the most performant way to do it.
+          class classyController
+            # `classyController` contains only a set of proxy functions for `classFns`,
+            # this is because I suspect that performance is better this way.
+            # TODO: Test performance to see if this is the most performant way to do it.
 
-          # Pre-initialisation (before instance is created)
-          classFns.preInit(@, classObj, module)
+            # Pre-initialisation (before instance is created)
+            classFns.preInit(@, classObj, module)
 
-          # Initialisation (after instance is created)
-          constructor: -> classFns.init(@, arguments, module)
+            # Initialisation (after instance is created)
+            constructor: -> classFns.init(@, arguments, module)
+
+      module.cC = module.classy.controller
 
   return module
 
-defaults =
-  controller: {}
-
-selectorControllerCount = 0
-availablePlugins = {}
-enabledPlugins = {}
-
-utils =
-  extendDeep: (dst) ->
-    for obj in arguments
-      if obj isnt dst
-        for key, value of obj
-          if dst[key] and dst[key].constructor and dst[key].constructor is Object
-            @extendDeep dst[key], value
-          else
-            dst[key] = value
-    dst
 
 classFns =
   preInit: (classConstructor, classObj, module) ->
@@ -91,18 +87,14 @@ classFns =
       plugin.preInit?(classConstructor, classObj, module)
 
   init: (klass, $inject, module) ->
-    options = klass.constructor.__options
-    deps = @getDependencies(klass, $inject)
+    deps = {}
+    deps[key] = $inject[i] for key, i in klass.constructor.$inject
 
     for pluginName, plugin of enabledPlugins
       plugin.init?(klass, deps, module)
 
     klass.init?()
 
-  getDependencies: (klass, $inject) ->
-    deps = {}
-    deps[key] = $inject[i] for key, i in klass.constructor.$inject
-    deps
 
 angular.module('classy-core', [])
 
