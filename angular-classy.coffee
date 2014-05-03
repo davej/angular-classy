@@ -8,6 +8,15 @@ License: MIT
 
 'use strict';
 
+copyAndExtendDeep = (dst) ->
+  for obj in arguments
+    if obj isnt dst
+      for key, value of obj
+        if dst[key] and dst[key].constructor and dst[key].constructor is Object
+          copyAndExtendDeep dst[key], value
+        else
+          dst[key] = angular.copy(value)
+  dst
 origModuleMethod = angular.module
 angular.module = (name, reqs, configFn) ->
   ###
@@ -74,12 +83,11 @@ classFns =
     for own key,value of classObj
       classConstructor::[key] = value
 
-    classConstructor.__options = options =
-      extendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
+    options =
+      copyAndExtendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
 
     for pluginName, plugin of enabledPlugins
-      if options[plugin.name]
-        plugin.options = options[plugin.name]
+      plugin.options = options[plugin.name] or {}
       plugin.preInit?(classConstructor, classObj, module)
 
   init: (klass, $inject, module) ->
