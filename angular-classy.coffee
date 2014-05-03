@@ -76,7 +76,8 @@ angular.module = (name, reqs, configFn) ->
 
 classFns =
   preInit: (classConstructor, classObj, module) ->
-    for own key,value of classObj
+
+    for own key, value of classObj
       classConstructor::[key] = value
 
     options =
