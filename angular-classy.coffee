@@ -163,14 +163,13 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
   init: (klass, deps, module) ->
     if @options.enabled
       injectObject = klass.constructor.__classyControllerInjectObject
-      injectObjectMode = !!injectObject
 
       # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
       for key, i in klass.constructor.$inject
         dependency = deps[key]
 
         # If the named dependency is assigned a name that is different from the original name
-        if (injectObjectMode and (injectName = injectObject[key]) and
+        if (injectObject and (injectName = injectObject[key]) and
             injectName != @options.useExistingNameString)
           klass[injectName] = dependency
         else
