@@ -147,18 +147,18 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     deps = classObj.inject
 
     # Inject the `deps` if it's passed in as an array
-    if angular.isArray(deps) then @inject(classConstructor, deps)
+    if angular.isArray(deps) then @inject(classConstructor, depNames)
 
     # If `deps` is object: Wrap object in array and then inject
-    else if angular.isObject(deps) then @inject(classConstructor, [deps], classObj)
+    else if angular.isObject(deps) then @inject(classConstructor, [depNames], classObj)
 
-  inject: (classConstructor, deps, classObj) ->
-    if angular.isObject deps[0]
-      classConstructor.__classyControllerInjectObject = injectObject = deps[0]
-      deps = (service for service, name of injectObject)
+  inject: (classConstructor, depNames, classObj) ->
+    if angular.isObject depNames[0]
+      classConstructor.__classyControllerInjectObject = depNames[0]
+      deps = (service for service, name of depNames[0])
 
     # Add the `deps` to the controller's $inject annotations.
-    classConstructor.$inject = deps
+    classConstructor.$inject = depNames
 
   init: (klass, deps, module) ->
     if @options.enabled
