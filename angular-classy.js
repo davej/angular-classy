@@ -113,6 +113,7 @@ License: MIT
   };
 
   classFns = {
+    localInject: ['$q'],
     preInit: function(classConstructor, classObj, module) {
       var key, options, plugin, pluginName, value, _results;
       for (key in classObj) {
@@ -130,20 +131,66 @@ License: MIT
       return _results;
     },
     init: function(klass, $inject, module) {
-      var deps, i, key, plugin, pluginName, _i, _len, _ref;
+      var dep, depName, deps, injectIndex, key, plugin, pluginName, pluginPromises, returnVal, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      injectIndex = 0;
       deps = {};
-      _ref = klass.constructor.$inject;
-      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-        key = _ref[i];
-        deps[key] = $inject[i];
+      _ref = klass.constructor.__classDepNames;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        deps[key] = $inject[injectIndex];
+        injectIndex++;
       }
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
-        if (typeof plugin.init === "function") {
-          plugin.init(klass, deps, module);
+        if (angular.isArray(plugin.localInject)) {
+          _ref1 = plugin.localInject;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            depName = _ref1[_j];
+            dep = $inject[injectIndex];
+            plugin[depName] = dep;
+            injectIndex++;
+          }
         }
       }
-      return typeof klass.init === "function" ? klass.init() : void 0;
+      _ref2 = this.localInject;
+      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+        depName = _ref2[_k];
+        dep = $inject[injectIndex];
+        this[depName] = dep;
+        injectIndex++;
+      }
+      pluginPromises = [];
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        returnVal = typeof plugin.init === "function" ? plugin.init(klass, deps, module) : void 0;
+        if (returnVal && returnVal.then) {
+          pluginPromises.push(returnVal);
+        }
+      }
+      if (pluginPromises.length) {
+        return this.$q.all(pluginPromises).then(function() {
+          var _results;
+          if (typeof klass.init === "function") {
+            klass.init();
+          }
+          _results = [];
+          for (pluginName in enabledPlugins) {
+            plugin = enabledPlugins[pluginName];
+            _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
+          }
+          return _results;
+        });
+      } else {
+        if (typeof klass.init === "function") {
+          klass.init();
+        }
+        _results = [];
+        for (pluginName in enabledPlugins) {
+          plugin = enabledPlugins[pluginName];
+          _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
+        }
+        return _results;
+      }
     }
   };
 
@@ -202,41 +249,49 @@ License: MIT
       useExistingNameString: '.'
     },
     preInit: function(classConstructor, classObj, module) {
-      var deps;
-      deps = classObj.inject;
-      if (angular.isArray(deps)) {
-        return this.inject(classConstructor, deps);
-      } else if (angular.isObject(deps)) {
-        return this.inject(classConstructor, [deps], classObj);
+      var depNames;
+      depNames = classObj.inject;
+      if (angular.isArray(depNames)) {
+        return this.inject(classConstructor, depNames);
+      } else if (angular.isObject(depNames)) {
+        return this.inject(classConstructor, [depNames], classObj);
       }
     },
-    inject: function(classConstructor, deps, classObj) {
-      var injectObject, name, service;
-      if (angular.isObject(deps[0])) {
-        classConstructor.__classyControllerInjectObject = injectObject = deps[0];
-        deps = (function() {
-          var _results;
+    inject: function(classConstructor, depNames, classObj) {
+      var name, plugin, pluginDepNames, pluginName, service;
+      if (angular.isObject(depNames[0])) {
+        classConstructor.__classyControllerInjectObject = depNames[0];
+        depNames = (function() {
+          var _ref, _results;
+          _ref = depNames[0];
           _results = [];
-          for (service in injectObject) {
-            name = injectObject[service];
+          for (service in _ref) {
+            name = _ref[service];
             _results.push(service);
           }
           return _results;
         })();
       }
-      return classConstructor.$inject = deps;
+      pluginDepNames = [];
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        if (angular.isArray(plugin.localInject)) {
+          pluginDepNames = pluginDepNames.concat(plugin.localInject).concat(classFns.localInject);
+        }
+      }
+      classConstructor.__classDepNames = angular.copy(depNames);
+      return classConstructor.$inject = depNames.concat(pluginDepNames);
     },
     init: function(klass, deps, module) {
-      var dependency, i, injectName, injectObject, injectObjectMode, key, _i, _len, _ref, _results;
+      var dependency, i, injectName, injectObject, key, _i, _len, _ref, _results;
       if (this.options.enabled) {
         injectObject = klass.constructor.__classyControllerInjectObject;
-        injectObjectMode = !!injectObject;
         _ref = klass.constructor.$inject;
         _results = [];
         for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
           key = _ref[i];
           dependency = deps[key];
-          if (injectObjectMode && (injectName = injectObject[key]) && injectName !== this.options.useExistingNameString) {
+          if (injectObject && (injectName = injectObject[key]) && injectName !== this.options.useExistingNameString) {
             _results.push(klass[injectName] = dependency);
           } else {
             klass[key] = dependency;
@@ -317,7 +372,7 @@ License: MIT
         return deps.$scope.$watchCollection(expression, angular.bind(klass, fn));
       }
     },
-    init: function(klass, deps, module) {
+    postInit: function(klass, deps, module) {
       var expression, fn, keyword, watchFn, watchKeywords, watchRegistered, watchType, _i, _len, _ref, _ref1, _ref2, _results;
       if (!this.isActive(klass, deps)) {
         return;
