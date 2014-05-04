@@ -75,8 +75,9 @@ angular.module = (name, reqs, configFn) ->
 
 
 classFns =
-  preInit: (classConstructor, classObj, module) ->
+  localInject: ['$q']
 
+  preInit: (classConstructor, classObj, module) ->
     for own key, value of classObj
       classConstructor::[key] = value
 
@@ -88,13 +89,42 @@ classFns =
       plugin.preInit?(classConstructor, classObj, module)
 
   init: (klass, $inject, module) ->
+    injectIndex = 0
     deps = {}
-    deps[key] = $inject[i] for key, i in klass.constructor.$inject
+    for key in klass.constructor.__classDepNames
+      deps[key] = $inject[injectIndex]
+      injectIndex++
 
     for pluginName, plugin of enabledPlugins
-      plugin.init?(klass, deps, module)
+      if angular.isArray(plugin.localInject)
+        for depName in plugin.localInject
+          dep = $inject[injectIndex]
+          plugin[depName] = dep
+          injectIndex++
 
-    klass.init?()
+    for depName in @localInject
+      dep = $inject[injectIndex]
+      @[depName] = dep
+      injectIndex++
+
+
+    pluginPromises = []
+    for pluginName, plugin of enabledPlugins
+      returnVal = plugin.init?(klass, deps, module)
+      if returnVal && returnVal.then
+        # Naively assume this is a promise
+        # TODO: Make this smarter than just looking for `.then`
+        pluginPromises.push(returnVal)
+
+    if pluginPromises.length
+      @$q.all(pluginPromises).then ->
+        klass.init?()
+        for pluginName, plugin of enabledPlugins
+          plugin.postInit?(klass, deps, module)
+    else
+      klass.init?()
+      for pluginName, plugin of enabledPlugins
+        plugin.postInit?(klass, deps, module)
 
 
 angular.module('classy-core', [])
@@ -147,18 +177,25 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     depNames = classObj.inject
 
     # Inject the `deps` if it's passed in as an array
-    if angular.isArray(deps) then @inject(classConstructor, depNames)
+    if angular.isArray(depNames) then @inject(classConstructor, depNames)
 
     # If `deps` is object: Wrap object in array and then inject
-    else if angular.isObject(deps) then @inject(classConstructor, [depNames], classObj)
+    else if angular.isObject(depNames) then @inject(classConstructor, [depNames], classObj)
 
   inject: (classConstructor, depNames, classObj) ->
     if angular.isObject depNames[0]
       classConstructor.__classyControllerInjectObject = depNames[0]
-      deps = (service for service, name of depNames[0])
+      depNames = (service for service, name of depNames[0])
+
+    pluginDepNames = []
+    for pluginName, plugin of enabledPlugins
+      if angular.isArray(plugin.localInject)
+        pluginDepNames = pluginDepNames.concat(plugin.localInject).concat(classFns.localInject)
+
+    classConstructor.__classDepNames = angular.copy depNames
 
     # Add the `deps` to the controller's $inject annotations.
-    classConstructor.$inject = depNames
+    classConstructor.$inject = depNames.concat pluginDepNames
 
   init: (klass, deps, module) ->
     if @options.enabled
@@ -176,7 +213,7 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
           klass[key] = dependency
 
           if key is '$scope' and @options.scopeShortcut
-            # Add a shortcut to the $scope (by default `this.$`)
+            # Add a shortcut to the $scope (by default `@$`)
             klass[@options.scopeShortcut] = klass[key]
 
 angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller
@@ -226,7 +263,7 @@ angular.module('classy-watch', ['classy-core']).classy.plugin.controller
     collection: (klass, expression, fn, deps) ->
         deps.$scope.$watchCollection(expression, angular.bind(klass, fn))
 
-  init: (klass, deps, module) ->
+  postInit: (klass, deps, module) ->
     if !@isActive(klass, deps) then return
 
     watchKeywords = @options._watchKeywords
