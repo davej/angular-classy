@@ -35,4 +35,12 @@ app.classy.options.controller = {
 * Added shortcut for `this.$scope`. You can now reference the $scope with `this.$`, although `this.$scope` still works fine
 
 ## 0.4.2 (29/Apr/2014)
-* Bugfix: Bind classy controller functions so that `this` always references the controller. This fixes binding on function references inside callbacks.
+* Bugfix: Bind classy controller functions so that `this` always references the controller. This fixes binding on function references inside callbacks. For example:
+```javascript
+getTweets: function() {
+	this.$http.get(url).then(_populateTweets)
+},
+_populateTweets: function() {
+	console.log(this); // -> bugfix: `this` refers to the classy controller
+}
+```
