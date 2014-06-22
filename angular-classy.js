@@ -122,16 +122,28 @@ License: MIT
         classConstructor.prototype[key] = value;
       }
       options = copyAndExtendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
-      _results = [];
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
         plugin.options = options[plugin.name] || {};
-        _results.push(typeof plugin.preInit === "function" ? plugin.preInit(classConstructor, classObj, module) : void 0);
+        if (typeof plugin.preInitBefore === "function") {
+          plugin.preInitBefore(classConstructor, classObj, module);
+        }
+      }
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        if (typeof plugin.preInit === "function") {
+          plugin.preInit(classConstructor, classObj, module);
+        }
+      }
+      _results = [];
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        _results.push(typeof plugin.preInitAfter === "function" ? plugin.preInitAfter(classConstructor, classObj, module) : void 0);
       }
       return _results;
     },
     init: function(klass, $inject, module) {
-      var dep, depName, deps, injectIndex, key, plugin, pluginName, pluginPromises, returnVal, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      var dep, depName, deps, injectIndex, key, plugin, pluginName, pluginPromises, returnVal, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       injectIndex = 0;
       deps = {};
       _ref = klass.constructor.__classDepNames;
@@ -159,6 +171,12 @@ License: MIT
         this[depName] = dep;
         injectIndex++;
       }
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        if (typeof plugin.initBefore === "function") {
+          plugin.initBefore(klass, deps, module);
+        }
+      }
       pluginPromises = [];
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
@@ -168,29 +186,41 @@ License: MIT
         }
       }
       if (pluginPromises.length) {
-        return this.$q.all(pluginPromises).then(function() {
-          var _results;
-          if (typeof klass.init === "function") {
-            klass.init();
-          }
-          _results = [];
-          for (pluginName in enabledPlugins) {
-            plugin = enabledPlugins[pluginName];
-            _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
-          }
-          return _results;
-        });
+        return this.$q.all(pluginPromises).then((function(_this) {
+          return function() {
+            if (typeof klass.init === "function") {
+              klass.init();
+            }
+            return _this.postInit(klass, deps, module);
+          };
+        })(this));
       } else {
         if (typeof klass.init === "function") {
           klass.init();
         }
-        _results = [];
-        for (pluginName in enabledPlugins) {
-          plugin = enabledPlugins[pluginName];
-          _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
-        }
-        return _results;
+        return this.postInit(klass, deps, module);
       }
+    },
+    postInit: function(klass, deps, module) {
+      var plugin, pluginName, _results;
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        if (typeof plugin.postInitBefore === "function") {
+          plugin.postInitBefore(klass, deps, module);
+        }
+      }
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        if (typeof plugin.postInit === "function") {
+          plugin.postInit(klass, deps, module);
+        }
+      }
+      _results = [];
+      for (pluginName in enabledPlugins) {
+        plugin = enabledPlugins[pluginName];
+        _results.push(typeof plugin.postInitAfter === "function" ? plugin.postInitAfter(klass, deps, module) : void 0);
+      }
+      return _results;
     }
   };
 

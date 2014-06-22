@@ -86,7 +86,13 @@ classFns =
 
     for pluginName, plugin of enabledPlugins
       plugin.options = options[plugin.name] or {}
+      plugin.preInitBefore?(classConstructor, classObj, module)
+
+    for pluginName, plugin of enabledPlugins
       plugin.preInit?(classConstructor, classObj, module)
+
+    for pluginName, plugin of enabledPlugins
+      plugin.preInitAfter?(classConstructor, classObj, module)
 
   init: (klass, $inject, module) ->
     injectIndex = 0
@@ -107,6 +113,8 @@ classFns =
       @[depName] = dep
       injectIndex++
 
+    for pluginName, plugin of enabledPlugins
+      plugin.initBefore?(klass, deps, module)
 
     pluginPromises = []
     for pluginName, plugin of enabledPlugins
@@ -117,14 +125,20 @@ classFns =
         pluginPromises.push(returnVal)
 
     if pluginPromises.length
-      @$q.all(pluginPromises).then ->
+      @$q.all(pluginPromises).then =>
         klass.init?()
-        for pluginName, plugin of enabledPlugins
-          plugin.postInit?(klass, deps, module)
+        @postInit(klass, deps, module)
     else
       klass.init?()
-      for pluginName, plugin of enabledPlugins
-        plugin.postInit?(klass, deps, module)
+      @postInit(klass, deps, module)
+
+  postInit: (klass, deps, module) ->
+    for pluginName, plugin of enabledPlugins
+      plugin.postInitBefore?(klass, deps, module)
+    for pluginName, plugin of enabledPlugins
+      plugin.postInit?(klass, deps, module)
+    for pluginName, plugin of enabledPlugins
+      plugin.postInitAfter?(klass, deps, module)
 
 
 angular.module('classy-core', [])
