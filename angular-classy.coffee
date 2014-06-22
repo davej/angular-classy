@@ -127,9 +127,13 @@ classFns =
     if pluginPromises.length
       @$q.all(pluginPromises).then =>
         klass.init?()
+        for pluginName, plugin of enabledPlugins
+          plugin.initBefore?(klass, deps, module)
         @postInit(klass, deps, module)
     else
       klass.init?()
+      for pluginName, plugin of enabledPlugins
+        plugin.initBefore?(klass, deps, module)
       @postInit(klass, deps, module)
 
   postInit: (klass, deps, module) ->

@@ -191,12 +191,24 @@ License: MIT
             if (typeof klass.init === "function") {
               klass.init();
             }
+            for (pluginName in enabledPlugins) {
+              plugin = enabledPlugins[pluginName];
+              if (typeof plugin.initBefore === "function") {
+                plugin.initBefore(klass, deps, module);
+              }
+            }
             return _this.postInit(klass, deps, module);
           };
         })(this));
       } else {
         if (typeof klass.init === "function") {
           klass.init();
+        }
+        for (pluginName in enabledPlugins) {
+          plugin = enabledPlugins[pluginName];
+          if (typeof plugin.initBefore === "function") {
+            plugin.initBefore(klass, deps, module);
+          }
         }
         return this.postInit(klass, deps, module);
       }
