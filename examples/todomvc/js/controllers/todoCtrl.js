@@ -31,6 +31,14 @@ todomvc.classy.controller({
 		},
 		'{object}todos': '_onTodoChange'
 	},
+	computed: {
+		'countString': function() {
+			console.log('hi', this)
+			var yo = this.$.completedCount + '/' + this.todos.length;
+			console.log(yo);
+			return yo;
+		}
+	},
 
 
 	_onTodoChange: function (newValue, oldValue) {
