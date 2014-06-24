@@ -11,7 +11,9 @@ License: MIT
 defaults =
   controller: {}
 
+registeredControllers = {}
 selectorControllerCount = 0
+
 availablePlugins = {}
 enabledPlugins = {}
 
@@ -162,8 +164,11 @@ angular.module('classy-register', ['classy-core']).classy.plugin.controller
 
   preInit: (classConstructor, classObj, module) ->
     if angular.isString(classObj.name)
-      # Register the controller using name
-      module.controller classObj.name, classConstructor
+      registeredControllers[classObj.name] = classConstructor
+
+      if !classObj.isAbstract
+        # Register the controller using name
+        module.controller classObj.name, classConstructor
 
 angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
   name: 'bindDependencies'
