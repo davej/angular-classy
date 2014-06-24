@@ -10,7 +10,7 @@ License: MIT
 
 (function() {
   'use strict';
-  var availablePlugins, classFns, copyAndExtendDeep, defaults, enablePlugins, enabledPlugins, origModuleMethod, selectorControllerCount,
+  var availablePlugins, classFns, copyAndExtendDeep, defaults, enablePlugins, enabledPlugins, origModuleMethod, pluginDo, selectorControllerCount,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     __hasProp = {}.hasOwnProperty;
 
@@ -47,6 +47,22 @@ License: MIT
         }
         return _results1;
       })());
+    }
+    return _results;
+  };
+
+  pluginDo = function(methodName, params, obj) {
+    var plugin, pluginName, returnVal, _ref, _results;
+    _results = [];
+    for (pluginName in enabledPlugins) {
+      plugin = enabledPlugins[pluginName];
+      if (obj != null) {
+        if (typeof obj.before === "function") {
+          obj.before(plugin);
+        }
+      }
+      returnVal = (_ref = plugin[methodName]) != null ? _ref.apply(plugin, params) : void 0;
+      _results.push(obj != null ? typeof obj.after === "function" ? obj.after(plugin, returnVal) : void 0 : void 0);
     }
     return _results;
   };
@@ -115,23 +131,23 @@ License: MIT
   classFns = {
     localInject: ['$q'],
     preInit: function(classConstructor, classObj, module) {
-      var key, options, plugin, pluginName, value, _results;
+      var key, options, value;
       for (key in classObj) {
         if (!__hasProp.call(classObj, key)) continue;
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
       options = copyAndExtendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
-      _results = [];
-      for (pluginName in enabledPlugins) {
-        plugin = enabledPlugins[pluginName];
-        plugin.options = options[plugin.name] || {};
-        _results.push(typeof plugin.preInit === "function" ? plugin.preInit(classConstructor, classObj, module) : void 0);
-      }
-      return _results;
+      pluginDo('preInitBefore', [classConstructor, classObj, module], {
+        before: function(plugin) {
+          return plugin.options = options[plugin.name] || {};
+        }
+      });
+      pluginDo('preInit', [classConstructor, classObj, module]);
+      return pluginDo('preInitAfter', [classConstructor, classObj, module]);
     },
     init: function(klass, $inject, module) {
-      var dep, depName, deps, injectIndex, key, plugin, pluginName, pluginPromises, returnVal, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      var dep, depName, deps, initClass, injectIndex, key, pluginPromises, _i, _j, _len, _len1, _ref, _ref1;
       injectIndex = 0;
       deps = {};
       _ref = klass.constructor.__classDepNames;
@@ -140,57 +156,55 @@ License: MIT
         deps[key] = $inject[injectIndex];
         injectIndex++;
       }
-      for (pluginName in enabledPlugins) {
-        plugin = enabledPlugins[pluginName];
-        if (angular.isArray(plugin.localInject)) {
-          _ref1 = plugin.localInject;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            depName = _ref1[_j];
-            dep = $inject[injectIndex];
-            plugin[depName] = dep;
-            injectIndex++;
+      pluginDo('null', [], {
+        before: function(plugin) {
+          var dep, depName, _j, _len1, _ref1, _results;
+          if (angular.isArray(plugin.localInject)) {
+            _ref1 = plugin.localInject;
+            _results = [];
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              depName = _ref1[_j];
+              dep = $inject[injectIndex];
+              plugin[depName] = dep;
+              _results.push(injectIndex++);
+            }
+            return _results;
           }
         }
-      }
-      _ref2 = this.localInject;
-      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-        depName = _ref2[_k];
+      });
+      _ref1 = this.localInject;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        depName = _ref1[_j];
         dep = $inject[injectIndex];
         this[depName] = dep;
         injectIndex++;
       }
+      pluginDo('initBefore', [klass, deps, module]);
       pluginPromises = [];
-      for (pluginName in enabledPlugins) {
-        plugin = enabledPlugins[pluginName];
-        returnVal = typeof plugin.init === "function" ? plugin.init(klass, deps, module) : void 0;
-        if (returnVal && returnVal.then) {
-          pluginPromises.push(returnVal);
+      pluginDo('init', [klass, deps, module], {
+        after: function(plugin, returnVal) {
+          if (returnVal && returnVal.then) {
+            return pluginPromises.push(returnVal);
+          }
         }
-      }
-      if (pluginPromises.length) {
-        return this.$q.all(pluginPromises).then(function() {
-          var _results;
-          if (typeof klass.init === "function") {
-            klass.init();
-          }
-          _results = [];
-          for (pluginName in enabledPlugins) {
-            plugin = enabledPlugins[pluginName];
-            _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
-          }
-          return _results;
-        });
-      } else {
+      });
+      initClass = function() {
         if (typeof klass.init === "function") {
           klass.init();
         }
-        _results = [];
-        for (pluginName in enabledPlugins) {
-          plugin = enabledPlugins[pluginName];
-          _results.push(typeof plugin.postInit === "function" ? plugin.postInit(klass, deps, module) : void 0);
-        }
-        return _results;
+        pluginDo('initAfter', [klass, deps, module]);
+        return this.postInit(klass, deps, module);
+      };
+      if (pluginPromises.length) {
+        return this.$q.all(pluginPromises).then(angular.bind(this, initClass));
+      } else {
+        return angular.bind(this, initClass)();
       }
+    },
+    postInit: function(klass, deps, module) {
+      pluginDo('postInitBefore', [klass, deps, module]);
+      pluginDo('postInit', [klass, deps, module]);
+      return pluginDo('postInitAfter', [klass, deps, module]);
     }
   };
 
