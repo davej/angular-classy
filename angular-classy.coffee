@@ -11,7 +11,8 @@ License: MIT
 defaults =
   controller: {}
 
-registeredControllers = {}
+availableControllers = {}
+
 selectorControllerCount = 0
 
 availablePlugins = {}
@@ -71,6 +72,9 @@ angular.module = (name, reqs, configFn) ->
             # this is because I suspect that performance is better this way.
             # TODO: Test performance to see if this is the most performant way to do it.
 
+            classFns.preConstruct(@, classObj, module)
+            classFns.construct(@, classObj, module)
+
             # Pre-initialisation (before instance is created)
             classFns.preInit(@, classObj, module)
 
@@ -85,17 +89,24 @@ angular.module = (name, reqs, configFn) ->
 classFns =
   localInject: ['$q']
 
-  preInit: (classConstructor, classObj, module) ->
-    for own key, value of classObj
-      classConstructor::[key] = value
-
+  preConstruct: (classConstructor, classObj, module) ->
     options =
       copyAndExtendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
+    for pluginName, plugin of enabledPlugins
+      plugin.options = options[plugin.name] or {}
+
+    pluginDo 'preConstructBefore', [classConstructor, classObj, module]
+    pluginDo 'preConstruct', [classConstructor, classObj, module]
+    pluginDo 'preConstructAfter', [classConstructor, classObj, module]
+
+  construct: (classConstructor, classObj, module) ->
+    pluginDo 'constructBefore', [classConstructor, classObj, module]
+    pluginDo 'construct', [classConstructor, classObj, module]
+    pluginDo 'constructAfter', [classConstructor, classObj, module]
 
 
-    pluginDo 'preInitBefore', [classConstructor, classObj, module],
-      before: (plugin) ->
-        plugin.options = options[plugin.name] or {}
+  preInit: (classConstructor, classObj, module) ->
+    pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
     pluginDo 'preInitAfter', [classConstructor, classObj, module]
 
@@ -106,13 +117,12 @@ classFns =
       deps[key] = $inject[injectIndex]
       injectIndex++
 
-    pluginDo 'null', [],
-      before: (plugin) ->
-        if angular.isArray(plugin.localInject)
-          for depName in plugin.localInject
-            dep = $inject[injectIndex]
-            plugin[depName] = dep
-            injectIndex++
+    for pluginName, plugin of enabledPlugins
+      if angular.isArray(plugin.localInject)
+        for depName in plugin.localInject
+          dep = $inject[injectIndex]
+          plugin[depName] = dep
+          injectIndex++
 
     for depName in @localInject
       dep = $inject[injectIndex]
@@ -147,13 +157,55 @@ classFns =
 
 angular.module('classy-core', [])
 
-angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
+angular.module('classy-saveController', ['classy-core']).classy.plugin.controller
+  name: 'saveController'
+
+  preConstructBefore: (classConstructor, classObj, module) ->
+    if angular.isString(classObj.name) and classConstructor
+      if !module.availableClassyControllers then module.availableClassyControllers = {}
+      module.availableClassyControllers[classObj.name] = classConstructor
+
+angular.module('classy-mixins', ['classy-core']).classy.plugin.controller
+  name: 'mixins'
+
+  options:
+    enabled: true
+
+  isActive: (klass, deps) ->
+    if @options.enabled and angular.isObject(klass.mixins)
+      return true
+
+  preConstruct: (classConstructor, classObj, module) ->
+    if @isActive
+      for mixin of classObj.mixins
+        for name, method of availableClassyControllers[mixin]
+          classConstructor::[name] = method
+
+angular.module('classy-construct', ['classy-core']).classy.plugin.controller
+  name: 'construct'
+
+  isActive: (klass, deps) -> !!classObj
+
+  construct: (classConstructor, classObj, module) ->
+    if isActive
+      for own key, value of classObj
+        classConstructor::[key] = value
+
+angular.module('classy-register', ['classy-core']).classy.plugin.controller
   name: 'register'
 
   preInit: (classConstructor, classObj, module) ->
-    if classObj.el || classObj.selector
+    if angular.isString(classObj.name) and !classObj.isAbstract
+        # Register the controller using name
+        module.controller classObj.name, classConstructor
+
+angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
+  name: 'registerSelector'
+
+  preInit: (classConstructor, classObj, module) ->
+    if !classObj.isAbstract and (classObj.el or classObj.selector)
       # Register the controller using selector
-      @registerSelector(module, classObj.el || classObj.selector, classConstructor)
+      @registerSelector(module, classObj.el or classObj.selector, classConstructor)
 
   registerSelector: (module, selector, classConstructor) ->
     selectorControllerCount++
@@ -174,17 +226,6 @@ angular.module('classy-registerSelector', ['classy-core']).classy.plugin.control
     for el in els
       if angular.isElement(el)
         el.setAttribute('data-ng-controller', controllerName)
-
-angular.module('classy-register', ['classy-core']).classy.plugin.controller
-  name: 'registerSelector'
-
-  preInit: (classConstructor, classObj, module) ->
-    if angular.isString(classObj.name)
-      registeredControllers[classObj.name] = classConstructor
-
-      if !classObj.isAbstract
-        # Register the controller using name
-        module.controller classObj.name, classConstructor
 
 angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
   name: 'bindDependencies'
