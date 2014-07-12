@@ -190,7 +190,7 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     useExistingNameString: '.'
 
   preInit: (classConstructor, classObj, module) ->
-    depNames = classObj.inject
+    depNames = classObj.inject or []
 
     # Inject the `deps` if it's passed in as an array
     if angular.isArray(depNames) then @inject(classConstructor, depNames)

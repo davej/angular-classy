@@ -264,7 +264,7 @@ License: MIT
     },
     preInit: function(classConstructor, classObj, module) {
       var depNames;
-      depNames = classObj.inject;
+      depNames = classObj.inject || [];
       if (angular.isArray(depNames)) {
         return this.inject(classConstructor, depNames);
       } else if (angular.isObject(depNames)) {
