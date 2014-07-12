@@ -331,7 +331,11 @@ License: MIT
     hasPrivateMethodPrefix: function(string) {
       var prefix;
       prefix = this.options.privateMethodPrefix;
-      return string.slice(0, prefix.length) !== prefix;
+      if (!prefix) {
+        return false;
+      } else {
+        return string.slice(0, prefix.length) === prefix;
+      }
     },
     init: function(klass, deps, module) {
       var fn, key, _ref, _results;
@@ -342,7 +346,7 @@ License: MIT
           fn = _ref[key];
           if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
             klass[key] = angular.bind(klass, fn);
-            if (this.hasPrivateMethodPrefix(key)) {
+            if (!this.hasPrivateMethodPrefix(key) && deps.$scope) {
               _results.push(deps.$scope[key] = klass[key]);
             } else {
               _results.push(void 0);
