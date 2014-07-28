@@ -4,6 +4,18 @@
 
 Check out the [Angular Classy website](http://davej.github.io/angular-classy/) to see what it's all about.
 
+## Building and testing Angular Classy
+
+If you want to edit any of the Classy source files or contribute some code then please build and test Angular Classy.
+
+1. Install [NodeJS](http://nodejs.org/).
+2. Install [gulp.js](http://gulpjs.com/) globally (`npm install -g gulp`).
+3. Install [Bower](http://bower.io/) globally (`npm install -g bower`).
+4. If you wish to run the tests then please also install [PhantomJS](http://phantomjs.org/) and [Firefox](https://www.mozilla.org/en-US/firefox/new/).
+5. Run `npm install`.
+6. Run `bower install`.
+
+To build Classy run `gulp`. To test Classy run `gulp test`.
 
 ## What's next
 

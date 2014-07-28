@@ -57,8 +57,6 @@ angular.module = (name, reqs, configFn) ->
       module.classy =
         plugin:
           controller: (plugin) -> availablePlugins[name] = plugin
-              
-
         options:
           controller: {}
 
@@ -142,45 +140,28 @@ classFns =
     pluginDo 'postInit', [klass, deps, module]
     pluginDo 'postInitAfter', [klass, deps, module]
 
-
 angular.module('classy-core', [])
+angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller
+  name: 'addFnsToScope'
 
-angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
-  name: 'register'
+  options:
+    enabled: true
+    privateMethodPrefix: '_'
+    ignore: ['constructor', 'init']
 
-  preInit: (classConstructor, classObj, module) ->
-    if classObj.el || classObj.selector
-      # Register the controller using selector
-      @registerSelector(module, classObj.el || classObj.selector, classConstructor)
+  hasPrivateMethodPrefix: (string) ->
+    prefix = @options.privateMethodPrefix
+    if !prefix then false
+    else string.slice(0, prefix.length) is prefix
 
-  registerSelector: (module, selector, classConstructor) ->
-    selectorControllerCount++
-    controllerName = "ClassySelector#{selectorControllerCount}Controller"
-    module.controller controllerName, classConstructor
-
-    if angular.isElement(selector)
-      selector.setAttribute('data-ng-controller', controllerName)
-      return
-
-    if angular.isString(selector)
-      # Query the dom using jQuery if available, otherwise fallback to qSA
-      els = window.jQuery?(selector) or document.querySelectorAll(selector)
-    else if angular.isArray(selector)
-      els = selector
-    else return
-
-    for el in els
-      if angular.isElement(el)
-        el.setAttribute('data-ng-controller', controllerName)
-
-angular.module('classy-register', ['classy-core']).classy.plugin.controller
-  name: 'registerSelector'
-
-  preInit: (classConstructor, classObj, module) ->
-    if angular.isString(classObj.name)
-      # Register the controller using name
-      module.controller classObj.name, classConstructor
-
+  init: (klass, deps, module) ->
+    # Adds controller functions (unless they have a `_` prefix) to the `$scope`
+    if @options.enabled
+      for key, fn of klass.constructor::
+        if angular.isFunction(fn) and !(key in @options.ignore)
+          klass[key] = angular.bind(klass, fn)
+          if !@hasPrivateMethodPrefix(key) and deps.$scope
+            deps.$scope[key] = klass[key]
 angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
   name: 'bindDependencies'
 
@@ -231,29 +212,40 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
           if key is '$scope' and @options.scopeShortcut
             # Add a shortcut to the $scope (by default `@$`)
             klass[@options.scopeShortcut] = klass[key]
+angular.module('classy-register', ['classy-core']).classy.plugin.controller
+  name: 'registerSelector'
 
-angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller
-  name: 'addFnsToScope'
+  preInit: (classConstructor, classObj, module) ->
+    if angular.isString(classObj.name)
+      # Register the controller using name
+      module.controller classObj.name, classConstructor
+angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
+  name: 'register'
 
-  options:
-    enabled: true
-    privateMethodPrefix: '_'
-    ignore: ['constructor', 'init']
+  preInit: (classConstructor, classObj, module) ->
+    if classObj.el || classObj.selector
+      # Register the controller using selector
+      @registerSelector(module, classObj.el || classObj.selector, classConstructor)
 
-  hasPrivateMethodPrefix: (string) ->
-    prefix = @options.privateMethodPrefix
-    if !prefix then false
-    else string.slice(0, prefix.length) is prefix
+  registerSelector: (module, selector, classConstructor) ->
+    selectorControllerCount++
+    controllerName = "ClassySelector#{selectorControllerCount}Controller"
+    module.controller controllerName, classConstructor
 
-  init: (klass, deps, module) ->
-    # Adds controller functions (unless they have a `_` prefix) to the `$scope`
-    if @options.enabled
-      for key, fn of klass.constructor::
-        if angular.isFunction(fn) and !(key in @options.ignore)
-          klass[key] = angular.bind(klass, fn)
-          if !@hasPrivateMethodPrefix(key) and deps.$scope
-            deps.$scope[key] = klass[key]
+    if angular.isElement(selector)
+      selector.setAttribute('data-ng-controller', controllerName)
+      return
 
+    if angular.isString(selector)
+      # Query the dom using jQuery if available, otherwise fallback to qSA
+      els = window.jQuery?(selector) or document.querySelectorAll(selector)
+    else if angular.isArray(selector)
+      els = selector
+    else return
+
+    for el in els
+      if angular.isElement(el)
+        el.setAttribute('data-ng-controller', controllerName)
 angular.module('classy-watch', ['classy-core']).classy.plugin.controller
   name: 'watch'
 
@@ -302,10 +294,4 @@ angular.module('classy-watch', ['classy-core']).classy.plugin.controller
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
 
-angular.module 'classy',  [
-                            'classy-bindDependencies',
-                            'classy-addFnsToScope',
-                            'classy-watch',
-                            'classy-registerSelector',
-                            'classy-register'
-                          ]
+angular.module 'classy', ["classy-addFnsToScope","classy-bindDependencies","classy-register","classy-registerSelector","classy-watch"]

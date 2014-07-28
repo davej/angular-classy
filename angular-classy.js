@@ -210,47 +210,41 @@ License: MIT
 
   angular.module('classy-core', []);
 
-  angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller({
-    name: 'register',
-    preInit: function(classConstructor, classObj, module) {
-      if (classObj.el || classObj.selector) {
-        return this.registerSelector(module, classObj.el || classObj.selector, classConstructor);
+  angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller({
+    name: 'addFnsToScope',
+    options: {
+      enabled: true,
+      privateMethodPrefix: '_',
+      ignore: ['constructor', 'init']
+    },
+    hasPrivateMethodPrefix: function(string) {
+      var prefix;
+      prefix = this.options.privateMethodPrefix;
+      if (!prefix) {
+        return false;
+      } else {
+        return string.slice(0, prefix.length) === prefix;
       }
     },
-    registerSelector: function(module, selector, classConstructor) {
-      var controllerName, el, els, _i, _len, _results;
-      selectorControllerCount++;
-      controllerName = "ClassySelector" + selectorControllerCount + "Controller";
-      module.controller(controllerName, classConstructor);
-      if (angular.isElement(selector)) {
-        selector.setAttribute('data-ng-controller', controllerName);
-        return;
-      }
-      if (angular.isString(selector)) {
-        els = (typeof window.jQuery === "function" ? window.jQuery(selector) : void 0) || document.querySelectorAll(selector);
-      } else if (angular.isArray(selector)) {
-        els = selector;
-      } else {
-        return;
-      }
-      _results = [];
-      for (_i = 0, _len = els.length; _i < _len; _i++) {
-        el = els[_i];
-        if (angular.isElement(el)) {
-          _results.push(el.setAttribute('data-ng-controller', controllerName));
-        } else {
-          _results.push(void 0);
+    init: function(klass, deps, module) {
+      var fn, key, _ref, _results;
+      if (this.options.enabled) {
+        _ref = klass.constructor.prototype;
+        _results = [];
+        for (key in _ref) {
+          fn = _ref[key];
+          if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
+            klass[key] = angular.bind(klass, fn);
+            if (!this.hasPrivateMethodPrefix(key) && deps.$scope) {
+              _results.push(deps.$scope[key] = klass[key]);
+            } else {
+              _results.push(void 0);
+            }
+          } else {
+            _results.push(void 0);
+          }
         }
-      }
-      return _results;
-    }
-  });
-
-  angular.module('classy-register', ['classy-core']).classy.plugin.controller({
-    name: 'registerSelector',
-    preInit: function(classConstructor, classObj, module) {
-      if (angular.isString(classObj.name)) {
-        return module.controller(classObj.name, classConstructor);
+        return _results;
       }
     }
   });
@@ -321,42 +315,48 @@ License: MIT
     }
   });
 
-  angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller({
-    name: 'addFnsToScope',
-    options: {
-      enabled: true,
-      privateMethodPrefix: '_',
-      ignore: ['constructor', 'init']
+  angular.module('classy-register', ['classy-core']).classy.plugin.controller({
+    name: 'registerSelector',
+    preInit: function(classConstructor, classObj, module) {
+      if (angular.isString(classObj.name)) {
+        return module.controller(classObj.name, classConstructor);
+      }
+    }
+  });
+
+  angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller({
+    name: 'register',
+    preInit: function(classConstructor, classObj, module) {
+      if (classObj.el || classObj.selector) {
+        return this.registerSelector(module, classObj.el || classObj.selector, classConstructor);
+      }
     },
-    hasPrivateMethodPrefix: function(string) {
-      var prefix;
-      prefix = this.options.privateMethodPrefix;
-      if (!prefix) {
-        return false;
+    registerSelector: function(module, selector, classConstructor) {
+      var controllerName, el, els, _i, _len, _results;
+      selectorControllerCount++;
+      controllerName = "ClassySelector" + selectorControllerCount + "Controller";
+      module.controller(controllerName, classConstructor);
+      if (angular.isElement(selector)) {
+        selector.setAttribute('data-ng-controller', controllerName);
+        return;
+      }
+      if (angular.isString(selector)) {
+        els = (typeof window.jQuery === "function" ? window.jQuery(selector) : void 0) || document.querySelectorAll(selector);
+      } else if (angular.isArray(selector)) {
+        els = selector;
       } else {
-        return string.slice(0, prefix.length) === prefix;
+        return;
       }
-    },
-    init: function(klass, deps, module) {
-      var fn, key, _ref, _results;
-      if (this.options.enabled) {
-        _ref = klass.constructor.prototype;
-        _results = [];
-        for (key in _ref) {
-          fn = _ref[key];
-          if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
-            klass[key] = angular.bind(klass, fn);
-            if (!this.hasPrivateMethodPrefix(key) && deps.$scope) {
-              _results.push(deps.$scope[key] = klass[key]);
-            } else {
-              _results.push(void 0);
-            }
-          } else {
-            _results.push(void 0);
-          }
+      _results = [];
+      for (_i = 0, _len = els.length; _i < _len; _i++) {
+        el = els[_i];
+        if (angular.isElement(el)) {
+          _results.push(el.setAttribute('data-ng-controller', controllerName));
+        } else {
+          _results.push(void 0);
         }
-        return _results;
       }
+      return _results;
     }
   });
 
@@ -434,6 +434,6 @@ License: MIT
     }
   });
 
-  angular.module('classy', ['classy-bindDependencies', 'classy-addFnsToScope', 'classy-watch', 'classy-registerSelector', 'classy-register']);
+  angular.module('classy', ["classy-addFnsToScope", "classy-bindDependencies", "classy-register", "classy-registerSelector", "classy-watch"]);
 
 }).call(this);
