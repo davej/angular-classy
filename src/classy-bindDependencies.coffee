@@ -23,7 +23,8 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     pluginDepNames = []
     for pluginName, plugin of enabledPlugins
       if angular.isArray(plugin.localInject)
-        pluginDepNames = pluginDepNames.concat(plugin.localInject).concat(classFns.localInject)
+        pluginDepNames = pluginDepNames.concat(plugin.localInject)
+    pluginDepNames = pluginDepNames.concat(classFns.localInject)
 
     classConstructor.__classDepNames = angular.copy depNames
 

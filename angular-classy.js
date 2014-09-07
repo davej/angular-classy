@@ -284,9 +284,10 @@ License: MIT
       for (pluginName in enabledPlugins) {
         plugin = enabledPlugins[pluginName];
         if (angular.isArray(plugin.localInject)) {
-          pluginDepNames = pluginDepNames.concat(plugin.localInject).concat(classFns.localInject);
+          pluginDepNames = pluginDepNames.concat(plugin.localInject);
         }
       }
+      pluginDepNames = pluginDepNames.concat(classFns.localInject);
       classConstructor.__classDepNames = angular.copy(depNames);
       return classConstructor.$inject = depNames.concat(pluginDepNames);
     },
