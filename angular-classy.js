@@ -120,9 +120,18 @@ License: MIT
               return classyController;
 
             })();
+          },
+          controllers: function(controllerArray) {
+            var classObj, _i, _len;
+            for (_i = 0, _len = controllerArray.length; _i < _len; _i++) {
+              classObj = controllerArray[_i];
+              this.controller(classObj);
+            }
+            return module;
           }
         };
         module.cC = module.classy.controller;
+        module.cCs = module.classy.controllers;
       }
     }
     return module;

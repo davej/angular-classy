@@ -73,7 +73,17 @@ angular.module = (name, reqs, configFn) ->
             # Initialisation (after instance is created)
             constructor: -> classFns.init(@, arguments, module)
 
+        controllers: (controllerArray) ->
+          # Accepts an array of controllers and returns the module, e.g.:
+          # `module.classy.controllers([xxx, xxx]).config(xxx).run(xxx)`
+          # Requested in issue #29
+          for classObj in controllerArray
+            @controller(classObj)
+          return module
+
       module.cC = module.classy.controller
+      module.cCs = module.classy.controllers
+
 
   return module
 
