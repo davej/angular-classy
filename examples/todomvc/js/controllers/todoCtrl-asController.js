@@ -10,9 +10,11 @@
 
 todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
-	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
+	inject: ['$location', 'todoStorage', 'filterFilter'],
 	__options: {
-		addFnsToScope: false
+		addFnsToScope: {
+			enabled: false
+		}
 	},
 
 	init: function() {
@@ -26,14 +28,14 @@ todomvc.classy.controller({
 		}
 	},
 
-	watch: {
-		'todoCtrl.$location.path()': function(path) {
-			this.statusFilter = (path === '/active') ?
-				{ completed: false } : (path === '/completed') ?
-				{ completed: true } : null;
-		},
-		'{object}todoCtrl.todos': '_onTodoChange'
-	},
+	// watch: {
+	// 	'todoCtrl.$location.path()': function(path) {
+	// 		this.statusFilter = (path === '/active') ?
+	// 			{ completed: false } : (path === '/completed') ?
+	// 			{ completed: true } : null;
+	// 	},
+	// 	'{object}todoCtrl.todos': '_onTodoChange'
+	// },
 
 
 	_onTodoChange: function (newValue, oldValue) {

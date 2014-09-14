@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Simple test for multiple controllers</title>
+	</head>
+	<body>
+		<p>Simple test for multiple controllers, more tests will be added here in future.</p>
+		<section id="todoapp" ng-controller="hello">
+		{{ foo }}
+		</section>
+		<section id="todoapp" ng-controller="goodbye">
+		{{ foo }}
+		</section>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="../../angular-classy.js"></script>
+		<script src="app.js"></script>
+	</body>
+</html>
