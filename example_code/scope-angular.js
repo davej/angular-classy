@@ -1,0 +1,3 @@
+$scope.editTodo = function(todo) {
+  //...
+}

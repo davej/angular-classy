@@ -1,0 +1,6 @@
+watch:
+  'location.path()': (newValue, oldValue) ->
+    # ...
+
+  '{object}todos': (newValue, oldValue) ->
+    # ...

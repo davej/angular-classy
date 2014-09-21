@@ -5,20 +5,6 @@
 Check out the [Angular Classy website](http://davej.github.io/angular-classy/) to see what it's all about.
 
 
-## What's next
-
-* ~~Tests~~ **Unit tests now added (based on the TodoMVC controller)**
-* ~~Make it work with Bower~~ **Now works with bower**
-* ~~Make a simple github.io site~~ **[Site now available](http://davej.github.io/angular-classy/)**
-* Performance testing
-* Investigate other Classy Angular stuff (especially services and directives)
-
-## Thanks
-
-* [@elado](https://github.com/elado) and [this gist](https://gist.github.com/elado/8138516).
-* [@ahmednuaman](https://github.com/ahmednuaman) and his project [Radian](https://github.com/ahmednuaman/radian).
-
-
 ## License
 
 The MIT License
