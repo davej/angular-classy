@@ -88,6 +88,9 @@ a {
   color: #c00;
   font-weight: bold; }
 
+pre, code {
+  font-family: 'Inconsolata', 'Bitstream Vera Sans Mono', Consolas, Courier, monospace !important; }
+
 span.hide {
   display: none; }
 
@@ -332,7 +335,6 @@ body > header {
       .code-editor .editor pre.hide {
         display: none; }
     .code-editor .editor code {
-      font-family: 'Inconsolata', 'Bitstream Vera Sans Mono', Consolas, Courier, monospace;
       font-size: 15px; }
   .code-editor section {
     position: relative;
