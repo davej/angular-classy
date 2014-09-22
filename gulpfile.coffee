@@ -9,10 +9,11 @@ sass = require('gulp-sass')
 highlight = require('highlight.js')
 coffeeSyntax = require('hljs-classy-site/coffeescript')
 javascriptSyntax = require('hljs-classy-site/javascript')
+bowerLatest = require('bower-latest')
 
 highlight.registerLanguage('coffeescript', coffeeSyntax)
 highlight.registerLanguage('javascript', javascriptSyntax)
-
+classyVersion = null
 
 gulp.task "default", [ "include", "sass" ]
 
@@ -26,16 +27,25 @@ gulp.task "docco", (cb) ->
     cb()
   , 100
 
+gulp.task "getVersion", (cb) ->
+  bowerLatest 'angular-classy', (component) ->
+    console.log component
+    console.log "Classy version is: #{component.version}"
+    classyVersion = component.version
+    cb()
+
 highlightJS = (code) -> highlight.highlight('js', code).value
 highlightCoffee = (code) -> highlight.highlight('coffee', code).value
 highlightHTML = (code) -> highlight.highlight('html', code).value
-
+getClassyVersion = -> classyVersion
 
 gulp.task "include", ['docco'], ->
+
   gulp.src([ "index.template" ])
   .pipe include
     prefix: "@@"
     basepath: "@file"
+    classyVersion: classyVersion
     filters:
       highlightJS: highlightJS
       highlightCoffee: highlightCoffee
