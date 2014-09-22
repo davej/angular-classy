@@ -20,10 +20,10 @@ app.classy.controller({
 // The $scope is available using this.$ (or you can use this.$scope if you prefer).
 
   init: function() {
-    this.todos = this.$.todos = this.todoStorage.get();
-    this.$.newTodo = '';
-    this.$.location = this.$location;
-  },
+    this.todos = this.$.todos = this.todoStorage.get(); //!
+    this.$.newTodo = ''; //!
+    this.$.location = this.$location; //!
+  }, //!
 
 
 // Instead of polluting your init method with lots of calls to $scope.$watch,
@@ -32,30 +32,30 @@ app.classy.controller({
 
   watch: {
     'location.path()': function(path) {
-      this.$.statusFilter = (path === '/active') ?
-        { completed: false } : (path === '/completed') ?
-        { completed: true };
-    },
+      this.$.statusFilter = (path === '/active') ? //!
+        { completed: false } : (path === '/completed') ? //!
+        { completed: true }; //!
+    }, //!
 
     '{object}todos': '_onTodoChange'
-  },
+  }, //!
 
 // Most of the time when you add a function to a controller, you want it available on the `$scope`.
 // Classy automatically puts the function in your `$scope` so you can easily access it using directives like ng-click.
 
   addTodo: function() {
-    var newTodo = this.$.newTodo.trim();
-    this.todos.push({
-      title: newTodo,
-      completed: false
-    });
-  },
+    var newTodo = this.$.newTodo.trim(); //!
+    this.todos.push({ //!
+      title: newTodo, //!
+      completed: false //!
+    }); //!
+  }, //!
 
 // Prefix the function name with an underscore and Classy wont add it to the $scope.
 
   _onTodoChange: function(newValue, oldValue) {
-    this.$.remainingCount =
-      this.filterFilter(this.todos, { completed: false }).length;
-  }
+    this.$.remainingCount = //!
+      this.filterFilter(this.todos, { completed: false }).length; //!
+  } //!
 
-});
+}); //!

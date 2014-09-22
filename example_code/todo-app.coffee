@@ -16,29 +16,29 @@ app.classy.controller
 # You can access your dependencies using the class-wide @ symbol.
 # The $scope is available using @$ (or you can use @$scope if you prefer).
   init: ->
-    @todos = @$.todos = @todoStorage.get()
-    @$.newTodo = ''
-    @$.location = @$location
+    @todos = @$.todos = @todoStorage.get() #!
+    @$.newTodo = '' #!
+    @$.location = @$location #!
 
 
 # Instead of polluting your init method with lots of calls to `$scope.$watch`, you can put your watchers in the watch object instead.
 # If you want to watch an object or collection just use the `{object}` or `{collection}` keyword.
   watch:
     'location.path()': (path) ->
-      @$.statusFilter =
-        if (path is '/active') then completed: false
-        else if (path is '/completed') then completed: true
+      @$.statusFilter = #!
+        if (path is '/active') then completed: false #!
+        else if (path is '/completed') then completed: true #!
 
     '{object}todos': '_onTodoChange'
 
 # Most of the time when you add a function to a controller, you want it available on the $scope.
 # Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click.
   addTodo: ->
-    newTodo = @$.newTodo.trim()
-    @todos.push
-      title: newTodo
-      completed: false
+    newTodo = @$.newTodo.trim() #!
+    @todos.push #!
+      title: newTodo #!
+      completed: false #!
 
 # Prefix the function name with an underscore and Classy wont add
   _onTodoChange: (newValue, oldValue) ->
-    @$.remainingCount = @filterFilter(@todos, completed: false).length
+    @$.remainingCount = @filterFilter(@todos, completed: false).length #!

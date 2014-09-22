@@ -95,9 +95,11 @@ code {
 
 .hljs-object-key, .hljs-attribute { color: #F3712B; }
 
-.hljs-comment { color: rgba(255,255,255,0.3); }
+.hljs-comment, .hljs-background-line { color: rgba(255,255,255,0.3); }
 
 .hljs-function .hljs-title { color: #fff; }
+
+.hljs-hide { display: none; }
 
 .inline-code {
   margin: 0 2px;

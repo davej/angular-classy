@@ -335,25 +335,25 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 You can access your dependencies using the class-wide @ symbol.
 The $scope is available using @$ (or you can use @$scope if you prefer).</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@todos</span> = <span class="hljs-property">@$</span>.todos = <span class="hljs-property">@todoStorage</span>.get()
-    <span class="hljs-property">@$</span>.newTodo = <span class="hljs-string">''</span>
-    <span class="hljs-property">@$</span>.location = <span class="hljs-property">@$location</span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead.
+<span class="hljs-background-line">    @todos = @$.todos = @todoStorage.get()<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @$.newTodo = ''<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @$.location = @$location<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead.
 If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">watch:</span>
     <span class="hljs-string">'location.path()'</span>: <span class="hljs-function"><span class="hljs-params">(path)</span> -&gt;</span>
-      <span class="hljs-property">@$</span>.statusFilter =
-        <span class="hljs-keyword">if</span> (path <span class="hljs-keyword">is</span> <span class="hljs-string">'/active'</span>) <span class="hljs-keyword">then</span> <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span>
-        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (path <span class="hljs-keyword">is</span> <span class="hljs-string">'/completed'</span>) <span class="hljs-keyword">then</span> <span class="hljs-object-key">completed:</span> <span class="hljs-literal">true</span>
+<span class="hljs-background-line">      @$.statusFilter =<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        if (path is '/active') then completed: false<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        else if (path is '/completed') then completed: true<span class="hljs-hide"> #!</span></span>
 
     <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span></pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the $scope.
 Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click.</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">addTodo:</span><span class="hljs-function"> -&gt;</span>
-    newTodo = <span class="hljs-property">@$</span>.newTodo.trim()
-    <span class="hljs-property">@todos</span>.push
-      <span class="hljs-object-key">title:</span> newTodo
-      <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add</p>
+<span class="hljs-background-line">    newTodo = @$.newTodo.trim()<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @todos.push<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      title: newTodo<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      completed: false<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-params">(newValue, oldValue)</span> -&gt;</span>
-    <span class="hljs-property">@$</span>.remainingCount = <span class="hljs-property">@filterFilter</span>(<span class="hljs-property">@todos</span>, <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span>).length</pre></div></section></code></pre>
+<span class="hljs-background-line">    @$.remainingCount = @filterFilter(@todos, completed: false).length<span class="hljs-hide"> #!</span></span></pre></div></section></code></pre>
                   <pre class="javascript-code"><code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
 </div></div><div class='highlight'><pre>
 <span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Registers your controller and inject your dependencies.
@@ -370,38 +370,38 @@ You can access your dependencies using the class-wide this symbol.
 The $scope is available using this.$ (or you can use this.$scope if you prefer).</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-    <span class="hljs-keyword">this</span>.todos = <span class="hljs-keyword">this</span>.$.todos = <span class="hljs-keyword">this</span>.todoStorage.get();
-    <span class="hljs-keyword">this</span>.$.newTodo = <span class="hljs-string">''</span>;
-    <span class="hljs-keyword">this</span>.$.location = <span class="hljs-keyword">this</span>.$location;
-  },</pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to $scope.$watch,
+<span class="hljs-background-line">    this.todos = this.$.todos = this.todoStorage.get();<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">    this.$.newTodo = '';<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">    this.$.location = this.$location;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to $scope.$watch,
 you can put your watchers in the watch object instead.
 If you want to watch an object or collection just use the {object} or {collection} keyword.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">watch:</span> {
     <span class="hljs-string">'location.path()'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
-      <span class="hljs-keyword">this</span>.$.statusFilter = (path === <span class="hljs-string">'/active'</span>) ?
-        { <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span> } : (path === <span class="hljs-string">'/completed'</span>) ?
-        { <span class="hljs-object-key">completed:</span> <span class="hljs-literal">true</span> };
-    },
+<span class="hljs-background-line">      this.$.statusFilter = (path === '/active') ?<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">        { completed: false } : (path === '/completed') ?<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">        { completed: true };<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">    },<span class="hljs-hide"> //!</span></span>
 
     <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span>
-  },</pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>.
+<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>.
 Classy automatically puts the function in your <code>$scope</code> so you can easily access it using directives like ng-click.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">addTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-    <span class="hljs-keyword">var</span> newTodo = <span class="hljs-keyword">this</span>.$.newTodo.trim();
-    <span class="hljs-keyword">this</span>.todos.push({
-      <span class="hljs-object-key">title:</span> newTodo,
-      <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span>
-    });
-  },</pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add it to the $scope.</p>
+<span class="hljs-background-line">    var newTodo = this.$.newTodo.trim();<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">    this.todos.push({<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      title: newTodo,<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      completed: false<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">    });<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add it to the $scope.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newValue, oldValue)</span> </span>{
-    <span class="hljs-keyword">this</span>.$.remainingCount =
-      <span class="hljs-keyword">this</span>.filterFilter(<span class="hljs-keyword">this</span>.todos, { <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span> }).length;
-  }
+<span class="hljs-background-line">    this.$.remainingCount =<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this.filterFilter(this.todos, { completed: false }).length;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">  }<span class="hljs-hide"> //!</span></span>
 
-});</pre></div></section></code></pre>
+<span class="hljs-background-line">});<span class="hljs-hide"> //!</span></span></pre></div></section></code></pre>
                 </div>
               </div>
 

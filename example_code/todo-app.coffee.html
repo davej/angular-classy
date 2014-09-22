@@ -11,22 +11,22 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 You can access your dependencies using the class-wide @ symbol.
 The $scope is available using @$ (or you can use @$scope if you prefer).</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@todos</span> = <span class="hljs-property">@$</span>.todos = <span class="hljs-property">@todoStorage</span>.get()
-    <span class="hljs-property">@$</span>.newTodo = <span class="hljs-string">''</span>
-    <span class="hljs-property">@$</span>.location = <span class="hljs-property">@$location</span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead.
+<span class="hljs-background-line">    @todos = @$.todos = @todoStorage.get()<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @$.newTodo = ''<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @$.location = @$location<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead.
 If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">watch:</span>
     <span class="hljs-string">'location.path()'</span>: <span class="hljs-function"><span class="hljs-params">(path)</span> -&gt;</span>
-      <span class="hljs-property">@$</span>.statusFilter =
-        <span class="hljs-keyword">if</span> (path <span class="hljs-keyword">is</span> <span class="hljs-string">'/active'</span>) <span class="hljs-keyword">then</span> <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span>
-        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (path <span class="hljs-keyword">is</span> <span class="hljs-string">'/completed'</span>) <span class="hljs-keyword">then</span> <span class="hljs-object-key">completed:</span> <span class="hljs-literal">true</span>
+<span class="hljs-background-line">      @$.statusFilter =<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        if (path is '/active') then completed: false<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        else if (path is '/completed') then completed: true<span class="hljs-hide"> #!</span></span>
 
     <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span></pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the $scope.
 Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click.</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">addTodo:</span><span class="hljs-function"> -&gt;</span>
-    newTodo = <span class="hljs-property">@$</span>.newTodo.trim()
-    <span class="hljs-property">@todos</span>.push
-      <span class="hljs-object-key">title:</span> newTodo
-      <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add</p>
+<span class="hljs-background-line">    newTodo = @$.newTodo.trim()<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">    @todos.push<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      title: newTodo<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      completed: false<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-params">(newValue, oldValue)</span> -&gt;</span>
-    <span class="hljs-property">@$</span>.remainingCount = <span class="hljs-property">@filterFilter</span>(<span class="hljs-property">@todos</span>, <span class="hljs-object-key">completed:</span> <span class="hljs-literal">false</span>).length</pre></div></section></code>
+<span class="hljs-background-line">    @$.remainingCount = @filterFilter(@todos, completed: false).length<span class="hljs-hide"> #!</span></span></pre></div></section></code>
