@@ -8,9 +8,6 @@
   "license": "MIT",
   "devDependencies": {
     "gulp": "^3.8.6",
-    "gulp-concat": "^2.3.3",
-    "gulp-insert": "^0.4.0",
-    "event-stream": "^3.1.5",
     "coffee-script": "^1.7.1",
     "gulp-coffee": "^2.1.1",
     "gulp-util": "^3.0.0",
@@ -18,6 +15,8 @@
     "gulp-rename": "^1.2.0",
     "docco": "git://github.com/davej/docco",
     "gulp-file-include": "^0.5.1",
-    "gulp-sass": "^0.7.3"
+    "gulp-sass": "^0.7.3",
+    "hljs-classy-site": "davej/hljs-classy-site",
+    "highlight.js": "^8.2.0"
   }
 }

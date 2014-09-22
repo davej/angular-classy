@@ -1,8 +1,4 @@
 gulp = require("gulp")
-concat = require("gulp-concat")
-insert = require("gulp-insert")
-path = require("path")
-es = require("event-stream")
 coffee = require("gulp-coffee")
 gutil = require('gulp-util')
 uglify = require('gulp-uglify')
@@ -11,6 +7,11 @@ include = require('gulp-file-include')
 docco = require('docco')
 sass = require('gulp-sass')
 highlight = require('highlight.js')
+coffeeSyntax = require('hljs-classy-site/coffeescript')
+javascriptSyntax = require('hljs-classy-site/javascript')
+
+highlight.registerLanguage('coffeescript', coffeeSyntax)
+highlight.registerLanguage('javascript', javascriptSyntax)
 
 
 gulp.task "default", [ "include", "sass" ]
