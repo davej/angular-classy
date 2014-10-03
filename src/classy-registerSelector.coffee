@@ -1,8 +1,11 @@
 angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
   name: 'register'
 
+  options:
+    enabled: true
+
   preInit: (classConstructor, classObj, module) ->
-    if classObj.el || classObj.selector
+    if @options.enabled && (classObj.el || classObj.selector)
       # Register the controller using selector
       @registerSelector(module, classObj.el || classObj.selector, classConstructor)
 
