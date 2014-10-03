@@ -47,6 +47,8 @@ gulp.task "minify", [ "coffeeToJs" ], ->
     .pipe rename suffix: '.min'
     .pipe gulp.dest("./")
 
+gulp.task "watch", -> gulp.watch "./src/*classy*.coffee", ['minify']
+
 ###
   `test` Action - Uses Karma
 
