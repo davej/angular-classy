@@ -27,46 +27,47 @@ todoFuncs =
 
     '{object}todos': '_onTodoChange'
 
-  _onTodoChange: (newValue, oldValue) ->
-    @$.remainingCount = @fF(@todos, { completed: false }).length
-    @$.completedCount = @todos.length - @$.remainingCount
-    @$.allChecked = !@$.remainingCount
-    if newValue != oldValue # This prevents unneeded calls to the local storage
-      @todoStorage.put(@todos)
+  methods:
+    _onTodoChange: (newValue, oldValue) ->
+      @$.remainingCount = @fF(@todos, { completed: false }).length
+      @$.completedCount = @todos.length - @$.remainingCount
+      @$.allChecked = !@$.remainingCount
+      if newValue != oldValue # This prevents unneeded calls to the local storage
+        @todoStorage.put(@todos)
 
-  addTodo: ->
-    newTodo = @$.newTodo.trim()
-    if !newTodo.length then return
-    @todos.push
-      title: newTodo
-      completed: false
+    addTodo: ->
+      newTodo = @$.newTodo.trim()
+      if !newTodo.length then return
+      @todos.push
+        title: newTodo
+        completed: false
 
-    @$.newTodo = ""
+      @$.newTodo = ""
 
-  editTodo: (todo) ->
-    @$.editedTodo = todo
-    # Clone the original todo to restore it on demand.
-    @$.originalTodo = angular.extend({}, todo)
+    editTodo: (todo) ->
+      @$.editedTodo = todo
+      # Clone the original todo to restore it on demand.
+      @$.originalTodo = angular.extend({}, todo)
 
-  doneEditing: (todo) ->
-    @$.editedTodo = null
-    todo.title = todo.title.trim()
-    @$.removeTodo todo unless todo.title
+    doneEditing: (todo) ->
+      @$.editedTodo = null
+      todo.title = todo.title.trim()
+      @$.removeTodo todo unless todo.title
 
-  revertEditing: (todo) ->
-    @todos[@todos.indexOf(todo)] = @$.originalTodo
-    @$.doneEditing @$.originalTodo
+    revertEditing: (todo) ->
+      @todos[@todos.indexOf(todo)] = @$.originalTodo
+      @$.doneEditing @$.originalTodo
 
-  removeTodo: (todo) ->
-    @todos.splice @todos.indexOf(todo), 1
+    removeTodo: (todo) ->
+      @todos.splice @todos.indexOf(todo), 1
 
-  clearCompletedTodos: ->
-    @$.todos = @todos =
-      @todos.filter (val) -> !val.completed
+    clearCompletedTodos: ->
+      @$.todos = @todos =
+        @todos.filter (val) -> !val.completed
 
-  markAll: (completed) ->
-    for todo in @todos
-      todo.completed = completed
+    markAll: (completed) ->
+      for todo in @todos
+        todo.completed = completed
 
 todomvc.cC angular.extend todoFuncs,
   name: 'ThisDoesNotMapToNgController'
