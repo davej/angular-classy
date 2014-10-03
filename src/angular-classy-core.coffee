@@ -13,18 +13,19 @@ defaults =
 
 selectorControllerCount = 0
 availablePlugins = {}
-enabledPlugins = {}
+activePlugins = {}
+pluginInstances = []
 
-enablePlugins = (reqs) ->
+activatePlugins = (reqs) ->
   for req in reqs
-    for pluginName, plugin of availablePlugins
-      if pluginName is req
-        enabledPlugins[pluginName] = plugin
-        if plugin.options
-          defaults.controller[plugin.name] = angular.copy(plugin.options)
+    for pluginFullName, plugin of availablePlugins
+      if pluginFullName is req
+        activePlugins[pluginFullName] = plugin
+        defaults.controller[plugin.name] = angular.copy plugin.options or {}
 
 pluginDo = (methodName, params, obj) ->
-  for pluginName, plugin of enabledPlugins
+  plugins = params[0].__plugins or params[0]::__plugins
+  for pluginName, plugin of plugins
     obj?.before?(plugin)
     returnVal = plugin[methodName]?.apply(plugin, params)
     obj?.after?(plugin, returnVal)
@@ -51,14 +52,19 @@ angular.module = (name, reqs, configFn) ->
   # This is super messy.
   # TODO: Clean this up and test the logic flow properly before moving to master
   if reqs
-    enablePlugins(reqs)
+    activatePlugins(reqs)
 
     if 'classy-core' in reqs or 'classy' in reqs
       module.classy =
+        
         plugin:
           controller: (plugin) -> availablePlugins[name] = plugin
+        
         options:
           controller: {}
+
+        availablePlugins: availablePlugins
+        activePlugins: activePlugins
 
         controller: (classObj) ->
 
@@ -98,10 +104,13 @@ classFns =
     options =
       copyAndExtendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
 
+    classConstructor::__plugins = {}
+    for pluginName, plugin of activePlugins
+      plugin.classyOptions = options
+      plugin.options = options[plugin.name] or {}
+      classConstructor::__plugins[pluginName] = angular.copy(plugin)
 
-    pluginDo 'preInitBefore', [classConstructor, classObj, module],
-      before: (plugin) ->
-        plugin.options = options[plugin.name] or {}
+    pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
     pluginDo 'preInitAfter', [classConstructor, classObj, module]
 
@@ -112,7 +121,7 @@ classFns =
       deps[key] = $inject[injectIndex]
       injectIndex++
 
-    pluginDo 'null', [],
+    pluginDo 'null', [klass],
       before: (plugin) ->
         if angular.isArray(plugin.localInject)
           for depName in plugin.localInject
@@ -130,9 +139,8 @@ classFns =
     pluginPromises = []
     pluginDo 'init', [klass, deps, module],
       after: (plugin, returnVal) ->
-        if returnVal && returnVal.then
+        if returnVal?.then
           # Naively assume this is a promise
-          # TODO: Make this smarter than just looking for `.then`
           pluginPromises.push(returnVal)
 
     initClass = ->
