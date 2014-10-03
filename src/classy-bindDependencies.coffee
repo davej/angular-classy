@@ -10,18 +10,18 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     depNames = classObj.inject or []
 
     # Inject the `deps` if it's passed in as an array
-    if angular.isArray(depNames) then @inject(classConstructor, depNames)
+    if angular.isArray(depNames) then @inject(classConstructor, depNames, module)
 
     # If `deps` is object: Wrap object in array and then inject
-    else if angular.isObject(depNames) then @inject(classConstructor, [depNames], classObj)
+    else if angular.isObject(depNames) then @inject(classConstructor, [depNames], module)
 
-  inject: (classConstructor, depNames, classObj) ->
+  inject: (classConstructor, depNames, module) ->
     if angular.isObject depNames[0]
       classConstructor.__classyControllerInjectObject = depNames[0]
       depNames = (service for service, name of depNames[0])
 
     pluginDepNames = []
-    for pluginName, plugin of enabledPlugins
+    for pluginName, plugin of module.classy.activePlugins
       if angular.isArray(plugin.localInject)
         pluginDepNames = pluginDepNames.concat(plugin.localInject)
     pluginDepNames = pluginDepNames.concat(classFns.localInject)
@@ -31,7 +31,7 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
     # Add the `deps` to the controller's $inject annotations.
     classConstructor.$inject = depNames.concat pluginDepNames
 
-  init: (klass, deps, module) ->
+  initBefore: (klass, deps, module) ->
     if @options.enabled
       injectObject = klass.constructor.__classyControllerInjectObject
 
