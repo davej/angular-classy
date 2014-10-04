@@ -24,6 +24,10 @@
 			ctrl = $controller(ctrlName, { $scope: scope });
 		}));
 
+		it('should have the default todo set as `Getting funky`', function () {
+			expect(scope.newTodo).toBe('Getting funky');
+		});
+
 		it('should not have an edited Todo on start', function () {
 			expect(scope.editedTodo).toBeNull();
 		});

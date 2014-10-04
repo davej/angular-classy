@@ -9,10 +9,13 @@
 ###
 
 todoFuncs =
+
+  data:
+    newTodo: 'Getting funky'
+
   init: ->
     @todos = @$.todos = @todoStorage.get()
 
-    @$.newTodo = ''
     @$.editedTodo = null
 
     if @$loc.path() is '' then @$loc.path('/')

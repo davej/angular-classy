@@ -11,9 +11,11 @@
 var todoFuncs;
 
 todoFuncs = {
+  data: {
+    newTodo: 'Getting funky'
+  },
   init: function() {
     this.todos = this.$.todos = this.todoStorage.get();
-    this.$.newTodo = '';
     this.$.editedTodo = null;
     if (this.$loc.path() === '') {
       this.$loc.path('/');
