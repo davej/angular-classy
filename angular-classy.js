@@ -10,7 +10,7 @@ License: MIT
 
 (function() {
   'use strict';
-  var availablePlugins, classFns, copyAndExtendDeep, defaults, enablePlugins, enabledPlugins, origModuleMethod, pluginDo, selectorControllerCount,
+  var activatePlugins, activePlugins, availablePlugins, classFns, copyAndExtendDeep, defaults, origModuleMethod, pluginDo, pluginInstances, selectorControllerCount,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     __hasProp = {}.hasOwnProperty;
 
@@ -22,25 +22,23 @@ License: MIT
 
   availablePlugins = {};
 
-  enabledPlugins = {};
+  activePlugins = {};
 
-  enablePlugins = function(reqs) {
-    var plugin, pluginName, req, _i, _len, _results;
+  pluginInstances = [];
+
+  activatePlugins = function(reqs) {
+    var plugin, pluginFullName, req, _i, _len, _results;
     _results = [];
     for (_i = 0, _len = reqs.length; _i < _len; _i++) {
       req = reqs[_i];
       _results.push((function() {
         var _results1;
         _results1 = [];
-        for (pluginName in availablePlugins) {
-          plugin = availablePlugins[pluginName];
-          if (pluginName === req) {
-            enabledPlugins[pluginName] = plugin;
-            if (plugin.options) {
-              _results1.push(defaults.controller[plugin.name] = angular.copy(plugin.options));
-            } else {
-              _results1.push(void 0);
-            }
+        for (pluginFullName in availablePlugins) {
+          plugin = availablePlugins[pluginFullName];
+          if (pluginFullName === req) {
+            activePlugins[pluginFullName] = plugin;
+            _results1.push(defaults.controller[plugin.name] = angular.copy(plugin.options || {}));
           } else {
             _results1.push(void 0);
           }
@@ -52,10 +50,11 @@ License: MIT
   };
 
   pluginDo = function(methodName, params, obj) {
-    var plugin, pluginName, returnVal, _ref, _results;
+    var plugin, pluginName, plugins, returnVal, _ref, _results;
+    plugins = params[0].__plugins || params[0].prototype.__plugins;
     _results = [];
-    for (pluginName in enabledPlugins) {
-      plugin = enabledPlugins[pluginName];
+    for (pluginName in plugins) {
+      plugin = plugins[pluginName];
       if (obj != null) {
         if (typeof obj.before === "function") {
           obj.before(plugin);
@@ -97,7 +96,7 @@ License: MIT
     var module;
     module = origModuleMethod(name, reqs, configFn);
     if (reqs) {
-      enablePlugins(reqs);
+      activatePlugins(reqs);
       if (__indexOf.call(reqs, 'classy-core') >= 0 || __indexOf.call(reqs, 'classy') >= 0) {
         module.classy = {
           plugin: {
@@ -108,6 +107,8 @@ License: MIT
           options: {
             controller: {}
           },
+          availablePlugins: availablePlugins,
+          activePlugins: activePlugins,
           controller: function(classObj) {
             var classyController;
             return classyController = (function() {
@@ -140,18 +141,21 @@ License: MIT
   classFns = {
     localInject: ['$q'],
     preInit: function(classConstructor, classObj, module) {
-      var key, options, value;
+      var key, options, plugin, pluginName, value;
       for (key in classObj) {
         if (!__hasProp.call(classObj, key)) continue;
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
       options = copyAndExtendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
-      pluginDo('preInitBefore', [classConstructor, classObj, module], {
-        before: function(plugin) {
-          return plugin.options = options[plugin.name] || {};
-        }
-      });
+      classConstructor.prototype.__plugins = {};
+      for (pluginName in activePlugins) {
+        plugin = activePlugins[pluginName];
+        plugin.classyOptions = options;
+        plugin.options = options[plugin.name] || {};
+        classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
+      }
+      pluginDo('preInitBefore', [classConstructor, classObj, module]);
       pluginDo('preInit', [classConstructor, classObj, module]);
       return pluginDo('preInitAfter', [classConstructor, classObj, module]);
     },
@@ -165,7 +169,7 @@ License: MIT
         deps[key] = $inject[injectIndex];
         injectIndex++;
       }
-      pluginDo('null', [], {
+      pluginDo('null', [klass], {
         before: function(plugin) {
           var dep, depName, _j, _len1, _ref1, _results;
           if (angular.isArray(plugin.localInject)) {
@@ -192,7 +196,7 @@ License: MIT
       pluginPromises = [];
       pluginDo('init', [klass, deps, module], {
         after: function(plugin, returnVal) {
-          if (returnVal && returnVal.then) {
+          if (returnVal != null ? returnVal.then : void 0) {
             return pluginPromises.push(returnVal);
           }
         }
@@ -219,16 +223,17 @@ License: MIT
 
   angular.module('classy-core', []);
 
-  angular.module('classy-addFnsToScope', ['classy-core']).classy.plugin.controller({
-    name: 'addFnsToScope',
+  angular.module('classy-bindData', ['classy-core']).classy.plugin.controller({
+    name: 'bindData',
     options: {
+      addToScope: true,
+      privatePrefix: '_',
       enabled: true,
-      privateMethodPrefix: '_',
-      ignore: ['constructor', 'init']
+      keyName: 'data'
     },
-    hasPrivateMethodPrefix: function(string) {
+    hasPrivatePrefix: function(string) {
       var prefix;
-      prefix = this.options.privateMethodPrefix;
+      prefix = this.options.privatePrefix;
       if (!prefix) {
         return false;
       } else {
@@ -236,19 +241,18 @@ License: MIT
       }
     },
     init: function(klass, deps, module) {
-      var fn, key, _ref, _results;
-      if (this.options.enabled) {
-        _ref = klass.constructor.prototype;
+      var data, key, value, _results;
+      if (this.options.enabled && klass.constructor.prototype[this.options.keyName]) {
+        data = klass.constructor.prototype[this.options.keyName];
+        if (angular.isFunction(data)) {
+          data = data.call(klass);
+        }
         _results = [];
-        for (key in _ref) {
-          fn = _ref[key];
-          if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
-            klass[key] = angular.bind(klass, fn);
-            if (!this.hasPrivateMethodPrefix(key) && deps.$scope) {
-              _results.push(deps.$scope[key] = klass[key]);
-            } else {
-              _results.push(void 0);
-            }
+        for (key in data) {
+          value = data[key];
+          klass[key] = value;
+          if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
+            _results.push(deps.$scope[key] = klass[key]);
           } else {
             _results.push(void 0);
           }
@@ -269,13 +273,13 @@ License: MIT
       var depNames;
       depNames = classObj.inject || [];
       if (angular.isArray(depNames)) {
-        return this.inject(classConstructor, depNames);
+        return this.inject(classConstructor, depNames, module);
       } else if (angular.isObject(depNames)) {
-        return this.inject(classConstructor, [depNames], classObj);
+        return this.inject(classConstructor, [depNames], module);
       }
     },
-    inject: function(classConstructor, depNames, classObj) {
-      var name, plugin, pluginDepNames, pluginName, service;
+    inject: function(classConstructor, depNames, module) {
+      var name, plugin, pluginDepNames, pluginName, service, _ref;
       if (angular.isObject(depNames[0])) {
         classConstructor.__classyControllerInjectObject = depNames[0];
         depNames = (function() {
@@ -290,8 +294,9 @@ License: MIT
         })();
       }
       pluginDepNames = [];
-      for (pluginName in enabledPlugins) {
-        plugin = enabledPlugins[pluginName];
+      _ref = module.classy.activePlugins;
+      for (pluginName in _ref) {
+        plugin = _ref[pluginName];
         if (angular.isArray(plugin.localInject)) {
           pluginDepNames = pluginDepNames.concat(plugin.localInject);
         }
@@ -300,7 +305,7 @@ License: MIT
       classConstructor.__classDepNames = angular.copy(depNames);
       return classConstructor.$inject = depNames.concat(pluginDepNames);
     },
-    init: function(klass, deps, module) {
+    initBefore: function(klass, deps, module) {
       var dependency, i, injectName, injectObject, key, _i, _len, _ref, _results;
       if (this.options.enabled) {
         injectObject = klass.constructor.__classyControllerInjectObject;
@@ -325,6 +330,47 @@ License: MIT
     }
   });
 
+  angular.module('classy-bindMethods', ['classy-core']).classy.plugin.controller({
+    name: 'bindMethods',
+    options: {
+      enabled: true,
+      addToScope: true,
+      privatePrefix: '_',
+      ignore: ['constructor', 'init'],
+      keyName: 'methods'
+    },
+    hasPrivatePrefix: function(string) {
+      var prefix;
+      prefix = this.options.privatePrefix;
+      if (!prefix) {
+        return false;
+      } else {
+        return string.slice(0, prefix.length) === prefix;
+      }
+    },
+    initBefore: function(klass, deps, module) {
+      var fn, key, _ref, _results;
+      if (this.options.enabled) {
+        _ref = klass.constructor.prototype[this.options.keyName];
+        _results = [];
+        for (key in _ref) {
+          fn = _ref[key];
+          if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
+            klass[key] = angular.bind(klass, fn);
+            if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
+              _results.push(deps.$scope[key] = klass[key]);
+            } else {
+              _results.push(void 0);
+            }
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
+    }
+  });
+
   angular.module('classy-register', ['classy-core']).classy.plugin.controller({
     name: 'registerSelector',
     preInit: function(classConstructor, classObj, module) {
@@ -336,8 +382,11 @@ License: MIT
 
   angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller({
     name: 'register',
+    options: {
+      enabled: true
+    },
     preInit: function(classConstructor, classObj, module) {
-      if (classObj.el || classObj.selector) {
+      if (this.options.enabled && (classObj.el || classObj.selector)) {
         return this.registerSelector(module, classObj.el || classObj.selector, classConstructor);
       }
     },
@@ -444,6 +493,6 @@ License: MIT
     }
   });
 
-  angular.module('classy', ["classy-addFnsToScope", "classy-bindDependencies", "classy-register", "classy-registerSelector", "classy-watch"]);
+  angular.module('classy', ["classy-bindData", "classy-bindDependencies", "classy-bindMethods", "classy-register", "classy-registerSelector", "classy-watch"]);
 
 }).call(this);
