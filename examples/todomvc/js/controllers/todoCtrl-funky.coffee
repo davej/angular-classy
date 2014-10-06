@@ -11,7 +11,7 @@
 todoFuncs =
 
   data:
-    newTodo: 'Getting funky'
+    newTodo: '"Getting funky"'
 
   init: ->
     @todos = @$.todos = @todoStorage.get()

@@ -20,19 +20,23 @@ todomvc.classy.controller({
 		}
 	},
 
+	data: function() {
+		return {
+			todos: this.todoStorage.get(),
+			newTodo: '',
+			editedTodo: null,
+			location: this.$location
+		}
+	},
+
 	init: function() {
-		this.todos = this.todoStorage.get();
-
-		this.newTodo = '';
-		this.editedTodo = null;
-
-		if (this.$location.path() === '') {
-			this.$location.path('/');
+		if (this.location.path() === '') {
+			this.location.path('/');
 		}
 	},
 
 	watch: {
-		'todoCtrl.$location.path()': function(path) {
+		'todoCtrl.location.path()': function(path) {
 			this.statusFilter = (path === '/active') ?
 				{ completed: false } : (path === '/completed') ?
 				{ completed: true } : null;

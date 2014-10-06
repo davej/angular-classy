@@ -2,10 +2,12 @@ angular.module('classy-bindData', ['classy-core']).classy.plugin.controller
   # Based on @wuxiaoying's classy-initScope plugin
   name: 'bindData'
 
+  localInject: ['$parse']
+
   options:
+    enabled: true
     addToScope: true
     privatePrefix: '_'
-    enabled: true
     keyName: 'data'
     
   hasPrivatePrefix: (string) ->
@@ -17,8 +19,14 @@ angular.module('classy-bindData', ['classy-core']).classy.plugin.controller
     # Adds objects returned by or set to the `$scope`
     if @options.enabled and klass.constructor::[@options.keyName]
 
-      data = klass.constructor::[@options.keyName]
+      data = angular.copy klass.constructor::[@options.keyName]
+
       if angular.isFunction data then data = data.call klass
+      else if angular.isObject data
+        for key, value of data
+          if typeof value is 'string'
+            getter = @$parse value
+            data[key] = getter(klass)
 
       for key, value of data
         klass[key] = value

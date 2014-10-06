@@ -5,13 +5,10 @@ todomvc.classy.controller({
 	name: 'TodoCtrl',
 	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
 
-	data: function() {
-		return {
-			location: this.$location,
-			todos: this.todoStorage.get(),
-			newTodo: '',
-			editedTodo: null
-		}
+	data: {
+		location: '$location',
+		todos: 'todoStorage.get()',
+		editedTodo: 'null'
 	},
 
 	init: function() {

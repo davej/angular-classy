@@ -50,7 +50,6 @@
 							path: function () { return '/active'; }
 						}
 					});
-
 					scope.$digest();
 					expect(scope.statusFilter.completed).toBeFalsy();
 				}));

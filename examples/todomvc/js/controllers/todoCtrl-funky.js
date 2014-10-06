@@ -12,7 +12,7 @@ var todoFuncs;
 
 todoFuncs = {
   data: {
-    newTodo: 'Getting funky'
+    newTodo: '"Getting funky"'
   },
   init: function() {
     this.todos = this.$.todos = this.todoStorage.get();
