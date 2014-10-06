@@ -1,0 +1,57 @@
+body.beta {
+
+	@include background-image(linear-gradient(-45deg, #D2A92D, #D61F1F));
+	color: rgba(255, 255, 255, 0.95);
+
+	.this-is-beta {
+		position: absolute;
+		font-family: $h-font;
+		z-index: 1;
+		left: 270px;
+		font-size: 1.6em;
+		color: #600;
+	}
+
+	a {
+		color: #FFF;
+	}
+
+	> header h1 img {
+		// -webkit-filter: hue-rotate(180deg) #{'invert(1)'} #{'saturate(0.7)'} #{'brightness(1.2)'} drop-shadow(0px 0px 6px white);
+		// filter: hue-rotate(180deg) #{'invert(1)'} #{'saturate(0.7)'} #{'brightness(1.2)'} drop-shadow(0px 0px 6px white);
+	}
+
+	.main-content {
+		background: rgba(0, 0, 0, 0.2);
+
+		h2 {
+			color: #fff;
+			text-shadow: 0px 2px 2px rgba(0,0,0,0.6);
+		}
+	}
+
+	.inline-code {
+		background-color: rgba(0, 0, 0, 0.2);
+	}
+
+
+	.features {
+		hr {
+			border-color: rgba(255, 255, 255, 0.35);
+		}
+		h3 i {
+			color: rgba(255, 255, 255, 0.55);
+		}
+	}
+
+	table {
+		color: #333;
+		a {
+			color:#333;
+		}
+	}
+
+	.installation, .more-info {
+		background: rgba(0, 0, 0, 0.5);
+	}
+}

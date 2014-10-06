@@ -21,10 +21,6 @@ switchLanguage = (language) ->
 document.getElementById('select-language').onchange = (event) ->
   switchLanguage(event.target.value)
 
-document.getElementById("bitcoin-qrcode-link").onclick = (event) ->
-  event.preventDefault()
-  document.getElementById("bitcoin-qrcode").className=''
-
 for el in document.getElementsByClassName('toggle-section')
   el.onclick = (event) ->
     event.preventDefault()
@@ -34,3 +30,45 @@ for el in document.getElementsByClassName('toggle-section')
       target = target.nextSibling
 
     target.classList.toggle('hide-this')
+
+timeSince = (date) ->
+  date = new Date(date)  if typeof date isnt "object"
+  seconds = Math.floor((new Date() - date) / 1000)
+  intervalType = undefined
+  interval = Math.floor(seconds / 31536000)
+  if interval >= 1
+    intervalType = "year"
+  else
+    interval = Math.floor(seconds / 2592000)
+    if interval >= 1
+      intervalType = "month"
+    else
+      interval = Math.floor(seconds / 86400)
+      if interval >= 1
+        intervalType = "day"
+      else
+        interval = Math.floor(seconds / 3600)
+        if interval >= 1
+          intervalType = "hour"
+        else
+          interval = Math.floor(seconds / 60)
+          if interval >= 1
+            intervalType = "minute"
+          else
+            interval = seconds
+            intervalType = "second"
+  intervalType += "s"  if interval > 1 or interval is 0
+  interval + " " + intervalType
+
+window.initClassyPluginList = (json) ->
+  htmlStr = ''
+  plugins = json?.query?.results?.json?.json
+  if plugins.length
+    sortedPlugins = plugins.sort (a, b) -> b.stars - a.stars
+    pluginNode = document.getElementById('plugin-list')
+
+    for plugin in sortedPlugins
+      tr = document.createElement('tr')
+      tdString = "<td><a href=\"#{plugin.website}\" target=\"_blank\">#{plugin.name}</a><br>#{plugin.description}</td><td>#{plugin.owner}</td><td>#{timeSince(plugin.updated)}</td>"
+      tr.innerHTML = tdString
+      pluginNode.appendChild(tr)

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="648px" height="268px" viewBox="0 0 648 268" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>logo</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Classy-+-AngularJS-Shield" sketch:type="MSLayerGroup">
+            <text id="Classy" sketch:type="MSTextLayer" font-family="Mission Script" font-size="180.226659" font-weight="normal" sketch:alignment="middle" letter-spacing="0.320855588" fill="#EBBCC1">
+                <tspan x="292.287888" y="209">Classy</tspan>
+            </text>
+            <g id="AngularJS-Shield" sketch:type="MSShapeGroup">
+                <path d="M124.600296,0 L0,44.0431328 L19.6892479,208.010769 L124.732318,266 L230.317226,207.224825 L250,43.2638606 L124.600296,0 Z" id="Fill-1" fill="#B3B3B3"></path>
+                <path d="M239,52.5980798 L126,14 L126,251 L220.699238,198.502611 L239,52.5980798 Z" id="Fill-3" fill="#A51C25"></path>
+                <path d="M14,53.2990919 L31.127604,199.199855 L126,251 L126,14 L14,53.2990919 Z" id="Fill-4" fill="#D91B2A"></path>
+                <path d="M150,133 L123.941442,79 L101,133 L150,133 Z M160.392911,156.463758 L91.244478,156.463758 L75.7748047,195.464394 L47,196 L124.155422,23 L204,196 L177.329917,196 L160.392911,156.463758 Z" id="Fill-5" fill="#F2F2F2"></path>
+                <path d="M126,23 L126.206764,78.3026885 L152.360258,133.086925 L126.058915,133.086925 L126,156.027261 L162.368795,156.062748 L179.366991,195.486361 L207,196 L126,23 Z" id="Fill-6" fill="#B3B3B3"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -535,6 +535,37 @@ footer {
 div.hide-this {
   display: none; }
 
+body.beta {
+  background-image: -webkit-linear-gradient(-225deg, #D2A92D, #D61F1F);
+  background-image: linear-gradient(-45deg, #D2A92D, #D61F1F);
+  color: rgba(255, 255, 255, 0.95); }
+  body.beta .this-is-beta {
+    position: absolute;
+    font-family: 'Signika', sans-serif;
+    z-index: 1;
+    left: 270px;
+    font-size: 1.6em;
+    color: #600; }
+  body.beta a {
+    color: #FFF; }
+  body.beta .main-content {
+    background: rgba(0, 0, 0, 0.2); }
+    body.beta .main-content h2 {
+      color: #fff;
+      text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.6); }
+  body.beta .inline-code {
+    background-color: rgba(0, 0, 0, 0.2); }
+  body.beta .features hr {
+    border-color: rgba(255, 255, 255, 0.35); }
+  body.beta .features h3 i {
+    color: rgba(255, 255, 255, 0.55); }
+  body.beta table {
+    color: #333; }
+    body.beta table a {
+      color: #333; }
+  body.beta .installation, body.beta .more-info {
+    background: rgba(0, 0, 0, 0.5); }
+
 @font-face {
   font-family: 'classy';
   src: url('font/classy.eot?92462613');

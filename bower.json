@@ -5,8 +5,7 @@
   "dependencies": {
     "angular": "~1.2",
     "angular-classy": "",
-    "todomvc-common": "~0.1.4",
-    "drop": "~0.3"
+    "todomvc-common": "~0.1.4"
   },
   "devDependencies": {
     "tether": "~0.4.8"

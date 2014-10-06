@@ -19,9 +19,10 @@ gulp.task "default", [ "include", "sass" ]
 
 gulp.task "docco", (cb) ->
   docco.document
-    args: ['./example_code/todo-app.js', './example_code/todo-app.coffee']
+    args: ['./example_code/todo-app.js', './example_code/todo-app.coffee', './example_code/beta/todo-app.js', './example_code/beta/todo-app.coffee']
     template: './example_code/code-hint.jst'
     output: './example_code/../'
+
 
   setTimeout ->
     cb()
@@ -39,9 +40,9 @@ highlightCoffee = (code) -> highlight.highlight('coffee', code).value
 highlightHTML = (code) -> highlight.highlight('html', code).value
 getClassyVersion = -> classyVersion
 
-gulp.task "include", ['docco'], ->
+gulp.task "include", ['docco', 'coffee'], ->
 
-  gulp.src([ "index.template" ])
+  gulp.src([ "index.template", "beta.template" ])
   .pipe include
     prefix: "@@"
     basepath: "@file"
@@ -58,3 +59,8 @@ gulp.task "sass", ->
   gulp.src("./styles/main.scss")
   .pipe sass()
   .pipe gulp.dest("./styles/")
+
+gulp.task "coffee", ->
+  gulp.src("./scripts/main.coffee")
+  .pipe coffee()
+  .pipe gulp.dest("./scripts/")
