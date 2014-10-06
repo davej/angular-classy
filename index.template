@@ -25,6 +25,11 @@
         </header>
 
         <div class="main-content">
+
+          <div class="special-notice">
+            Classy 1.0 beta just released, <a href="beta.html">check it out here</a>.
+          </div>
+
             <h2>Cleaner class-based controllers for AngularJS</h2>
 
             <div class="features">
