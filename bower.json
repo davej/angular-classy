@@ -29,6 +29,8 @@
     "test",
     "tests",
     "examples",
-    ".travis.yml"
+    ".travis.yml",
+    "gulpfile.coffee",
+    "package.json"
   ]
 }
