@@ -225,10 +225,11 @@ License: MIT
 
   angular.module('classy-bindData', ['classy-core']).classy.plugin.controller({
     name: 'bindData',
+    localInject: ['$parse'],
     options: {
+      enabled: true,
       addToScope: true,
       privatePrefix: '_',
-      enabled: true,
       keyName: 'data'
     },
     hasPrivatePrefix: function(string) {
@@ -241,11 +242,19 @@ License: MIT
       }
     },
     init: function(klass, deps, module) {
-      var data, key, value, _results;
+      var data, getter, key, value, _results;
       if (this.options.enabled && klass.constructor.prototype[this.options.keyName]) {
-        data = klass.constructor.prototype[this.options.keyName];
+        data = angular.copy(klass.constructor.prototype[this.options.keyName]);
         if (angular.isFunction(data)) {
           data = data.call(klass);
+        } else if (angular.isObject(data)) {
+          for (key in data) {
+            value = data[key];
+            if (typeof value === 'string') {
+              getter = this.$parse(value);
+              data[key] = getter(klass);
+            }
+          }
         }
         _results = [];
         for (key in data) {
