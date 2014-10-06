@@ -1,5 +1,5 @@
 ###
-Angular Classy 1.0.0 - Beta 1
+Angular Classy 1.0.0 - Beta 2
 Dave Jeffery, @DaveJ
 License: MIT
 ###
