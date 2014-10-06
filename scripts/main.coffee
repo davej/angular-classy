@@ -69,6 +69,6 @@ window.initClassyPluginList = (json) ->
 
     for plugin in sortedPlugins
       tr = document.createElement('tr')
-      tdString = "<td><a href=\"#{plugin.website}\" target=\"_blank\">#{plugin.name}</a><br>#{plugin.description}</td><td>#{plugin.owner}</td><td>#{timeSince(plugin.updated)}</td>"
+      tdString = "<td><a href=\"#{plugin.website}\" target=\"_blank\">#{plugin.name}</a><br>#{plugin.description}</td><td>#{plugin.owner}</td><td>#{timeSince(plugin.updated)} ago</td>"
       tr.innerHTML = tdString
       pluginNode.appendChild(tr)

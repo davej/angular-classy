@@ -152,6 +152,7 @@
 
 
         <script src="scripts/main.js"></script>
+        <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22https%3A%2F%2Fbower-component-list.herokuapp.com%2Fkeyword%2Fclassy-plugin%22&amp;format=json&amp;diagnostics=true&amp;callback=initClassyPluginList"></script>
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -160,6 +161,5 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-6949082-2');ga('send','pageview');
         </script>
-        <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22https%3A%2F%2Fbower-component-list.herokuapp.com%2Fkeyword%2Fclassy-plugin%22&amp;format=json&amp;diagnostics=true&amp;callback=initClassyPluginList"></script>
     </body>
 </html>
