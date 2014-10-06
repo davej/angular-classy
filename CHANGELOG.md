@@ -44,3 +44,7 @@ _populateTweets: function() {
 	console.log(this); // -> bugfix: `this` refers to the classy controller
 }
 ```
+
+## 1.0.0 beta 2 (6/Oct/2014)
+
+* See: http://davej.github.io/angular-classy/beta.html
