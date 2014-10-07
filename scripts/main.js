@@ -101,7 +101,7 @@
       for (_j = 0, _len1 = sortedPlugins.length; _j < _len1; _j++) {
         plugin = sortedPlugins[_j];
         tr = document.createElement('tr');
-        tdString = "<td><a href=\"" + plugin.website + "\" target=\"_blank\">" + plugin.name + "</a><br>" + plugin.description + "</td><td>" + plugin.owner + "</td><td>" + (timeSince(plugin.updated)) + "</td>";
+        tdString = "<td><a href=\"" + plugin.website + "\" target=\"_blank\">" + plugin.name + "</a><br>" + plugin.description + "</td><td>" + plugin.owner + "</td><td>" + (timeSince(plugin.updated)) + " ago</td>";
         tr.innerHTML = tdString;
         _results.push(pluginNode.appendChild(tr));
       }

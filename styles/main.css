@@ -157,7 +157,7 @@ code .comment {
   color: #fff;
   background: #494f57;
   padding: 5px 10px;
-  overflow: scroll; }
+  overflow: auto; }
   .block-code code {
     margin: 0;
     padding: 0; }
