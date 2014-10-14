@@ -55,3 +55,12 @@ body.beta {
 		background: rgba(0, 0, 0, 0.5);
 	}
 }
+
+@media screen and (max-width: 960px) {
+	body.beta .this-is-beta {
+		font-size: 32px;
+		width: 95%;
+		max-width: 680px;
+		margin: 0 auto;
+	}
+}
