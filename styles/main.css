@@ -207,6 +207,13 @@ body > header {
   .special-notice a {
     color: #fff; }
 
+@media screen and (max-width: 960px) {
+  .special-notice {
+    width: 95%;
+    max-width: 680px;
+    margin: 0 auto;
+    margin-bottom: 20px; } }
+
 .main-content {
   background-image: -webkit-linear-gradient( #ccc, #f5f5f5);
   background-image: linear-gradient( #ccc, #f5f5f5);
@@ -582,13 +589,6 @@ body.beta {
       color: #333; }
   body.beta .installation, body.beta .more-info {
     background: rgba(0, 0, 0, 0.5); }
-
-@media screen and (max-width: 960px) {
-  .special-notice {
-    font-size: 32px;
-    width: 95%;
-    max-width: 680px;
-    margin: 0 auto; } }
 
 @font-face {
   font-family: 'classy';

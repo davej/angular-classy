@@ -194,6 +194,15 @@ body > header {
   a { color: #fff; }
 }
 
+@media screen and (max-width: 960px) {
+  .special-notice {
+    width: 95%;
+    max-width: 680px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+}
+
 .main-content {
   @include background-image(linear-gradient(#ccc, #f5f5f5));
   background: rgba(255, 255, 255, 0.5);
