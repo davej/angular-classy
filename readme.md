@@ -21,6 +21,7 @@ To build Classy run `gulp`. To test Classy run `gulp test`.
 
 * [@elado](https://github.com/elado) and [this gist](https://gist.github.com/elado/8138516).
 * [@ahmednuaman](https://github.com/ahmednuaman) and his project [Radian](https://github.com/ahmednuaman/radian).
+* [@wuxiaoying](https://github.com/wuxiaoying) for contributions and [plugins](http://bower.io/search/?q=owner:wuxiaoying%20classy).
 
 ## License
 
