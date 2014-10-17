@@ -381,7 +381,7 @@ License: MIT
   });
 
   angular.module('classy-register', ['classy-core']).classy.plugin.controller({
-    name: 'registerSelector',
+    name: 'register',
     preInit: function(classConstructor, classObj, module) {
       if (angular.isString(classObj.name)) {
         return module.controller(classObj.name, classConstructor);
@@ -390,7 +390,7 @@ License: MIT
   });
 
   angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller({
-    name: 'register',
+    name: 'registerSelector',
     options: {
       enabled: true
     },

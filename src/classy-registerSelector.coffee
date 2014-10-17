@@ -1,5 +1,5 @@
 angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
-  name: 'register'
+  name: 'registerSelector'
 
   options:
     enabled: true

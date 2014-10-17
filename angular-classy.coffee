@@ -269,14 +269,14 @@ angular.module('classy-bindMethods', ['classy-core']).classy.plugin.controller
           if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
             deps.$scope[key] = klass[key]
 angular.module('classy-register', ['classy-core']).classy.plugin.controller
-  name: 'registerSelector'
+  name: 'register'
 
   preInit: (classConstructor, classObj, module) ->
     if angular.isString(classObj.name)
       # Register the controller using name
       module.controller classObj.name, classConstructor
 angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
-  name: 'register'
+  name: 'registerSelector'
 
   options:
     enabled: true

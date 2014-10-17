@@ -1,5 +1,5 @@
 angular.module('classy-register', ['classy-core']).classy.plugin.controller
-  name: 'registerSelector'
+  name: 'register'
 
   preInit: (classConstructor, classObj, module) ->
     if angular.isString(classObj.name)
