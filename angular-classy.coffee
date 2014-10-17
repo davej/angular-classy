@@ -8,20 +8,23 @@ License: MIT
 
 'use strict';
 
-defaults =
-  controller: {}
-
 selectorControllerCount = 0
 availablePlugins = {}
-activePlugins = {}
-pluginInstances = []
 
-activatePlugins = (reqs) ->
-  for req in reqs
-    for pluginFullName, plugin of availablePlugins
-      if pluginFullName is req
-        activePlugins[pluginFullName] = plugin
-        defaults.controller[plugin.name] = angular.copy plugin.options or {}
+getActiveClassyPlugins = (name, origModule) ->
+  obj = {}
+  do getNextRequires = (name) ->
+    module = angular.module(name)
+    for pluginName in module.requires
+      plugin = availablePlugins[pluginName]
+      if plugin
+        obj[pluginName] = plugin
+        origModule.__classyPluginDefaults ?= {}
+        origModule.__classyPluginDefaults[plugin.name] = angular.copy plugin.options or {}
+      getNextRequires(pluginName)
+
+  return obj
+
 
 pluginDo = (methodName, params, obj) ->
   plugins = params[0].__plugins or params[0]::__plugins
@@ -49,22 +52,21 @@ angular.module = (name, reqs, configFn) ->
   ###
   module = origModuleMethod(name, reqs, configFn)
 
-  # This is super messy.
-  # TODO: Clean this up and test the logic flow properly before moving to master
   if reqs
-    activatePlugins(reqs)
 
-    if 'classy-core' in reqs or 'classy' in reqs
-      module.classy =
+    if name is 'classy-core' then availablePlugins[name] = {}
+
+    activeClassyPlugins = getActiveClassyPlugins(name, module)
         
+    if activeClassyPlugins['classy-core']
+      module.classy =
         plugin:
           controller: (plugin) -> availablePlugins[name] = plugin
-        
+
         options:
           controller: {}
 
-        availablePlugins: availablePlugins
-        activePlugins: activePlugins
+        activePlugins: activeClassyPlugins
 
         controller: (classObj) ->
 
@@ -90,7 +92,6 @@ angular.module = (name, reqs, configFn) ->
       module.cC = module.classy.controller
       module.cCs = module.classy.controllers
 
-
   return module
 
 
@@ -102,13 +103,18 @@ classFns =
       classConstructor::[key] = value
 
     options =
-      copyAndExtendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
+      copyAndExtendDeep(
+        {},
+        module.__classyPluginDefaults,
+        module.classy.options.controller,
+        classObj.__options
+      )
 
     classConstructor::__plugins = {}
-    for pluginName, plugin of activePlugins
-      plugin.classyOptions = options
-      plugin.options = options[plugin.name] or {}
+    for pluginName, plugin of module.classy.activePlugins
       classConstructor::__plugins[pluginName] = angular.copy(plugin)
+      classConstructor::__plugins[pluginName].classyOptions = options
+      classConstructor::__plugins[pluginName].options = options[plugin.name] or {}
 
     pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
@@ -272,13 +278,13 @@ angular.module('classy-register', ['classy-core']).classy.plugin.controller
   name: 'register'
 
   options:
-  	enabled: true
-  	key: 'name'
+    enabled: true
+    key: 'name'
 
   preInit: (classConstructor, classObj, module) ->
-    if angular.isString(classObj[@options.key])
-      # Register the controller using name
-      module.controller classObj[@options.key], classConstructor
+    if @options.enabled and angular.isString(classObj[@options.key])
+        # Register the controller using name
+        module.controller classObj[@options.key], classConstructor
 angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
   name: 'registerSelector'
 

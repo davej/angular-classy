@@ -10,43 +10,37 @@ License: MIT
 
 (function() {
   'use strict';
-  var activatePlugins, activePlugins, availablePlugins, classFns, copyAndExtendDeep, defaults, origModuleMethod, pluginDo, pluginInstances, selectorControllerCount,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-    __hasProp = {}.hasOwnProperty;
-
-  defaults = {
-    controller: {}
-  };
+  var availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo, selectorControllerCount,
+    __hasProp = {}.hasOwnProperty,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   selectorControllerCount = 0;
 
   availablePlugins = {};
 
-  activePlugins = {};
-
-  pluginInstances = [];
-
-  activatePlugins = function(reqs) {
-    var plugin, pluginFullName, req, _i, _len, _results;
-    _results = [];
-    for (_i = 0, _len = reqs.length; _i < _len; _i++) {
-      req = reqs[_i];
-      _results.push((function() {
-        var _results1;
-        _results1 = [];
-        for (pluginFullName in availablePlugins) {
-          plugin = availablePlugins[pluginFullName];
-          if (pluginFullName === req) {
-            activePlugins[pluginFullName] = plugin;
-            _results1.push(defaults.controller[plugin.name] = angular.copy(plugin.options || {}));
-          } else {
-            _results1.push(void 0);
+  getActiveClassyPlugins = function(name, origModule) {
+    var getNextRequires, obj;
+    obj = {};
+    (getNextRequires = function(name) {
+      var module, plugin, pluginName, _i, _len, _ref, _results;
+      module = angular.module(name);
+      _ref = module.requires;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pluginName = _ref[_i];
+        plugin = availablePlugins[pluginName];
+        if (plugin) {
+          obj[pluginName] = plugin;
+          if (origModule.__classyPluginDefaults == null) {
+            origModule.__classyPluginDefaults = {};
           }
+          origModule.__classyPluginDefaults[plugin.name] = angular.copy(plugin.options || {});
         }
-        return _results1;
-      })());
-    }
-    return _results;
+        _results.push(getNextRequires(pluginName));
+      }
+      return _results;
+    })(name);
+    return obj;
   };
 
   pluginDo = function(methodName, params, obj) {
@@ -93,11 +87,14 @@ License: MIT
      * as a requirement. We also need the module name to we can register our classy controllers.
      * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
      */
-    var module;
+    var activeClassyPlugins, module;
     module = origModuleMethod(name, reqs, configFn);
     if (reqs) {
-      activatePlugins(reqs);
-      if (__indexOf.call(reqs, 'classy-core') >= 0 || __indexOf.call(reqs, 'classy') >= 0) {
+      if (name === 'classy-core') {
+        availablePlugins[name] = {};
+      }
+      activeClassyPlugins = getActiveClassyPlugins(name, module);
+      if (activeClassyPlugins['classy-core']) {
         module.classy = {
           plugin: {
             controller: function(plugin) {
@@ -107,8 +104,7 @@ License: MIT
           options: {
             controller: {}
           },
-          availablePlugins: availablePlugins,
-          activePlugins: activePlugins,
+          activePlugins: activeClassyPlugins,
           controller: function(classObj) {
             var classyController;
             return classyController = (function() {
@@ -141,19 +137,20 @@ License: MIT
   classFns = {
     localInject: ['$q'],
     preInit: function(classConstructor, classObj, module) {
-      var key, options, plugin, pluginName, value;
+      var key, options, plugin, pluginName, value, _ref;
       for (key in classObj) {
         if (!__hasProp.call(classObj, key)) continue;
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
-      options = copyAndExtendDeep({}, defaults.controller, module.classy.options.controller, classObj.__options);
+      options = copyAndExtendDeep({}, module.__classyPluginDefaults, module.classy.options.controller, classObj.__options);
       classConstructor.prototype.__plugins = {};
-      for (pluginName in activePlugins) {
-        plugin = activePlugins[pluginName];
-        plugin.classyOptions = options;
-        plugin.options = options[plugin.name] || {};
+      _ref = module.classy.activePlugins;
+      for (pluginName in _ref) {
+        plugin = _ref[pluginName];
         classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
+        classConstructor.prototype.__plugins[pluginName].classyOptions = options;
+        classConstructor.prototype.__plugins[pluginName].options = options[plugin.name] || {};
       }
       pluginDo('preInitBefore', [classConstructor, classObj, module]);
       pluginDo('preInit', [classConstructor, classObj, module]);
@@ -387,7 +384,7 @@ License: MIT
       key: 'name'
     },
     preInit: function(classConstructor, classObj, module) {
-      if (angular.isString(classObj[this.options.key])) {
+      if (this.options.enabled && angular.isString(classObj[this.options.key])) {
         return module.controller(classObj[this.options.key], classConstructor);
       }
     }
