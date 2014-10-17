@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, inject, expect*/
+/*global describe, it, beforeEach, inject, expect, module */
 (function () {
 	'use strict';
 
@@ -27,7 +27,7 @@
 		it('should not have any controller methods placed on the scope', function () {
 			expect(scope.todos).toBeUndefined();
 			expect(scope.editTodo).toBeUndefined();
-		})
+		});
 
 		it('should not have an edited Todo on start', function () {
 			expect(ctrl.editedTodo).toBeNull();
