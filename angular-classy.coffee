@@ -271,10 +271,14 @@ angular.module('classy-bindMethods', ['classy-core']).classy.plugin.controller
 angular.module('classy-register', ['classy-core']).classy.plugin.controller
   name: 'register'
 
+  options:
+  	enabled: true
+  	key: 'name'
+
   preInit: (classConstructor, classObj, module) ->
-    if angular.isString(classObj.name)
+    if angular.isString(classObj[@options.key])
       # Register the controller using name
-      module.controller classObj.name, classConstructor
+      module.controller classObj[@options.key], classConstructor
 angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
   name: 'registerSelector'
 

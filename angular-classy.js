@@ -382,9 +382,13 @@ License: MIT
 
   angular.module('classy-register', ['classy-core']).classy.plugin.controller({
     name: 'register',
+    options: {
+      enabled: true,
+      key: 'name'
+    },
     preInit: function(classConstructor, classObj, module) {
-      if (angular.isString(classObj.name)) {
-        return module.controller(classObj.name, classConstructor);
+      if (angular.isString(classObj[this.options.key])) {
+        return module.controller(classObj[this.options.key], classConstructor);
       }
     }
   });
