@@ -1,8 +1,12 @@
 {
   "name": "angular-classy",
   "main": "angular-classy.js",
-  "version": "1.0.0-beta.3",
-  "homepage": "https://github.com/davej/angular-classy",
+  "version": "1.0.0-beta.4",
+  "homepage": "http://davej.github.io/angular-classy/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davej/angular-classy.git"
+  },
   "authors": [
     "Dave Jeffery <dave@davejeffery.com>"
   ],

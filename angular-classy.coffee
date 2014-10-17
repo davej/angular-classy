@@ -194,6 +194,9 @@ angular.module('classy-bindData', ['classy-core']).classy.plugin.controller
           if typeof value is 'string'
             getter = @$parse value
             data[key] = getter(klass)
+          else
+            data[key] = value
+
 
       for key, value of data
         klass[key] = value

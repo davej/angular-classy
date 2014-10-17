@@ -250,6 +250,8 @@ License: MIT
             if (typeof value === 'string') {
               getter = this.$parse(value);
               data[key] = getter(klass);
+            } else {
+              data[key] = value;
             }
           }
         }
