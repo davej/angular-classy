@@ -10,11 +10,9 @@ License: MIT
 
 (function() {
   'use strict';
-  var availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo, selectorControllerCount,
+  var availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo,
     __hasProp = {}.hasOwnProperty,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  selectorControllerCount = 0;
 
   availablePlugins = {};
 
@@ -392,45 +390,6 @@ License: MIT
     }
   });
 
-  angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller({
-    name: 'registerSelector',
-    options: {
-      enabled: true
-    },
-    preInit: function(classConstructor, classObj, module) {
-      if (this.options.enabled && (classObj.el || classObj.selector)) {
-        return this.registerSelector(module, classObj.el || classObj.selector, classConstructor);
-      }
-    },
-    registerSelector: function(module, selector, classConstructor) {
-      var controllerName, el, els, _i, _len, _results;
-      selectorControllerCount++;
-      controllerName = "ClassySelector" + selectorControllerCount + "Controller";
-      module.controller(controllerName, classConstructor);
-      if (angular.isElement(selector)) {
-        selector.setAttribute('data-ng-controller', controllerName);
-        return;
-      }
-      if (angular.isString(selector)) {
-        els = (typeof window.jQuery === "function" ? window.jQuery(selector) : void 0) || document.querySelectorAll(selector);
-      } else if (angular.isArray(selector)) {
-        els = selector;
-      } else {
-        return;
-      }
-      _results = [];
-      for (_i = 0, _len = els.length; _i < _len; _i++) {
-        el = els[_i];
-        if (angular.isElement(el)) {
-          _results.push(el.setAttribute('data-ng-controller', controllerName));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    }
-  });
-
   angular.module('classy-watch', ['classy-core']).classy.plugin.controller({
     name: 'watch',
     options: {
@@ -505,6 +464,6 @@ License: MIT
     }
   });
 
-  angular.module('classy', ["classy-bindData", "classy-bindDependencies", "classy-bindMethods", "classy-register", "classy-registerSelector", "classy-watch"]);
+  angular.module('classy', ["classy-bindData", "classy-bindDependencies", "classy-bindMethods", "classy-register", "classy-watch"]);
 
 }).call(this);

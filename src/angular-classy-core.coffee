@@ -8,7 +8,6 @@ License: MIT
 
 'use strict';
 
-selectorControllerCount = 0
 availablePlugins = {}
 
 getActiveClassyPlugins = (name, origModule) ->

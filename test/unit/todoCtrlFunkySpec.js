@@ -14,7 +14,7 @@
 				this.storage = value;
 			}
 		};
-		var ctrlName = 'ThisDoesNotMapToNgController';
+		var ctrlName = 'TodoFunkyCtrl';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
 		beforeEach(module('todomvc'));

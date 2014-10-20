@@ -31,7 +31,6 @@
 			expect(app.classy.activePlugins['classy-bindDependencies']).toBeDefined();
 			expect(app.classy.activePlugins['classy-bindMethods']).toBeDefined();
 			expect(app.classy.activePlugins['classy-register']).toBeDefined();
-			expect(app.classy.activePlugins['classy-registerSelector']).toBeDefined();
 			expect(app.classy.activePlugins['classy-watch']).toBeDefined();
 			expect(app.classy.activePlugins['classy-core']).toBeDefined();
 		});
@@ -54,7 +53,6 @@
 			expect(app.classy.activePlugins['classy-bindDependencies']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-bindMethods']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-register']).toBeUndefined();
-			expect(app.classy.activePlugins['classy-registerSelector']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-watch']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-core']).toBeDefined();
 		});
@@ -77,7 +75,6 @@
 			expect(app.classy.activePlugins['classy-bindDependencies']).toBeDefined();
 			expect(app.classy.activePlugins['classy-bindMethods']).toBeDefined();
 			expect(app.classy.activePlugins['classy-register']).toBeDefined();
-			expect(app.classy.activePlugins['classy-registerSelector']).toBeDefined();
 			expect(app.classy.activePlugins['classy-watch']).toBeDefined();
 			expect(app.classy.activePlugins['classy-core']).toBeDefined();
 		});
@@ -100,7 +97,6 @@
 			expect(app.classy.activePlugins['classy-bindDependencies']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-bindMethods']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-register']).toBeUndefined();
-			expect(app.classy.activePlugins['classy-registerSelector']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-watch']).toBeUndefined();
 			expect(app.classy.activePlugins['classy-core']).toBeDefined();
 			expect(app.classy.activePlugins['classy-foo']).toBeDefined();
@@ -126,7 +122,6 @@
 			expect(app.classy.activePlugins['classy-bindDependencies']).toBeDefined();
 			expect(app.classy.activePlugins['classy-bindMethods']).toBeDefined();
 			expect(app.classy.activePlugins['classy-register']).toBeDefined();
-			expect(app.classy.activePlugins['classy-registerSelector']).toBeDefined();
 			expect(app.classy.activePlugins['classy-watch']).toBeDefined();
 			expect(app.classy.activePlugins['classy-core']).toBeDefined();
 			expect(app.classy.activePlugins['classy-foo']).toBeDefined();

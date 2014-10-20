@@ -8,7 +8,6 @@ License: MIT
 
 'use strict';
 
-selectorControllerCount = 0
 availablePlugins = {}
 
 getActiveClassyPlugins = (name, origModule) ->
@@ -288,36 +287,6 @@ angular.module('classy-register', ['classy-core']).classy.plugin.controller
     if @options.enabled and angular.isString(classObj[@options.key])
         # Register the controller using name
         module.controller classObj[@options.key], classConstructor
-angular.module('classy-registerSelector', ['classy-core']).classy.plugin.controller
-  name: 'registerSelector'
-
-  options:
-    enabled: true
-
-  preInit: (classConstructor, classObj, module) ->
-    if @options.enabled && (classObj.el || classObj.selector)
-      # Register the controller using selector
-      @registerSelector(module, classObj.el || classObj.selector, classConstructor)
-
-  registerSelector: (module, selector, classConstructor) ->
-    selectorControllerCount++
-    controllerName = "ClassySelector#{selectorControllerCount}Controller"
-    module.controller controllerName, classConstructor
-
-    if angular.isElement(selector)
-      selector.setAttribute('data-ng-controller', controllerName)
-      return
-
-    if angular.isString(selector)
-      # Query the dom using jQuery if available, otherwise fallback to qSA
-      els = window.jQuery?(selector) or document.querySelectorAll(selector)
-    else if angular.isArray(selector)
-      els = selector
-    else return
-
-    for el in els
-      if angular.isElement(el)
-        el.setAttribute('data-ng-controller', controllerName)
 angular.module('classy-watch', ['classy-core']).classy.plugin.controller
   name: 'watch'
 
@@ -366,4 +335,4 @@ angular.module('classy-watch', ['classy-core']).classy.plugin.controller
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
 
-angular.module 'classy', ["classy-bindData","classy-bindDependencies","classy-bindMethods","classy-register","classy-registerSelector","classy-watch"]
+angular.module 'classy', ["classy-bindData","classy-bindDependencies","classy-bindMethods","classy-register","classy-watch"]

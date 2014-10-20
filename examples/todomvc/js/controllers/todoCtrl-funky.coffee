@@ -73,8 +73,7 @@ todoFuncs =
         todo.completed = completed
 
 todomvc.cC angular.extend todoFuncs,
-  name: 'ThisDoesNotMapToNgController'
-  el: '#todoapp'
+  name: 'TodoFunkyCtrl'
 
   inject:
     $scope: '$'
