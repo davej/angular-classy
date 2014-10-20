@@ -1,6 +1,6 @@
 
 /*
-Angular Classy 1.0.0 - Beta 2
+Angular Classy 1.0.0
 Dave Jeffery, @DaveJ
 License: MIT
  */
@@ -88,11 +88,11 @@ License: MIT
     var activeClassyPlugins, module;
     module = origModuleMethod(name, reqs, configFn);
     if (reqs) {
-      if (name === 'classy-core') {
+      if (name === 'classy.core') {
         availablePlugins[name] = {};
       }
       activeClassyPlugins = getActiveClassyPlugins(name, module);
-      if (activeClassyPlugins['classy-core']) {
+      if (activeClassyPlugins['classy.core']) {
         module.classy = {
           plugin: {
             controller: function(plugin) {
@@ -216,10 +216,10 @@ License: MIT
     }
   };
 
-  angular.module('classy-core', []);
+  angular.module('classy.core', []);
 
-  angular.module('classy-bind-data', ['classy-core']).classy.plugin.controller({
-    name: 'bind-data',
+  angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
+    name: 'bindData',
     localInject: ['$parse'],
     options: {
       enabled: true,
@@ -268,37 +268,21 @@ License: MIT
     }
   });
 
-  angular.module('classy-bind-dependencies', ['classy-core']).classy.plugin.controller({
-    name: 'bind-dependencies',
+  angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
+    name: 'bindDependencies',
     options: {
       enabled: true,
-      scopeShortcut: '$',
-      useExistingNameString: '.'
+      scopeShortcut: '$'
     },
     preInit: function(classConstructor, classObj, module) {
       var depNames;
       depNames = classObj.inject || [];
       if (angular.isArray(depNames)) {
         return this.inject(classConstructor, depNames, module);
-      } else if (angular.isObject(depNames)) {
-        return this.inject(classConstructor, [depNames], module);
       }
     },
     inject: function(classConstructor, depNames, module) {
-      var name, plugin, pluginDepNames, pluginName, service, _ref;
-      if (angular.isObject(depNames[0])) {
-        classConstructor.__classyControllerInjectObject = depNames[0];
-        depNames = (function() {
-          var _ref, _results;
-          _ref = depNames[0];
-          _results = [];
-          for (service in _ref) {
-            name = _ref[service];
-            _results.push(service);
-          }
-          return _results;
-        })();
-      }
+      var plugin, pluginDepNames, pluginName, _ref;
       pluginDepNames = [];
       _ref = module.classy.activePlugins;
       for (pluginName in _ref) {
@@ -312,23 +296,17 @@ License: MIT
       return classConstructor.$inject = depNames.concat(pluginDepNames);
     },
     initBefore: function(klass, deps, module) {
-      var dependency, i, injectName, injectObject, key, _i, _len, _ref, _results;
+      var i, key, _i, _len, _ref, _results;
       if (this.options.enabled) {
-        injectObject = klass.constructor.__classyControllerInjectObject;
         _ref = klass.constructor.$inject;
         _results = [];
         for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
           key = _ref[i];
-          dependency = deps[key];
-          if (injectObject && (injectName = injectObject[key]) && injectName !== this.options.useExistingNameString) {
-            _results.push(klass[injectName] = dependency);
+          klass[key] = deps[key];
+          if (key === '$scope' && this.options.scopeShortcut) {
+            _results.push(klass[this.options.scopeShortcut] = klass[key]);
           } else {
-            klass[key] = dependency;
-            if (key === '$scope' && this.options.scopeShortcut) {
-              _results.push(klass[this.options.scopeShortcut] = klass[key]);
-            } else {
-              _results.push(void 0);
-            }
+            _results.push(void 0);
           }
         }
         return _results;
@@ -336,8 +314,8 @@ License: MIT
     }
   });
 
-  angular.module('classy-bind-methods', ['classy-core']).classy.plugin.controller({
-    name: 'bind-methods',
+  angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
+    name: 'bindMethods',
     options: {
       enabled: true,
       addToScope: true,
@@ -377,7 +355,7 @@ License: MIT
     }
   });
 
-  angular.module('classy-register', ['classy-core']).classy.plugin.controller({
+  angular.module('classy.register', ['classy.core']).classy.plugin.controller({
     name: 'register',
     options: {
       enabled: true,
@@ -390,7 +368,7 @@ License: MIT
     }
   });
 
-  angular.module('classy-watch', ['classy-core']).classy.plugin.controller({
+  angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
     name: 'watch',
     options: {
       enabled: true,
@@ -464,6 +442,6 @@ License: MIT
     }
   });
 
-  angular.module('classy', ["classy-bind-data", "classy-bind-dependencies", "classy-bind-methods", "classy-register", "classy-watch"]);
+  angular.module('classy', ["classy.bindData", "classy.bindDependencies", "classy.bindMethods", "classy.core", "classy.register", "classy.watch"]);
 
 }).call(this);
