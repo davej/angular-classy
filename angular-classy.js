@@ -29,6 +29,9 @@ License: MIT
         plugin = availablePlugins[pluginName];
         if (plugin) {
           obj[pluginName] = plugin;
+          if (plugin.name == null) {
+            plugin.name = pluginName.replace('classy.', '');
+          }
           if (origModule.__classyPluginDefaults == null) {
             origModule.__classyPluginDefaults = {};
           }
@@ -219,7 +222,6 @@ License: MIT
   angular.module('classy.core', []);
 
   angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
-    name: 'bindData',
     localInject: ['$parse'],
     options: {
       enabled: true,
@@ -269,7 +271,6 @@ License: MIT
   });
 
   angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
-    name: 'bindDependencies',
     options: {
       enabled: true,
       scopeShortcut: '$'
@@ -315,7 +316,6 @@ License: MIT
   });
 
   angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
-    name: 'bindMethods',
     options: {
       enabled: true,
       addToScope: true,
@@ -356,7 +356,6 @@ License: MIT
   });
 
   angular.module('classy.register', ['classy.core']).classy.plugin.controller({
-    name: 'register',
     options: {
       enabled: true,
       key: 'name'
@@ -369,7 +368,6 @@ License: MIT
   });
 
   angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
-    name: 'watch',
     options: {
       enabled: true,
       _watchKeywords: {

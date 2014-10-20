@@ -18,6 +18,7 @@ getActiveClassyPlugins = (name, origModule) ->
       plugin = availablePlugins[pluginName]
       if plugin
         obj[pluginName] = plugin
+        plugin.name ?= pluginName.replace 'classy.', ''
         origModule.__classyPluginDefaults ?= {}
         origModule.__classyPluginDefaults[plugin.name] = angular.copy plugin.options or {}
       getNextRequires(pluginName)
@@ -166,8 +167,6 @@ classFns =
 angular.module('classy.core', [])
 angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
   # Based on @wuxiaoying's classy-initScope plugin
-  name: 'bindData'
-
   localInject: ['$parse']
 
   options:
@@ -203,8 +202,6 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
           deps.$scope[key] = klass[key]
 
 angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller
-  name: 'bindDependencies'
-
   options:
     enabled: true
     scopeShortcut: '$'
@@ -237,8 +234,6 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
           # Add a shortcut to the $scope (by default `@$`)
           klass[@options.scopeShortcut] = klass[key]
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
-  name: 'bindMethods'
-
   options:
     enabled: true
     addToScope: true
@@ -260,8 +255,6 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
           if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
             deps.$scope[key] = klass[key]
 angular.module('classy.register', ['classy.core']).classy.plugin.controller
-  name: 'register'
-
   options:
     enabled: true
     key: 'name'
@@ -271,8 +264,6 @@ angular.module('classy.register', ['classy.core']).classy.plugin.controller
         # Register the controller using name
         module.controller classObj[@options.key], classConstructor
 angular.module('classy.watch', ['classy.core']).classy.plugin.controller
-  name: 'watch'
-
   options:
     enabled: true
     _watchKeywords:
