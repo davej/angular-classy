@@ -9,19 +9,22 @@ License: MIT
 'use strict';
 
 availablePlugins = {}
+alreadyRegisteredModules = {};
 
 getActiveClassyPlugins = (name, origModule) ->
   obj = {}
+  alreadyRegisteredModules[name] = true
   do getNextRequires = (name) ->
-    module = angular.module(name)
-    for pluginName in module.requires
-      plugin = availablePlugins[pluginName]
-      if plugin
-        obj[pluginName] = plugin
-        plugin.name ?= pluginName.replace 'classy.', ''
-        origModule.__classyDefaults ?= {}
-        origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
-      getNextRequires(pluginName)
+    if alreadyRegisteredModules[name]
+      module = angular.module(name)
+      for pluginName in module.requires
+        plugin = availablePlugins[pluginName]
+        if plugin
+          obj[pluginName] = plugin
+          plugin.name ?= pluginName.replace 'classy.', ''
+          origModule.__classyDefaults ?= {}
+          origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
+        getNextRequires(pluginName)
 
   return obj
 

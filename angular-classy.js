@@ -10,36 +10,41 @@ License: MIT
 
 (function() {
   'use strict';
-  var availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo,
+  var alreadyRegisteredModules, availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo,
     __hasProp = {}.hasOwnProperty,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   availablePlugins = {};
 
+  alreadyRegisteredModules = {};
+
   getActiveClassyPlugins = function(name, origModule) {
     var getNextRequires, obj;
     obj = {};
+    alreadyRegisteredModules[name] = true;
     (getNextRequires = function(name) {
       var module, plugin, pluginName, _i, _len, _ref, _results;
-      module = angular.module(name);
-      _ref = module.requires;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        pluginName = _ref[_i];
-        plugin = availablePlugins[pluginName];
-        if (plugin) {
-          obj[pluginName] = plugin;
-          if (plugin.name == null) {
-            plugin.name = pluginName.replace('classy.', '');
+      if (alreadyRegisteredModules[name]) {
+        module = angular.module(name);
+        _ref = module.requires;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          pluginName = _ref[_i];
+          plugin = availablePlugins[pluginName];
+          if (plugin) {
+            obj[pluginName] = plugin;
+            if (plugin.name == null) {
+              plugin.name = pluginName.replace('classy.', '');
+            }
+            if (origModule.__classyDefaults == null) {
+              origModule.__classyDefaults = {};
+            }
+            origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
           }
-          if (origModule.__classyDefaults == null) {
-            origModule.__classyDefaults = {};
-          }
-          origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
+          _results.push(getNextRequires(pluginName));
         }
-        _results.push(getNextRequires(pluginName));
+        return _results;
       }
-      return _results;
     })(name);
     return obj;
   };
