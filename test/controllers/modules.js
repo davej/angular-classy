@@ -40,4 +40,7 @@ var testBarVar;
 
 	angular.module('app7', ['app1']);
 
+	// This should not cause an error, see https://github.com/davej/angular-classy/issues/36
+	angular.module('app8', ['thisModuleDoesNotExist']);
+
 }());
