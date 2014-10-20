@@ -1,6 +1,4 @@
 angular.module('classy.register', ['classy.core']).classy.plugin.controller
-  name: 'register'
-
   options:
     enabled: true
     key: 'name'

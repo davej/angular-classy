@@ -18,6 +18,7 @@ getActiveClassyPlugins = (name, origModule) ->
       plugin = availablePlugins[pluginName]
       if plugin
         obj[pluginName] = plugin
+        plugin.name ?= pluginName.replace 'classy.', ''
         origModule.__classyPluginDefaults ?= {}
         origModule.__classyPluginDefaults[plugin.name] = angular.copy plugin.options or {}
       getNextRequires(pluginName)

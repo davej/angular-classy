@@ -1,6 +1,4 @@
 angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller
-  name: 'bindDependencies'
-
   options:
     enabled: true
     scopeShortcut: '$'

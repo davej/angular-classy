@@ -1,6 +1,4 @@
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
-  name: 'bindMethods'
-
   options:
     enabled: true
     addToScope: true
