@@ -164,9 +164,9 @@ classFns =
     pluginDo 'postInitAfter', [klass, deps, module]
 
 angular.module('classy-core', [])
-angular.module('classy-bindData', ['classy-core']).classy.plugin.controller
+angular.module('classy-bind-data', ['classy-core']).classy.plugin.controller
   # Based on @wuxiaoying's classy-initScope plugin
-  name: 'bindData'
+  name: 'bind-data'
 
   localInject: ['$parse']
 
@@ -202,8 +202,8 @@ angular.module('classy-bindData', ['classy-core']).classy.plugin.controller
         if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
           deps.$scope[key] = klass[key]
 
-angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
-  name: 'bindDependencies'
+angular.module('classy-bind-dependencies', ['classy-core']).classy.plugin.controller
+  name: 'bind-dependencies'
 
   options:
     enabled: true
@@ -253,8 +253,8 @@ angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.control
           if key is '$scope' and @options.scopeShortcut
             # Add a shortcut to the $scope (by default `@$`)
             klass[@options.scopeShortcut] = klass[key]
-angular.module('classy-bindMethods', ['classy-core']).classy.plugin.controller
-  name: 'bindMethods'
+angular.module('classy-bind-methods', ['classy-core']).classy.plugin.controller
+  name: 'bind-methods'
 
   options:
     enabled: true
@@ -335,4 +335,4 @@ angular.module('classy-watch', ['classy-core']).classy.plugin.controller
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
 
-angular.module 'classy', ["classy-bindData","classy-bindDependencies","classy-bindMethods","classy-register","classy-watch"]
+angular.module 'classy', ["classy-bind-data","classy-bind-dependencies","classy-bind-methods","classy-register","classy-watch"]

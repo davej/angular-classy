@@ -1,5 +1,5 @@
-angular.module('classy-bindDependencies', ['classy-core']).classy.plugin.controller
-  name: 'bindDependencies'
+angular.module('classy-bind-dependencies', ['classy-core']).classy.plugin.controller
+  name: 'bind-dependencies'
 
   options:
     enabled: true

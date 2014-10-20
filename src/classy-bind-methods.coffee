@@ -1,5 +1,5 @@
-angular.module('classy-bindMethods', ['classy-core']).classy.plugin.controller
-  name: 'bindMethods'
+angular.module('classy-bind-methods', ['classy-core']).classy.plugin.controller
+  name: 'bind-methods'
 
   options:
     enabled: true

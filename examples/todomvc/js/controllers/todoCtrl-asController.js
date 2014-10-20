@@ -12,10 +12,10 @@ todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
 	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
 	__options: {
-		bindData: {
+		'bind-data': {
 			addToScope: false
 		},
-		bindMethods: {
+		'bind-methods': {
 			addToScope: false
 		}
 	},
