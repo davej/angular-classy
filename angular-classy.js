@@ -32,10 +32,10 @@ License: MIT
           if (plugin.name == null) {
             plugin.name = pluginName.replace('classy.', '');
           }
-          if (origModule.__classyPluginDefaults == null) {
-            origModule.__classyPluginDefaults = {};
+          if (origModule.__classyDefaults == null) {
+            origModule.__classyDefaults = {};
           }
-          origModule.__classyPluginDefaults[plugin.name] = angular.copy(plugin.options || {});
+          origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
         }
         _results.push(getNextRequires(pluginName));
       }
@@ -144,7 +144,7 @@ License: MIT
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
-      options = copyAndExtendDeep({}, module.__classyPluginDefaults, module.classy.options.controller, classObj.__options);
+      options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
       classConstructor.prototype.__plugins = {};
       _ref = module.classy.activePlugins;
       for (pluginName in _ref) {
@@ -247,7 +247,7 @@ License: MIT
         } else if (angular.isObject(data)) {
           for (key in data) {
             value = data[key];
-            if (typeof value === 'string') {
+            if (angular.isString(value)) {
               getter = this.$parse(value);
               data[key] = getter(klass);
             } else {

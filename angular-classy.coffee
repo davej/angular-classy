@@ -19,8 +19,8 @@ getActiveClassyPlugins = (name, origModule) ->
       if plugin
         obj[pluginName] = plugin
         plugin.name ?= pluginName.replace 'classy.', ''
-        origModule.__classyPluginDefaults ?= {}
-        origModule.__classyPluginDefaults[plugin.name] = angular.copy plugin.options or {}
+        origModule.__classyDefaults ?= {}
+        origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
       getNextRequires(pluginName)
 
   return obj
@@ -105,7 +105,7 @@ classFns =
     options =
       copyAndExtendDeep(
         {},
-        module.__classyPluginDefaults,
+        module.__classyDefaults,
         module.classy.options.controller,
         classObj.__options
       )
@@ -189,7 +189,7 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
       if angular.isFunction data then data = data.call klass
       else if angular.isObject data
         for key, value of data
-          if typeof value is 'string'
+          if angular.isString(value)
             getter = @$parse value
             data[key] = getter(klass)
           else
