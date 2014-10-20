@@ -1,6 +1,6 @@
-angular.module('classy-bind-data', ['classy-core']).classy.plugin.controller
+angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
   # Based on @wuxiaoying's classy-initScope plugin
-  name: 'bind-data'
+  name: 'bindData'
 
   localInject: ['$parse']
 

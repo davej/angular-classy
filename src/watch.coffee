@@ -1,4 +1,4 @@
-angular.module('classy-watch', ['classy-core']).classy.plugin.controller
+angular.module('classy.watch', ['classy.core']).classy.plugin.controller
   name: 'watch'
 
   options:

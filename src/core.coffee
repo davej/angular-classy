@@ -1,5 +1,5 @@
 ###
-Angular Classy 1.0.0 - Beta 2
+Angular Classy 1.0.0
 Dave Jeffery, @DaveJ
 License: MIT
 ###
@@ -53,11 +53,11 @@ angular.module = (name, reqs, configFn) ->
 
   if reqs
 
-    if name is 'classy-core' then availablePlugins[name] = {}
+    if name is 'classy.core' then availablePlugins[name] = {}
 
     activeClassyPlugins = getActiveClassyPlugins(name, module)
         
-    if activeClassyPlugins['classy-core']
+    if activeClassyPlugins['classy.core']
       module.classy =
         plugin:
           controller: (plugin) -> availablePlugins[name] = plugin
@@ -163,4 +163,4 @@ classFns =
     pluginDo 'postInit', [klass, deps, module]
     pluginDo 'postInitAfter', [klass, deps, module]
 
-angular.module('classy-core', [])
+angular.module('classy.core', [])

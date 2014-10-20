@@ -6,10 +6,10 @@ var testBarVar;
 
 	angular.module('app2', ['classy']);
 	angular.module('app1', []);
-	angular.module('app3', ['classy-core']);
+	angular.module('app3', ['classy.core']);
 	angular.module('app4', ['app2']);
 
-	angular.module('classy-foo', ['classy-core']).classy.plugin.controller({
+	angular.module('classy.foo', ['classy.core']).classy.plugin.controller({
 		name: 'foo',
 
 		options: {
@@ -21,7 +21,7 @@ var testBarVar;
 		}
 	});
 
-	angular.module('classy-bar', ['classy-core']).classy.plugin.controller({
+	angular.module('classy.bar', ['classy.core']).classy.plugin.controller({
 		name: 'bar',
 
 		options: {
@@ -34,9 +34,9 @@ var testBarVar;
 		}
 	});
 
-	angular.module('app5', ['classy-core', 'classy-foo', 'classy-bar']);
+	angular.module('app5', ['classy.core', 'classy.foo', 'classy.bar']);
 
-	angular.module('app6', ['app1', 'app2', 'classy-foo', 'classy-bar']);
+	angular.module('app6', ['app1', 'app2', 'classy.foo', 'classy.bar']);
 
 	angular.module('app7', ['app1']);
 
