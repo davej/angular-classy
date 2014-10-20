@@ -136,7 +136,7 @@
 
 			app.classy.controller({name: 'testPluginsController'});
 
-			expect(app.__classyPluginDefaults.foo.foo).toBe('boo');
+			expect(app.__classyDefaults.foo.foo).toBe('boo');
 			expect(testFooVar).toBe('baz');
 			expect(testBarVar).toBe('baz');
 		});
