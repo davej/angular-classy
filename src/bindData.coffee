@@ -22,7 +22,7 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
       if angular.isFunction data then data = data.call klass
       else if angular.isObject data
         for key, value of data
-          if typeof value is 'string'
+          if angular.isString(value)
             getter = @$parse value
             data[key] = getter(klass)
           else
