@@ -13,3 +13,11 @@ var returnedClassyArrayModule = angular.module('array-classy', ['classy']).class
 		this.$.foo = 'baz';
 	}
 }]);
+
+var returnedClassyNormalModule = angular.module('normal-classy', ['classy']).classy.controller({
+	name: 'hello',
+	inject: ['$scope'],
+	init: function() {
+		this.$.foo = 'bar';
+	}
+});
