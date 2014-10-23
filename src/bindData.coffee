@@ -33,3 +33,5 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
         klass[key] = value
         if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
           deps.$scope[key] = klass[key]
+
+    return

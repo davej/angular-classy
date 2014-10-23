@@ -43,3 +43,5 @@ angular.module('classy.watch', ['classy.core']).classy.plugin.controller
 
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
+
+    return

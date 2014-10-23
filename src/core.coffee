@@ -25,6 +25,7 @@ getActiveClassyPlugins = (name, origModule) ->
           origModule.__classyDefaults ?= {}
           origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
         getNextRequires(pluginName)
+    return
 
   return obj
 
@@ -35,6 +36,7 @@ pluginDo = (methodName, params, obj) ->
     obj?.before?(plugin)
     returnVal = plugin[methodName]?.apply(plugin, params)
     obj?.after?(plugin, returnVal)
+  return
 
 copyAndExtendDeep = (dst) ->
   for obj in arguments
@@ -122,6 +124,7 @@ classFns =
     pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
     pluginDo 'preInitAfter', [classConstructor, classObj, module]
+    return
 
   init: (klass, $inject, module) ->
     injectIndex = 0
@@ -137,6 +140,7 @@ classFns =
             dep = $inject[injectIndex]
             plugin[depName] = dep
             injectIndex++
+        return
 
     for depName in @localInject
       dep = $inject[injectIndex]
@@ -151,20 +155,24 @@ classFns =
         if returnVal?.then
           # Naively assume this is a promise
           pluginPromises.push(returnVal)
+        return
 
     initClass = ->
       klass.init?()
       pluginDo 'initAfter', [klass, deps, module]
       @postInit(klass, deps, module)
+      return
 
     if pluginPromises.length
       @$q.all(pluginPromises).then angular.bind(@, initClass)
     else
       angular.bind(@, initClass)()
+    return
 
   postInit: (klass, deps, module) ->
     pluginDo 'postInitBefore', [klass, deps, module]
     pluginDo 'postInit', [klass, deps, module]
     pluginDo 'postInitAfter', [klass, deps, module]
+    return
 
 angular.module('classy.core', [])

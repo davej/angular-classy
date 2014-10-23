@@ -7,3 +7,4 @@ angular.module('classy.register', ['classy.core']).classy.plugin.controller
     if @options.enabled and angular.isString(classObj[@options.key])
         # Register the controller using name
         module.controller classObj[@options.key], classConstructor
+    return

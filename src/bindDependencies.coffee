@@ -8,6 +8,7 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
 
     # Inject the `deps` if it's passed in as an array
     if angular.isArray(depNames) then @inject(classConstructor, depNames, module)
+    return
 
   inject: (classConstructor, depNames, module) ->
     pluginDepNames = []
@@ -21,6 +22,8 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
     # Add the `deps` to the controller's $inject annotations.
     classConstructor.$inject = depNames.concat pluginDepNames
 
+    return
+
   initBefore: (klass, deps, module) ->
     if @options.enabled
       # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
@@ -30,3 +33,4 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
         if key is '$scope' and @options.scopeShortcut
           # Add a shortcut to the $scope (by default `@$`)
           klass[@options.scopeShortcut] = klass[key]
+    return
