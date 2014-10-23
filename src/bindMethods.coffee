@@ -11,7 +11,7 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
     if !prefix then false
     else string.slice(0, prefix.length) is prefix
 
-  initBefore: (klass, deps, module) ->
+  init: (klass, deps, module) ->
     if @options.enabled
       # Adds controller functions (unless they have an `_` prefix) to the `$scope`
       for key, fn of klass.constructor::[@options.keyName]
