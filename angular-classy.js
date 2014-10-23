@@ -23,11 +23,10 @@ License: MIT
     obj = {};
     alreadyRegisteredModules[name] = true;
     (getNextRequires = function(name) {
-      var module, plugin, pluginName, _i, _len, _ref, _results;
+      var module, plugin, pluginName, _i, _len, _ref;
       if (alreadyRegisteredModules[name]) {
         module = angular.module(name);
         _ref = module.requires;
-        _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           pluginName = _ref[_i];
           plugin = availablePlugins[pluginName];
@@ -41,18 +40,16 @@ License: MIT
             }
             origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
           }
-          _results.push(getNextRequires(pluginName));
+          getNextRequires(pluginName);
         }
-        return _results;
       }
     })(name);
     return obj;
   };
 
   pluginDo = function(methodName, params, obj) {
-    var plugin, pluginName, plugins, returnVal, _ref, _results;
+    var plugin, pluginName, plugins, returnVal, _ref;
     plugins = params[0].__plugins || params[0].prototype.__plugins;
-    _results = [];
     for (pluginName in plugins) {
       plugin = plugins[pluginName];
       if (obj != null) {
@@ -61,9 +58,12 @@ License: MIT
         }
       }
       returnVal = (_ref = plugin[methodName]) != null ? _ref.apply(plugin, params) : void 0;
-      _results.push(obj != null ? typeof obj.after === "function" ? obj.after(plugin, returnVal) : void 0 : void 0);
+      if (obj != null) {
+        if (typeof obj.after === "function") {
+          obj.after(plugin, returnVal);
+        }
+      }
     }
-    return _results;
   };
 
   copyAndExtendDeep = function(dst) {
@@ -160,7 +160,7 @@ License: MIT
       }
       pluginDo('preInitBefore', [classConstructor, classObj, module]);
       pluginDo('preInit', [classConstructor, classObj, module]);
-      return pluginDo('preInitAfter', [classConstructor, classObj, module]);
+      pluginDo('preInitAfter', [classConstructor, classObj, module]);
     },
     init: function(klass, $inject, module) {
       var dep, depName, deps, initClass, injectIndex, key, pluginPromises, _i, _j, _len, _len1, _ref, _ref1;
@@ -174,17 +174,15 @@ License: MIT
       }
       pluginDo('null', [klass], {
         before: function(plugin) {
-          var dep, depName, _j, _len1, _ref1, _results;
+          var dep, depName, _j, _len1, _ref1;
           if (angular.isArray(plugin.localInject)) {
             _ref1 = plugin.localInject;
-            _results = [];
             for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
               depName = _ref1[_j];
               dep = $inject[injectIndex];
               plugin[depName] = dep;
-              _results.push(injectIndex++);
+              injectIndex++;
             }
-            return _results;
           }
         }
       });
@@ -200,7 +198,7 @@ License: MIT
       pluginDo('init', [klass, deps, module], {
         after: function(plugin, returnVal) {
           if (returnVal != null ? returnVal.then : void 0) {
-            return pluginPromises.push(returnVal);
+            pluginPromises.push(returnVal);
           }
         }
       });
@@ -209,18 +207,18 @@ License: MIT
           klass.init();
         }
         pluginDo('initAfter', [klass, deps, module]);
-        return this.postInit(klass, deps, module);
+        this.postInit(klass, deps, module);
       };
       if (pluginPromises.length) {
-        return this.$q.all(pluginPromises).then(angular.bind(this, initClass));
+        this.$q.all(pluginPromises).then(angular.bind(this, initClass));
       } else {
-        return angular.bind(this, initClass)();
+        angular.bind(this, initClass)();
       }
     },
     postInit: function(klass, deps, module) {
       pluginDo('postInitBefore', [klass, deps, module]);
       pluginDo('postInit', [klass, deps, module]);
-      return pluginDo('postInitAfter', [klass, deps, module]);
+      pluginDo('postInitAfter', [klass, deps, module]);
     }
   };
 
@@ -244,7 +242,7 @@ License: MIT
       }
     },
     init: function(klass, deps, module) {
-      var data, getter, key, value, _results;
+      var data, getter, key, value;
       if (this.options.enabled && klass.constructor.prototype[this.options.keyName]) {
         data = angular.copy(klass.constructor.prototype[this.options.keyName]);
         if (angular.isFunction(data)) {
@@ -260,17 +258,13 @@ License: MIT
             }
           }
         }
-        _results = [];
         for (key in data) {
           value = data[key];
           klass[key] = value;
           if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-            _results.push(deps.$scope[key] = klass[key]);
-          } else {
-            _results.push(void 0);
+            deps.$scope[key] = klass[key];
           }
         }
-        return _results;
       }
     }
   });
@@ -284,7 +278,7 @@ License: MIT
       var depNames;
       depNames = classObj.inject || [];
       if (angular.isArray(depNames)) {
-        return this.inject(classConstructor, depNames, module);
+        this.inject(classConstructor, depNames, module);
       }
     },
     inject: function(classConstructor, depNames, module) {
@@ -299,23 +293,19 @@ License: MIT
       }
       pluginDepNames = pluginDepNames.concat(classFns.localInject);
       classConstructor.__classDepNames = angular.copy(depNames);
-      return classConstructor.$inject = depNames.concat(pluginDepNames);
+      classConstructor.$inject = depNames.concat(pluginDepNames);
     },
     initBefore: function(klass, deps, module) {
-      var i, key, _i, _len, _ref, _results;
+      var i, key, _i, _len, _ref;
       if (this.options.enabled) {
         _ref = klass.constructor.$inject;
-        _results = [];
         for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
           key = _ref[i];
           klass[key] = deps[key];
           if (key === '$scope' && this.options.scopeShortcut) {
-            _results.push(klass[this.options.scopeShortcut] = klass[key]);
-          } else {
-            _results.push(void 0);
+            klass[this.options.scopeShortcut] = klass[key];
           }
         }
-        return _results;
       }
     }
   });
@@ -337,25 +327,19 @@ License: MIT
         return string.slice(0, prefix.length) === prefix;
       }
     },
-    initBefore: function(klass, deps, module) {
-      var fn, key, _ref, _results;
+    init: function(klass, deps, module) {
+      var fn, key, _ref;
       if (this.options.enabled) {
         _ref = klass.constructor.prototype[this.options.keyName];
-        _results = [];
         for (key in _ref) {
           fn = _ref[key];
           if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
             klass[key] = angular.bind(klass, fn);
             if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-              _results.push(deps.$scope[key] = klass[key]);
-            } else {
-              _results.push(void 0);
+              deps.$scope[key] = klass[key];
             }
-          } else {
-            _results.push(void 0);
           }
         }
-        return _results;
       }
     }
   });
@@ -367,7 +351,7 @@ License: MIT
     },
     preInit: function(classConstructor, classObj, module) {
       if (this.options.enabled && angular.isString(classObj[this.options.key])) {
-        return module.controller(classObj[this.options.key], classConstructor);
+        module.controller(classObj[this.options.key], classConstructor);
       }
     }
   });
@@ -402,13 +386,12 @@ License: MIT
       }
     },
     postInit: function(klass, deps, module) {
-      var expression, fn, keyword, watchFn, watchKeywords, watchRegistered, watchType, _i, _len, _ref, _ref1, _ref2, _results;
+      var expression, fn, keyword, watchFn, watchKeywords, watchRegistered, watchType, _i, _len, _ref, _ref1, _ref2;
       if (!this.isActive(klass, deps)) {
         return;
       }
       watchKeywords = this.options._watchKeywords;
       _ref = klass.watch;
-      _results = [];
       for (expression in _ref) {
         fn = _ref[expression];
         if (angular.isString(fn)) {
@@ -433,15 +416,10 @@ License: MIT
             }
           }
           if (!watchRegistered) {
-            _results.push(this.watchFns.normal(klass, expression, fn, deps));
-          } else {
-            _results.push(void 0);
+            this.watchFns.normal(klass, expression, fn, deps);
           }
-        } else {
-          _results.push(void 0);
         }
       }
-      return _results;
     }
   });
 

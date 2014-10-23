@@ -25,6 +25,7 @@ getActiveClassyPlugins = (name, origModule) ->
           origModule.__classyDefaults ?= {}
           origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
         getNextRequires(pluginName)
+    return
 
   return obj
 
@@ -35,6 +36,7 @@ pluginDo = (methodName, params, obj) ->
     obj?.before?(plugin)
     returnVal = plugin[methodName]?.apply(plugin, params)
     obj?.after?(plugin, returnVal)
+  return
 
 copyAndExtendDeep = (dst) ->
   for obj in arguments
@@ -122,6 +124,7 @@ classFns =
     pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
     pluginDo 'preInitAfter', [classConstructor, classObj, module]
+    return
 
   init: (klass, $inject, module) ->
     injectIndex = 0
@@ -137,6 +140,7 @@ classFns =
             dep = $inject[injectIndex]
             plugin[depName] = dep
             injectIndex++
+        return
 
     for depName in @localInject
       dep = $inject[injectIndex]
@@ -151,21 +155,25 @@ classFns =
         if returnVal?.then
           # Naively assume this is a promise
           pluginPromises.push(returnVal)
+        return
 
     initClass = ->
       klass.init?()
       pluginDo 'initAfter', [klass, deps, module]
       @postInit(klass, deps, module)
+      return
 
     if pluginPromises.length
       @$q.all(pluginPromises).then angular.bind(@, initClass)
     else
       angular.bind(@, initClass)()
+    return
 
   postInit: (klass, deps, module) ->
     pluginDo 'postInitBefore', [klass, deps, module]
     pluginDo 'postInit', [klass, deps, module]
     pluginDo 'postInitAfter', [klass, deps, module]
+    return
 
 angular.module('classy.core', [])
 angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
@@ -204,6 +212,8 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
         if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
           deps.$scope[key] = klass[key]
 
+    return
+
 angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller
   options:
     enabled: true
@@ -214,6 +224,7 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
 
     # Inject the `deps` if it's passed in as an array
     if angular.isArray(depNames) then @inject(classConstructor, depNames, module)
+    return
 
   inject: (classConstructor, depNames, module) ->
     pluginDepNames = []
@@ -227,6 +238,8 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
     # Add the `deps` to the controller's $inject annotations.
     classConstructor.$inject = depNames.concat pluginDepNames
 
+    return
+
   initBefore: (klass, deps, module) ->
     if @options.enabled
       # Takes the `$inject` dependencies and assigns a class-wide (`@`) variable to each one.
@@ -236,6 +249,7 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
         if key is '$scope' and @options.scopeShortcut
           # Add a shortcut to the $scope (by default `@$`)
           klass[@options.scopeShortcut] = klass[key]
+    return
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
   options:
     enabled: true
@@ -249,7 +263,7 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
     if !prefix then false
     else string.slice(0, prefix.length) is prefix
 
-  initBefore: (klass, deps, module) ->
+  init: (klass, deps, module) ->
     if @options.enabled
       # Adds controller functions (unless they have an `_` prefix) to the `$scope`
       for key, fn of klass.constructor::[@options.keyName]
@@ -257,6 +271,8 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
           klass[key] = angular.bind(klass, fn)
           if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
             deps.$scope[key] = klass[key]
+
+    return
 angular.module('classy.register', ['classy.core']).classy.plugin.controller
   options:
     enabled: true
@@ -266,6 +282,7 @@ angular.module('classy.register', ['classy.core']).classy.plugin.controller
     if @options.enabled and angular.isString(classObj[@options.key])
         # Register the controller using name
         module.controller classObj[@options.key], classConstructor
+    return
 angular.module('classy.watch', ['classy.core']).classy.plugin.controller
   options:
     enabled: true
@@ -311,5 +328,7 @@ angular.module('classy.watch', ['classy.core']).classy.plugin.controller
 
         # If no keywords have been found then register it as a normal watch
         if !watchRegistered then this.watchFns.normal(klass, expression, fn, deps)
+
+    return
 
 angular.module 'classy', ["classy.bindData","classy.bindDependencies","classy.bindMethods","classy.core","classy.register","classy.watch"]
