@@ -229,6 +229,7 @@ License: MIT
     options: {
       enabled: true,
       addToScope: true,
+      addToClass: true,
       privatePrefix: '_',
       keyName: 'data'
     },
@@ -260,9 +261,11 @@ License: MIT
         }
         for (key in data) {
           value = data[key];
-          klass[key] = value;
+          if (this.options.addToClass) {
+            klass[key] = value;
+          }
           if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-            deps.$scope[key] = klass[key];
+            deps.$scope[key] = value;
           }
         }
       }
@@ -314,6 +317,7 @@ License: MIT
     options: {
       enabled: true,
       addToScope: true,
+      addToClass: true,
       privatePrefix: '_',
       ignore: ['constructor', 'init'],
       keyName: 'methods'
@@ -328,15 +332,18 @@ License: MIT
       }
     },
     init: function(klass, deps, module) {
-      var fn, key, _ref;
+      var boundFn, fn, key, _ref;
       if (this.options.enabled) {
         _ref = klass.constructor.prototype[this.options.keyName];
         for (key in _ref) {
           fn = _ref[key];
           if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
-            klass[key] = angular.bind(klass, fn);
+            boundFn = angular.bind(klass, fn);
+            if (this.options.addToClass) {
+              klass[key] = boundFn;
+            }
             if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-              deps.$scope[key] = klass[key];
+              deps.$scope[key] = boundFn;
             }
           }
         }

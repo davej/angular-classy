@@ -5,9 +5,10 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
   options:
     enabled: true
     addToScope: true
+    addToClass: true
     privatePrefix: '_'
     keyName: 'data'
-    
+
   hasPrivatePrefix: (string) ->
     prefix = @options.privatePrefix
     if !prefix then false
@@ -30,8 +31,9 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
 
 
       for key, value of data
-        klass[key] = value
+        if @options.addToClass
+          klass[key] = value
         if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
-          deps.$scope[key] = klass[key]
+          deps.$scope[key] = value
 
     return
