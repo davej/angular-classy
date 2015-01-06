@@ -14,13 +14,13 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
 
   init: (klass, deps, module) ->
     if @options.enabled
-      # Adds controller functions (unless they have an `_` prefix) to the `$scope`
       for key, fn of klass.constructor::[@options.keyName]
         if angular.isFunction(fn) and !(key in @options.ignore)
           boundFn = angular.bind(klass, fn)
           if @options.addToClass
             klass[key] = boundFn
           if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
+            # Adds controller functions (unless they have an `_` prefix) to the `$scope`
             deps.$scope[key] = boundFn
 
     return
