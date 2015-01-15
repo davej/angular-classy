@@ -14,6 +14,7 @@ bowerLatest = require('bower-latest')
 highlight.registerLanguage('coffeescript', coffeeSyntax)
 highlight.registerLanguage('javascript', javascriptSyntax)
 classyVersion = null
+templateFiles = [ "index.template", "beta.template", "1.0.template" ]
 
 gulp.task "default", [ "include", "sass" ]
 
@@ -42,7 +43,7 @@ getClassyVersion = -> classyVersion
 
 gulp.task "include", ['docco', 'coffee'], ->
 
-  gulp.src([ "index.template", "beta.template" ])
+  gulp.src(templateFiles)
   .pipe include
     prefix: "@@"
     basepath: "@file"
@@ -64,3 +65,9 @@ gulp.task "coffee", ->
   gulp.src("./scripts/main.coffee")
   .pipe coffee()
   .pipe gulp.dest("./scripts/")
+
+gulp.task "watch", ->
+  gulp.watch("./styles/*.scss", ["sass"])
+  gulp.watch("./scripts/main.coffee", ["coffee"])
+  gulp.watch(templateFiles, ["include"])
+  gulp.watch("./example_code/**/*.{js,coffee}", ["include"])
