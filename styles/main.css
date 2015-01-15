@@ -601,6 +601,10 @@ body.changelog {
   body.changelog .features {
     width: auto;
     max-width: 100%; }
+  body.changelog > header {
+    border-top: none; }
+  body.changelog header h1 {
+    text-align: center; }
 
 @font-face {
   font-family: 'classy';

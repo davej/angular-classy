@@ -11,4 +11,12 @@ body.changelog {
     width: auto;
     max-width: 100%;
   }
+
+  > header {
+    border-top: none;
+  }
+
+  header h1 {
+    text-align: center;
+  }
 }

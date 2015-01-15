@@ -20,10 +20,12 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <header>&nbsp;</header>
+        <header>
+          <h1><a href="index.html"><img src="images/logo.svg" title="Angular Classy" alt="Angular Classy logo" width="362" height="149"></a></h1>
+        </header>
 
         <div class="main-content">
-            <h2>What's new in Angular Classy 1.0 Beta?</h2>
+            <h2>What's new in Classy 1.0?</h2>
 
             <div class="features">
 
@@ -33,7 +35,7 @@
 
                 <p>If you want to write your own plugins then head on over to <a href="https://github.com/davej/classy-plugins" target="_blank">the classy-plugins repo for more information</a>. This will be expanded with more detail over time, if you have a question then raise an issue.</p>
 
-                <p>It's early days but there is a list of the current Classy plugins on the <a href="http://davej.github.io/angular-classy/" target="_blank">Classy homepage</a>:</p>
+                <p>It's early days but you can view a list of the current Classy plugins on the <a href="http://davej.github.io/angular-classy/" target="_blank">Classy homepage</a>.</p>
 
                 <hr>
 
