@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Angular Classy 1.0 Changelog</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/png" href="favicon.png">
+
+        <link href='http://fonts.googleapis.com/css?family=Signika:600|Inconsolata' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+    <body class="changelog">
+        <!--[if lt IE 9]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <header>&nbsp;</header>
+
+        <div class="main-content">
+            <h2>What's new in Angular Classy 1.0 Beta?</h2>
+
+            <div class="features">
+
+                <h3><i class="icon-star"></i> Plugins</h3>
+
+                <p>This is the headline feature! Angular Classy now supports plugins so you can extend Classy with useful features like mixins and computed properties.</p>
+
+                <p>If you want to write your own plugins then head on over to <a href="https://github.com/davej/classy-plugins" target="_blank">the classy-plugins repo for more information</a>. This will be expanded with more detail over time, if you have a question then raise an issue.</p>
+
+                <p>It's early days but there is a list of the current Classy plugins on the <a href="http://davej.github.io/angular-classy/" target="_blank">Classy homepage</a>:</p>
+
+                <hr>
+
+                <h3><i class="icon-align-left"></i> More Structure</h3>
+                <h4>Data</h4>
+                <p>There is now a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
+                <p>There are two ways to use the data property. You can either use an object which allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
+
+                <pre class="block-code javascript-code"><code><span class="hljs-object-key">data:</span> {
+  <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+}
+</code></pre>
+
+                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">data:</span>
+  <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+</code></pre>
+
+                <p>Or, if you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
+
+                <pre class="block-code javascript-code"><code><span class="hljs-object-key">data:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-object-key">todos:</span> <span class="hljs-keyword">this</span>.todoStorage.get(),
+    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+  }
+}</code></pre>
+
+                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">data:</span><span class="hljs-function"> -&gt;</span>
+  <span class="hljs-object-key">todos:</span> <span class="hljs-keyword">this</span>.todoStorage.get()
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span></code></pre>
+
+                <h4>Methods</h4>
+
+                <p>Controller methods work just as before (pre-1.0) but they are now defined within the <code class="inline-code">methods</code> property. This is a small bit more verbose but it provides a clearer structure and avoids confusion with Classy properties (name/inject/data/init/watch) and any future properties which will be used by Classy plugins.</p>
+
+                <hr>
+
+                <h3>Multiple controllers definition and chaining</h3>
+
+                <p>Earlier versions of Angular Classy didn't allow chaining (of services, routes and factories etc.) with Classy controllers. This was done to allow you to use Classy controllers inline with directives.</p>
+
+                <p>We are maintaining support for directives but also introducing a new syntax: <code class="inline-code">classy.controllers</code> (notice the 's' at the end) that takes an array of controllers and supports chaining so now you can do:</p>
+
+                <pre class="block-code javascript-code"><code>angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>])
+  .classy.controllers([{
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">'BarController'</span>,
+    <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>],
+    <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">this</span>.$.foo = <span class="hljs-string">'bar'</span>;
+    }
+  }, {
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">'BazController'</span>,
+    <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>],
+    <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">this</span>.$.foo = <span class="hljs-string">'baz'</span>;
+    }
+  }])
+  .service(
+    <span class="hljs-comment">// Service here</span>
+  )
+  .config(
+    <span class="hljs-comment">// Config here</span>
+  );</code></pre>
+
+                <pre class="block-code coffeescript-code hide"><code>angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">"app"</span>, [ <span class="hljs-string">"classy"</span> ])
+  .classy.controllers([
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">"BarController"</span>
+    <span class="hljs-object-key">inject:</span> [ <span class="hljs-string">"$scope"</span> ]
+    <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@$</span>.foo = <span class="hljs-string">"bar"</span>
+  ,
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">"BazController"</span>
+    <span class="hljs-object-key">inject:</span> [ <span class="hljs-string">"$scope"</span> ]
+    <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@$</span>.foo = <span class="hljs-string">"baz"</span>
+  ]).service(
+    <span class="hljs-comment"># Service here</span>
+  ).config(
+    <span class="hljs-comment"># Config here</span>
+  )</code></pre>
+
+            </div>
+
+        </div>
+
+        <footer>
+            &copy; Dave Jeffery 2014. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
+        </footer>
+
+        <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22https%3A%2F%2Fbower-component-list.herokuapp.com%2Fkeyword%2Fclassy-plugin%22&amp;format=json&amp;diagnostics=true&amp;callback=initClassyPluginList"></script>
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-6949082-2');ga('send','pageview');
+        </script>
+    </body>
+</html>

@@ -592,6 +592,16 @@ body.beta {
   body.beta .installation, body.beta .more-info {
     background: rgba(0, 0, 0, 0.5); }
 
+body.changelog {
+  max-width: 640px;
+  margin: 0 auto; }
+  body.changelog .main-content h2 {
+    width: auto;
+    max-width: 100%; }
+  body.changelog .features {
+    width: auto;
+    max-width: 100%; }
+
 @font-face {
   font-family: 'classy';
   src: url('font/classy.eot?92462613');
