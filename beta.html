@@ -50,17 +50,19 @@
 
                 <h3><i class="icon-align-left"></i> More Structure</h3>
                 <h4>Data</h4>
-                <p>There is now a <code>data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code>init</code> method.
+                <p>There is now a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
                 <p>There are two ways to use the data property. You can either use an object which allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
 
                 <pre class="block-code javascript-code"><code><span class="hljs-object-key">data:</span> {
   <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
-  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-string">'null'</span>
-}</code></pre>
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+}
+</code></pre>
 
                 <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">data:</span>
   <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>
-  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-string">'null'</span></code></pre>
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+</code></pre>
 
                 <p>Or, if you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
 
@@ -77,7 +79,7 @@
 
                 <h4>Methods</h4>
 
-                <p>Controller methods work just as before (pre-1.0) but they are now defined within the <code>methods</code> property. This is a small bit more verbose but it provides a clearer structure and avoids confusion with Classy properties (name/inject/data/init/watch) and any future properties which will be used by Classy plugins.</p>
+                <p>Controller methods work just as before (pre-1.0) but they are now defined within the <code class="inline-code">methods</code> property. This is a small bit more verbose but it provides a clearer structure and avoids confusion with Classy properties (name/inject/data/init/watch) and any future properties which will be used by Classy plugins.</p>
 
                 <hr>
 
@@ -85,7 +87,7 @@
 
                 <p>Earlier versions of Angular Classy didn't allow chaining (of services, routes and factories etc.) with Classy controllers. This was done to allow you to use Classy controllers inline with directives.</p>
 
-                <p>We are maintaining support for directives but also introducing a new syntax <code>classy.controllers</code> (notice the 's' at the end) that takes an array of controllers and supports chaining so now you can do:</p>
+                <p>We are maintaining support for directives but also introducing a new syntax: <code class="inline-code">classy.controllers</code> (notice the 's' at the end) that takes an array of controllers and supports chaining so now you can do:</p>
 
                 <pre class="block-code javascript-code"><code>angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>])
   .classy.controllers([{
@@ -150,13 +152,13 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>
 
   <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
-easily using angular expressions.</p>
-<p>Classy automatically makes items in the data object available class-wide and also on the <code>$scope</code>.</p>
+easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">data:</span>
     <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
-    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-string">'null'</span></pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
+    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span></pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
 You can access your dependencies using the class-wide <code>@</code> symbol.
 The <code>$scope</code> is available using <code>@$</code> (or you can use <code>@$scope</code> if you prefer).</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span>
@@ -191,13 +193,13 @@ app.classy.controller({
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
 
   <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
-easily using angular expressions.</p>
-<p>Classy automatically makes items in the data object available class-wide and also on the <code>$scope</code>.</p>
+easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">data:</span> {
     <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
-    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-string">'null'</span>
+    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
   },</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
 You can access your dependencies using the class-wide <code>this</code> symbol.
 The <code>$scope</code> is available using <code>this.$</code> (or you can use <code>this.$scope</code> if you prefer).</p>
@@ -274,7 +276,7 @@ so you can easily access it using directives like ng-click.</p>
              <section class="more-info">
                 <h3><i class="icon-info"></i> More Info</h3>
                 <ul>
-                  <li>Version: 1.0.0-beta.6</li>
+                  <li>Version: 1.0.0-beta.8</li>
                   <li>Compatible with AngularJS 1.1, 1.2 &amp; 1.3
                     <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
                     <li>Test status:
@@ -284,7 +286,7 @@ so you can easily access it using directives like ng-click.</p>
                     </li>
                     <li>License: MIT</li>
                     <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
-                    <li>Find Angular Classy useful? <a href="http://twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
+                    <li>Find Angular Classy useful? <a href="https://www.twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
                 </ul>
               </section>
 

@@ -284,7 +284,7 @@ body > header {
   overflow: hidden;
   padding: 45px;
   padding-bottom: 70px;
-  padding-right: 0; 
+  padding-right: 0;
   // margin-left: -180px;
 }
 
@@ -376,6 +376,10 @@ body > header {
     position: relative;
     // height: 300px;
     overflow: hidden;
+
+    a {
+      color: #222;
+    }
 
     pre {
       margin: 0;
@@ -632,7 +636,7 @@ footer {
     overflow: auto;
     padding: 0;
     padding-bottom: 0;
-    padding-right: 0; 
+    padding-right: 0;
     margin: 0 auto;
 
     .installation, .more-info {

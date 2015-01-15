@@ -13,15 +13,15 @@ app.classy.controller
   inject: ['$scope', '$location', 'todoStorage', 'filterFilter']
 
 # **New in 1.0!** The data object is a simple structure that allows you to assign properties
-# easily using angular expressions.
+# easily using [angular expressions](https://docs.angularjs.org/guide/expression).
 #
-# Classy automatically makes items in the data object available class-wide and also on the `$scope`.
+# Classy automatically makes items in the data object available class-wide (and on the `$scope`).
 #
 # This feature helps to move boilerplate assignments out of the `init` method.
 
   data:
     todos: 'todoStorage.get()',
-    editedTodo: 'null'
+    editedTodo: null
 
 # An init method for your initialization code!
 # You can access your dependencies using the class-wide `@` symbol.

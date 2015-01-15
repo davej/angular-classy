@@ -355,6 +355,8 @@ body > header {
     background: #494f57;
     position: relative;
     overflow: hidden; }
+    .code-editor .editor a {
+      color: #222; }
     .code-editor .editor pre {
       margin: 0;
       color: rgba(255, 255, 255, 0.9);

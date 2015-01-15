@@ -1,4 +1,4 @@
 data: {
   todos: 'todoStorage.get()',
-  editedTodo: 'null'
+  editedTodo: null
 }

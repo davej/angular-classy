@@ -10,13 +10,13 @@ app.classy.controller({
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
 
   <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
-easily using angular expressions.</p>
-<p>Classy automatically makes items in the data object available class-wide and also on the <code>$scope</code>.</p>
+easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">data:</span> {
     <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
-    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-string">'null'</span>
+    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
   },</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
 You can access your dependencies using the class-wide <code>this</code> symbol.
 The <code>$scope</code> is available using <code>this.$</code> (or you can use <code>this.$scope</code> if you prefer).</p>
