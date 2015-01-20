@@ -23,13 +23,15 @@ todomvc.classy.controller({
 				{ completed: false } : (path === '/completed') ?
 				{ completed: true } : null;
 		},
-		'{object}todos': '_onTodoChange'
+		'{object}todos': '_onTodoChanges'
 	},
 
 	methods: {
+		getRemainingCount: '(todos | filter:{ completed: false }).length',
+
 		_onTodoChange: function (newValue, oldValue) {
-			this.$.remainingCount = this.filterFilter(this.$.todos, { completed: false }).length;
-			this.$.completedCount = this.$.todos.length - this.$scope.remainingCount;
+			this.$.remainingCount = this.getRemainingCount();
+			this.$.completedCount = this.$.todos.length - this.$.remainingCount;
 			this.$.allChecked = !this.$.remainingCount;
 			if (newValue !== oldValue) { // This prevents unneeded calls to the local storage
 				this.todoStorage.put(this.$.todos);

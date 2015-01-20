@@ -314,6 +314,7 @@ License: MIT
   });
 
   angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
+    localInject: ['$parse'],
     options: {
       enabled: true,
       addToScope: true,
@@ -332,13 +333,20 @@ License: MIT
       }
     },
     init: function(klass, deps, module) {
-      var boundFn, fn, key, _ref;
+      var boundFn, fn, getter, key, _ref;
       if (this.options.enabled) {
         _ref = klass.constructor.prototype[this.options.keyName];
         for (key in _ref) {
           fn = _ref[key];
           if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
             boundFn = angular.bind(klass, fn);
+          } else if (angular.isString(fn)) {
+            getter = this.$parse(fn);
+            boundFn = function() {
+              return getter(klass);
+            };
+          }
+          if (angular.isFunction(boundFn)) {
             if (this.options.addToClass) {
               klass[key] = boundFn;
             }
@@ -402,6 +410,7 @@ License: MIT
       for (expression in _ref) {
         fn = _ref[expression];
         if (angular.isString(fn)) {
+          console.log(klass[fn]);
           fn = klass[fn];
         }
         if (angular.isString(expression) && angular.isFunction(fn)) {

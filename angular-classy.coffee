@@ -253,6 +253,8 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
           klass[@options.scopeShortcut] = klass[key]
     return
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
+  localInject: ['$parse'],
+
   options:
     enabled: true
     addToScope: true
@@ -271,6 +273,11 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller
       for key, fn of klass.constructor::[@options.keyName]
         if angular.isFunction(fn) and !(key in @options.ignore)
           boundFn = angular.bind(klass, fn)
+        else if angular.isString(fn)
+          getter = @$parse fn
+          boundFn = -> getter(klass);
+
+        if angular.isFunction(boundFn)
           if @options.addToClass
             klass[key] = boundFn
           if @options.addToScope and !@hasPrivatePrefix(key) and deps.$scope
@@ -319,7 +326,9 @@ angular.module('classy.watch', ['classy.core']).classy.plugin.controller
     watchKeywords = @options._watchKeywords
 
     for expression, fn of klass.watch
-      if angular.isString(fn) then fn = klass[fn]
+      if angular.isString(fn)
+        console.log(klass[fn]);
+        fn = klass[fn]
       if angular.isString(expression) and angular.isFunction(fn)
         watchRegistered = false
 
