@@ -410,7 +410,6 @@ License: MIT
       for (expression in _ref) {
         fn = _ref[expression];
         if (angular.isString(fn)) {
-          console.log(klass[fn]);
           fn = klass[fn];
         }
         if (angular.isString(expression) && angular.isFunction(fn)) {

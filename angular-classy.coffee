@@ -326,9 +326,7 @@ angular.module('classy.watch', ['classy.core']).classy.plugin.controller
     watchKeywords = @options._watchKeywords
 
     for expression, fn of klass.watch
-      if angular.isString(fn)
-        console.log(klass[fn]);
-        fn = klass[fn]
+      if angular.isString(fn) then fn = klass[fn]
       if angular.isString(expression) and angular.isFunction(fn)
         watchRegistered = false
 
