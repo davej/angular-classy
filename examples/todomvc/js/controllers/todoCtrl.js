@@ -23,7 +23,7 @@ todomvc.classy.controller({
 				{ completed: false } : (path === '/completed') ?
 				{ completed: true } : null;
 		},
-		'{object}todos': '_onTodoChanges'
+		'{object}todos': '_onTodoChange'
 	},
 
 	methods: {
