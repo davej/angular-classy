@@ -140,6 +140,9 @@
                       <option name="coffeescript">Coffeescript</option>
                     </select>
                   </span>
+                  <!--<div class="plunkr">
+                    <button>View/Edit on Plunkr</button>
+                  </div>-->
                 </div>
                 <div class="editor">
                   <pre class="coffeescript-code hide"><code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
@@ -151,7 +154,7 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>
 
-  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
 easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
 <p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
@@ -179,8 +182,10 @@ so you can easily access it using directives like ng-click.</p>
 <span class="hljs-background-line">        title: newTodo<span class="hljs-hide"> #!</span></span>
 <span class="hljs-background-line">        completed: false<span class="hljs-hide"> #!</span></span>
 
+    <span class="hljs-object-key">_getIncompleteTodos:</span> <span class="hljs-string">'todos | filter:{ complete: false }'</span>
+
     <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-params">(newValue, oldValue)</span> -&gt;</span>
-<span class="hljs-background-line">      @$.remainingCount = @filterFilter(@todos, completed: false).length<span class="hljs-hide"> #!</span></span></pre></div></section></code></pre>
+<span class="hljs-background-line">      @$.remainingCount = _getIncompleteTodos().length<span class="hljs-hide"> #!</span></span></pre></div></section></code></pre>
                   <pre class="javascript-code"><code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
 </div></div><div class='highlight'><pre>
 <span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Registers your controller and inject your dependencies.
@@ -192,7 +197,7 @@ app.classy.controller({
 
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
 
-  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
 easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
 <p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
@@ -230,9 +235,10 @@ so you can easily access it using directives like ng-click.</p>
 <span class="hljs-background-line">      });<span class="hljs-hide"> //!</span></span>
     },
 
+    <span class="hljs-object-key">_getIncompleteTodos:</span> <span class="hljs-string">'todos | filter:{ completed: false }'</span>,
+
     <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newValue, oldValue)</span> </span>{
-<span class="hljs-background-line">      this.$.remainingCount =<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">        this.filterFilter(this.$.todos, { completed: false }).length;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this.$.remainingCount = this._getIncompleteTodos().length;<span class="hljs-hide"> //!</span></span>
     }
   }
 

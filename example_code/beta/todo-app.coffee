@@ -10,7 +10,7 @@ app.classy.controller
 
   name: 'TodoCtrl'
 
-  inject: ['$scope', '$location', 'todoStorage', 'filterFilter']
+  inject: ['$scope', '$location', 'todoStorage']
 
 # **New in 1.0!** The data object is a simple structure that allows you to assign properties
 # easily using [angular expressions](https://docs.angularjs.org/guide/expression).
@@ -51,5 +51,7 @@ app.classy.controller
         title: newTodo #!
         completed: false #!
 
+    _getIncompleteTodos: 'todos | filter:{ complete: false }'
+
     _onTodoChange: (newValue, oldValue) ->
-      @$.remainingCount = @filterFilter(@todos, completed: false).length #!
+      @$.remainingCount = _getIncompleteTodos().length #!

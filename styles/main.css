@@ -351,6 +351,19 @@ body > header {
       background: -webkit-radial-gradient(  #00D640, #00DA43);
       background: radial-gradient(   #00D640, #00DA43);
       border-color: #12B728; }
+    .code-editor .toolbar .plunkr {
+      position: absolute;
+      right: 8px;
+      top: 0; }
+      .code-editor .toolbar .plunkr button {
+        height: 19px;
+        line-height: 14px;
+        font-size: 12px;
+        background: #aaa;
+        border: 0;
+        border-radius: 9px;
+        color: black;
+        padding: 0 11px; }
   .code-editor .editor {
     background: #494f57;
     position: relative;

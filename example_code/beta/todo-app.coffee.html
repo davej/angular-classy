@@ -7,7 +7,7 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>
 
-  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to assign properties
 easily using <a href="https://docs.angularjs.org/guide/expression">angular expressions</a>.</p>
 <p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
@@ -35,5 +35,7 @@ so you can easily access it using directives like ng-click.</p>
 <span class="hljs-background-line">        title: newTodo<span class="hljs-hide"> #!</span></span>
 <span class="hljs-background-line">        completed: false<span class="hljs-hide"> #!</span></span>
 
+    <span class="hljs-object-key">_getIncompleteTodos:</span> <span class="hljs-string">'todos | filter:{ complete: false }'</span>
+
     <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-params">(newValue, oldValue)</span> -&gt;</span>
-<span class="hljs-background-line">      @$.remainingCount = @filterFilter(@todos, completed: false).length<span class="hljs-hide"> #!</span></span></pre></div></section></code>
+<span class="hljs-background-line">      @$.remainingCount = _getIncompleteTodos().length<span class="hljs-hide"> #!</span></span></pre></div></section></code>

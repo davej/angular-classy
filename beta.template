@@ -94,6 +94,9 @@
                       <option name="coffeescript">Coffeescript</option>
                     </select>
                   </span>
+                  <!--<div class="plunkr">
+                    <button>View/Edit on Plunkr</button>
+                  </div>-->
                 </div>
                 <div class="editor">
                   <pre class="coffeescript-code hide">@@include('example_code/beta/todo-app.coffee.html')</pre>

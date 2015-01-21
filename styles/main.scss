@@ -369,6 +369,23 @@ body > header {
       // top: 5px;
       // font-size: 10px;
     }
+
+    .plunkr {
+      position: absolute;
+      right: 8px;
+      top: 0;
+
+      button {
+        height: 19px;
+        line-height: 14px;
+        font-size: 12px;
+        background: #aaa;
+        border: 0;
+        border-radius: 9px;
+        color: black;
+        padding: 0 11px;
+      }
+    }
   }
 
   .editor {
