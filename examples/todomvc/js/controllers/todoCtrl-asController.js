@@ -10,7 +10,7 @@
 
 todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
-	inject: ['$scope', '$location', 'todoStorage', 'filterFilter'],
+	inject: ['$scope', '$location', 'todoStorage'],
 	__options: {
 		'bindData': {
 			addToScope: false
@@ -45,8 +45,10 @@ todomvc.classy.controller({
 	},
 
 	methods: {
+		_getRemainingCount: '(todos | filter:{ completed: false }).length',
+
 		_onTodoChange: function (newValue, oldValue) {
-			this.remainingCount = this.filterFilter(this.todos, { completed: false }).length;
+			this.remainingCount = this._getRemainingCount();
 			this.completedCount = this.todos.length - this.remainingCount;
 			this.allChecked = !this.remainingCount;
 			if (newValue !== oldValue) { // This prevents unneeded calls to the local storage
