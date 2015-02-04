@@ -14,13 +14,16 @@ bowerLatest = require('bower-latest')
 highlight.registerLanguage('coffeescript', coffeeSyntax)
 highlight.registerLanguage('javascript', javascriptSyntax)
 classyVersion = null
-templateFiles = [ "index.template", "beta.template", "1.0.template" ]
+templateFiles = [ "index.template", "beta.template", "1.0.template", "upcoming.template" ]
 
 gulp.task "default", [ "include", "sass" ]
 
 gulp.task "docco", (cb) ->
   docco.document
-    args: ['./example_code/todo-app.js', './example_code/todo-app.coffee', './example_code/beta/todo-app.js', './example_code/beta/todo-app.coffee']
+    args: ['./example_code/todo-app.js', './example_code/todo-app.coffee',
+           './example_code/beta/todo-app.js', './example_code/beta/todo-app.coffee',
+           './example_code/1.0/todo-app.js', './example_code/1.0/todo-app.coffee',
+           ]
     template: './example_code/code-hint.jst'
     output: './example_code/../'
 

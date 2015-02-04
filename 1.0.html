@@ -72,6 +72,10 @@
 
                 <p>Controller methods work just as before (pre-1.0) but they are now defined within the <code class="inline-code">methods</code> property. This is a small bit more verbose but it provides a clearer structure and avoids confusion with Classy properties (name/inject/data/init/watch) and any future properties which will be used by Classy plugins.</p>
 
+                <h5>Method Expression</h5>
+
+                <p>You can now define methods using angular expressions. Whenever the method is called it will evaluate the expression and return the expression's result. Often, an expression will be much more concise and readable than a full method definition.</p>
+
                 <hr>
 
                 <h3>Multiple controllers definition and chaining</h3>
