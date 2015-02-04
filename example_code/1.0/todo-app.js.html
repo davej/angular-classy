@@ -1,0 +1,59 @@
+<code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
+</div></div><div class='highlight'><pre>
+<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Registers your controller and inject your dependencies.
+Injecting dependencies with Classy plays nice with minifiers, you don’t need to annotate
+your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
+<p>By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</p>
+</div></div><div class='highlight'><pre>
+app.classy.controller({
+
+  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
+
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'todoStorage'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to easily assign properties.</p>
+<p>You can either use a string representing an <a href="https://docs.angularjs.org/guide/expression">angular expression</a>,
+or you can directly assign any other object/primitive.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
+<p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">data:</span> {
+    <span class="hljs-object-key">items:</span> <span class="hljs-string">'todoStorage.get()'</span>
+  },</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
+You can access your dependencies using the class-wide <code>this</code> symbol.
+The <code>$scope</code> is available using <code>this.$</code> (or you can use <code>this.$scope</code> if you prefer).</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>._resetEntryField();
+  },</pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with calls to <code>$scope.$watch</code>,
+you can put your watchers in the watch object instead.
+If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">watch:</span> {
+    <span class="hljs-string">'{object}items'</span>: <span class="hljs-string">'_onTodoChange'</span>
+  },</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> Controller methods are defined inside of the <code>methods</code> object.</p>
+<p>Classy automatically makes methods available class-wide (through <code>this.methodName</code>) and also on the <code>$scope</code>
+so you can easily access it using directives like ng-click.</p>
+<p>Prefix the method name with an underscore and Classy wont add it to the $scope.</p>
+<p>You can also define methods using angular expressions (see <code>_getRemainingCount()</code>).
+Whenever the method is called it will evaluate the expression and return the expression’s result.</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">methods:</span> {
+
+    <span class="hljs-object-key">_getRemainingCount:</span> <span class="hljs-string">'items | filter:{ complete: false }'</span>,
+
+    <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.remainingCount = this._getRemainingCount().length;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this.todoStorage.put(this.items);<span class="hljs-hide"> //!</span></span>
+    },
+
+    <span class="hljs-object-key">addTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.items.push({text: this.$.newTodo, complete: false});<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this._resetEntryField();<span class="hljs-hide"> //!</span></span>
+    },
+
+    <span class="hljs-object-key">_resetTodoEntry:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.newTodo = '';<span class="hljs-hide"> //!</span></span>
+    }
+
+  }
+
+<span class="hljs-background-line">});<span class="hljs-hide"> //!</span></span></pre></div></section></code>
