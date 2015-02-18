@@ -63,16 +63,19 @@
 
                 <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/annotation-classy.js'))</code></pre>
 
-                <hr>
 
-                <h3><i class="icon-code"></i> Accessing <code>$scope</code> and dependencies</h3>
+                <h4> Accessing <code>$scope</code> and dependencies</h4>
 
                 <p>Dependencies are available using <code class="inline-code coffeescript-code hide">@DependencyName</code><code class="inline-code javascript-code">this.DependencyName</code>.
                 <p>To access the <code class="inline-code">$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code class="inline-code">this.$scope</code> if you prefer.
 
-                <h5><a href="#" class="toggle-section">Don't want to use $scope?</a></h5>
+                <h5><a href="#" class="toggle-section">Want to use <code>controllerAs</code> instead of <code>$scope</code>?</a></h5>
                 <div class="hide-this">
-                  <p>No problem, Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent data/methods from being added to the $scope by changing the config. You can do this on a per-module basis</p>
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-module.js'))</code></pre>
+
+                  <p>or on a per-controller basis:</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-controller.js'))</code></pre>
                 </div>
 
                 <hr>
@@ -80,17 +83,22 @@
                 <h3>Data Initialisation</h3>
 
                 <p>There is now a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
-                <p>There are two ways to use the data property. You can either use an object which allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
+                <p>The <code>data</code> object allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
 
                 <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/beta/data-object.js'))</code></pre>
 
                 <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/data-object.coffee'))</code></pre>
 
-                <p>Or, if you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
+                <h5><a href="#" class="toggle-section">What's the alternative syntax?</a></h5>
+                <div class="hide-this">
+                  <p>If you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
 
-                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/beta/data-function.js'))</code></pre>
+                  <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/beta/data-function.js'))</code></pre>
 
-                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/data-function.coffee'))</code></pre>
+                  <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/data-function.coffee'))</code></pre>
+                </div>
+
+
 
                 <hr>
 
@@ -135,10 +143,10 @@
 
                 <h3><i class="icon-code"></i> <code>Methods</code></h3>
 
-                <p>Most of the time when you add a method to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here's how it looks <strong>with Classy</strong>:</p>
+                <p>Most of the time when you add a method to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here is how methods look <strong>with Classy</strong>:</p>
 
-                <pre class="block-code coffeescript-code hide"><code>@include(highlightCoffee('example_code/scope-classy.coffee'))</code></pre>
-                <pre class="block-code javascript-code"><code>@include(highlightJS('example_code/scope-classy.js'))</code></pre>
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/1.0/methods.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/1.0/methods.js'))</code></pre>
 
 
                 <p>If you don't want the function to be on the <code class="inline-code">$scope</code> then just prefix it with an underscore character (<code>_</code>).</p>
@@ -147,8 +155,8 @@
 
                 <p>You can now define methods using angular expressions. Whenever the method is called it will evaluate the expression and return the expression's result. Often, an expression will be much more concise and readable than a full method definition.</p>
 
-                <pre class="block-code coffeescript-code hide"><code>Example</code></pre>
-                <pre class="block-code javascript-code"><code>Example</code></pre>
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/1.0/method-expressions.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/1.0/method-expressions.js'))</code></pre>
 
                 <hr>
 
@@ -169,7 +177,7 @@
                 </table>
                 <hr>
 
-                <h3><i class="icon-resize-small"></i> Only 1KB (gzipped and minified)</h3>
+                <h3><i class="icon-resize-small"></i> Only 2KB (gzipped and minified)</h3>
 
                 <p>it's super tiny so you don't have to worry about it adding weight to your application.</p>
 
@@ -293,7 +301,7 @@
         </div>
 
         <footer>
-            &copy; Dave Jeffery 2014. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
+            &copy; Dave Jeffery 2015. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
         </footer>
 
 
