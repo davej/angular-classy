@@ -62,7 +62,7 @@ angular.module = (name, reqs, configFn) ->
     if name is 'classy.core' then availablePlugins[name] = {}
 
     activeClassyPlugins = getActiveClassyPlugins(name, module)
-        
+
     if activeClassyPlugins['classy.core']
       module.classy =
         plugin:
@@ -119,7 +119,7 @@ classFns =
     for pluginName, plugin of module.classy.activePlugins
       classConstructor::__plugins[pluginName] = angular.copy(plugin)
       classConstructor::__plugins[pluginName].classyOptions = options
-      classConstructor::__plugins[pluginName].options = options[plugin.name] or {}
+      classConstructor::__plugins[pluginName].options = angular.copy {}, (options[plugin.name] or {}), options
 
     pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
