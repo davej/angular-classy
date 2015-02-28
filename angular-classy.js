@@ -143,20 +143,27 @@ License: MIT
   classFns = {
     localInject: ['$q'],
     preInit: function(classConstructor, classObj, module) {
-      var key, options, plugin, pluginName, value, _ref;
+      var key, option, optionName, options, plugin, pluginName, shorthandOptions, value, _ref;
       for (key in classObj) {
         if (!__hasProp.call(classObj, key)) continue;
         value = classObj[key];
         classConstructor.prototype[key] = value;
       }
       options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
+      shorthandOptions = {};
+      for (optionName in options) {
+        option = options[optionName];
+        if (!angular.isObject(option)) {
+          shorthandOptions[optionName] = option;
+        }
+      }
       classConstructor.prototype.__plugins = {};
       _ref = module.classy.activePlugins;
       for (pluginName in _ref) {
         plugin = _ref[pluginName];
         classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
         classConstructor.prototype.__plugins[pluginName].classyOptions = options;
-        classConstructor.prototype.__plugins[pluginName].options = options[plugin.name] || {};
+        classConstructor.prototype.__plugins[pluginName].options = angular.extend(options[plugin.name] || {}, shorthandOptions);
       }
       pluginDo('preInitBefore', [classConstructor, classObj, module]);
       pluginDo('preInit', [classConstructor, classObj, module]);

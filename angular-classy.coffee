@@ -12,6 +12,7 @@ availablePlugins = {}
 alreadyRegisteredModules = {};
 
 getActiveClassyPlugins = (name, origModule) ->
+  # TODO: Write a test to ensure that this method gets called the correct amount of times
   obj = {}
   alreadyRegisteredModules[name] = true
   do getNextRequires = (name) ->
@@ -62,7 +63,7 @@ angular.module = (name, reqs, configFn) ->
     if name is 'classy.core' then availablePlugins[name] = {}
 
     activeClassyPlugins = getActiveClassyPlugins(name, module)
-        
+
     if activeClassyPlugins['classy.core']
       module.classy =
         plugin:
@@ -115,11 +116,16 @@ classFns =
         classObj.__options
       )
 
+    shorthandOptions = {}
+    for optionName, option of options
+      if !angular.isObject(option)
+        shorthandOptions[optionName] = option
+
     classConstructor::__plugins = {}
     for pluginName, plugin of module.classy.activePlugins
       classConstructor::__plugins[pluginName] = angular.copy(plugin)
       classConstructor::__plugins[pluginName].classyOptions = options
-      classConstructor::__plugins[pluginName].options = options[plugin.name] or {}
+      classConstructor::__plugins[pluginName].options = angular.extend(options[plugin.name] or {}, shorthandOptions);
 
     pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
@@ -176,6 +182,7 @@ classFns =
     return
 
 angular.module('classy.core', [])
+
 angular.module('classy.bindData', ['classy.core']).classy.plugin.controller
   # Based on @wuxiaoying's classy-initScope plugin
   localInject: ['$parse']

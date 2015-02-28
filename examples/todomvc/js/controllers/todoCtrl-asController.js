@@ -12,12 +12,14 @@ todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
 	inject: ['$scope', '$location', 'todoStorage'],
 	__options: {
-		'bindData': {
-			addToScope: false
-		},
-		'bindMethods': {
-			addToScope: false
-		}
+		addToScope: false // shorthand for commented out code below
+
+		// 'bindData': {
+		// 	addToScope: false
+		// },
+		// 'bindMethods': {
+		// 	addToScope: false
+		// }
 	},
 
 	data: function() {
@@ -26,7 +28,7 @@ todomvc.classy.controller({
 			newTodo: '',
 			editedTodo: null,
 			location: this.$location
-		}
+		};
 	},
 
 	init: function() {
