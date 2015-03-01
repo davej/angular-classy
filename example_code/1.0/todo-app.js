@@ -49,17 +49,17 @@ app.classy.controller({
 // Classy automatically makes methods available class-wide (through `this.methodName`) and also on the `$scope`
 // so you can easily access it using directives like ng-click.
 //
-// Prefix the method name with an underscore and Classy wont add it to the $scope.
+// Prefix the method name with an underscore and Classy wont add it to the `$scope`.
 //
 // You can also define methods using angular expressions (see `_getRemainingCount()`).
-// Whenever the method is called it will evaluate the expression and return the expression's result.
+// Whenever the expression method is called it will evaluate the expression and return the expression's result.
 
   methods: {
 
-    _getRemainingCount: 'items | filter:{ complete: false }',
+    _getRemaining: 'items | filter:{ complete: false }',
 
     _onTodoChange: function() {
-      this.$.remainingCount = this._getRemainingCount().length; //!
+      this.$.remainingCount = this._getRemaining().length; //!
       this.todoStorage.put(this.items); //!
     },
 

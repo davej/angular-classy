@@ -22,14 +22,35 @@ document.getElementById('select-language').onchange = (event) ->
   switchLanguage(event.target.value)
 
 for el in document.getElementsByClassName('toggle-section')
-  el.onclick = (event) ->
-    event.preventDefault()
-    
-    target = event.target.parentNode.nextSibling
-    while target and target.nodeType != 1
-      target = target.nextSibling
+  do (el) ->
+    el.onclick = (event) ->
+      console.log(event, el)
+      event.preventDefault()
 
-    target.classList.toggle('hide-this')
+      target = el.parentNode.nextSibling
+      while target and target.nodeType != 1
+        target = target.nextSibling
+
+      target.classList.toggle('hide-this')
+
+animate = true
+delayMilliseconds = 5000
+for el, index in document.querySelectorAll('.javascript-code section')
+  do (el) ->
+    console.log(index)
+    window.setTimeout ->
+      if animate
+        el.className = 'active'
+    , index * delayMilliseconds
+
+    window.setTimeout ->
+      el.className = ''
+    , (index * delayMilliseconds) + delayMilliseconds
+
+document.querySelector('.code-editor').addEventListener 'mouseover', (e) ->
+  animate = false
+  for el in document.querySelectorAll('.javascript-code section')
+    el.className = ''
 
 timeSince = (date) ->
   date = new Date(date)  if typeof date isnt "object"

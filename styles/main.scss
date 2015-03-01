@@ -372,8 +372,17 @@ body > header {
 
     .plunkr {
       position: absolute;
-      right: 8px;
+      right: 16px;
       top: 0;
+
+      a {
+        font-size: 11px;
+        color: #555;
+        padding: 2px 6px;
+        border-radius: 5px;
+        font-weight: normal;
+        text-transform: uppercase;
+      }
 
       button {
         height: 19px;
@@ -480,7 +489,7 @@ body > header {
   p {
     font-family: $p-font;
     font-size: 14px;
-    line-height: 19px;
+    line-height: 20px;
   }
 
   hr {
@@ -597,6 +606,11 @@ table {
     border-top: 1px solid #ccc;
     background-color: rgba(255,255,255, 0.65);
   }
+}
+
+#plugin-list a {
+  line-height: 22px;
+  font-size: 15px;
 }
 
 footer {

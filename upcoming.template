@@ -26,7 +26,7 @@
 
         <div class="main-content">
           <div class="special-notice">
-            Classy 1.0 released, now with <a href="#">plugins</a>. Check out the <a href="1.0.html" target="_blank">new features</a>.
+            Classy 1.0 released (2<small>nd</small> March 2015).<br> Now supports <a href="#plugins">plugins</a> and other <a href="1.0.html" target="_blank">new features</a>.
           </div>
 
             <h2>Add structure to your AngularJS controllers</h2>
@@ -35,14 +35,14 @@
                 <!-- <h3><i class="icon-align-left"></i> Structure</h3> -->
 
                 <p>
-                  Angular's controllers are super-simple which is fantastic for getting started (they're just functions).
-                  Because they are just functions, there are lots of different ways to write controllers, it can be helpful to have something a little more structured and prescriptive.</p>
-
-                <p>Classy builds upon some neat ideas from <a href="https://angulardart.org/" target="_blank">AngularDart</a> and <a href="http://vuejs.org/" target="_blank">Vue.js</a> to make controllers nicer.</p>
+                  Angular's controllers are super-simple which is fantastic for getting started (<strong>they're just functions</strong>).
+                  Because they are just functions, there are lots of different ways to write Angular controllers. This is powerful but can also lead to a <strong>lack of structure</strong>, especially when many people (with many different coding styles) are working on the same codebase.
+                </p>
+                <p>It can be helpful to have something a little more structured and prescriptive. Enter Angular Classy!</p>
 
                 <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller for a simple Todo application. Take a look, <strong>Classy</strong> keeps your controllers clean and manageable.</p>
 
-                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>.</p>
+                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>. You can also see a <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">live example in plunker</a>.</p>
 
                 <hr>
 
@@ -67,29 +67,35 @@
                 <h4> Accessing <code>$scope</code> and dependencies</h4>
 
                 <p>Dependencies are available using <code class="inline-code coffeescript-code hide">@DependencyName</code><code class="inline-code javascript-code">this.DependencyName</code>.
-                <p>To access the <code class="inline-code">$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code class="inline-code">this.$scope</code> if you prefer.
+                <p>To access the <code class="inline-code">$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code class="inline-code coffeescript-code hide">@$scope</code><code class="inline-code javascript-code">this.$scope</code> if you prefer.
 
-                <h5><a href="#" class="toggle-section">Want to use <code>controllerAs</code> instead of <code>$scope</code>?</a></h5>
+                <h5><a href="#" class="toggle-section">Want to use <code>controllerAs</code> instead of <code>$scope</code>? &#x25BE;</a></h5>
                 <div class="hide-this">
                   <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
-                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-module.js'))</code></pre>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-module.js'))</code></pre>
 
                   <p>or on a per-controller basis:</p>
-                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-controller.js'))</code></pre>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-controller.js'))</code></pre>
                 </div>
 
                 <hr>
 
-                <h3>Data Initialisation</h3>
+                <h3><i class="icon-align-left"></i>Initialisation</h3>
 
-                <p>There is now a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
+                <p>Classy provides a canonical place to init things. It's an <code class="inline-code">init</code> method!</p>
+
+                <p>At a glance you can quickly see what your controller does when it initialises, no more searching through your controller. Simples!</p>
+
+                <h4>Data Initialisation</h4>
+
+                <p>There is also a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
                 <p>The <code>data</code> object allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
 
                 <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/beta/data-object.js'))</code></pre>
 
                 <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/data-object.coffee'))</code></pre>
 
-                <h5><a href="#" class="toggle-section">What's the alternative syntax?</a></h5>
+                <h5><a href="#" class="toggle-section">What's the alternative syntax? &#x25BE;</a></h5>
                 <div class="hide-this">
                   <p>If you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
 
@@ -141,7 +147,7 @@
 
                 <hr>
 
-                <h3><i class="icon-code"></i> <code>Methods</code></h3>
+                <h3><i class="icon-code"></i> Methods</h3>
 
                 <p>Most of the time when you add a method to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here is how methods look <strong>with Classy</strong>:</p>
 
@@ -160,9 +166,9 @@
 
                 <hr>
 
-                <h3><i class="icon-star"></i> Plugins</h3>
+                <h3 id="plugins"><i class="icon-star"></i> Plugins</h3>
 
-                <p>Angular Classy now supports plugins so you can extend Classy with useful features like mixins and computed properties.</p>
+                <p>Angular Classy now supports plugins so you can extend Classy with useful features like <a href="https://github.com/davej/classy-computed" target="_blank">computed properties</a> and <a href="https://github.com/wuxiaoying/classy-mixins" target="_blank">mixins</a>.</p>
 
                 <p>If you want to write your own plugins then head on over to <a href="https://github.com/davej/classy-plugins" target="_blank">the classy-plugins repo for more information</a>. This will be expanded with more detail over time, if you have a question then raise an issue.</p>
 
@@ -187,29 +193,29 @@
 
                 <p>Click the questions below to expand the answers.</p>
 
-                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive? &#x25BE;</a></h4>
                 <div class="hide-this">
                   <p>You use them the same way you normally would, except you don't need to give the controller a name because the controller does not need to be registered outside of Angular.</p>
                   <pre class="block-code"><code>@@include(highlightJS('example_code/classy-directive.js'))</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route? &#x25BE;</a></h4>
                 <div class="hide-this">
 
                   <p>Classy controllers are registered just like normal controllers in Angular so you can reference them the same way (it works in ui-router too).</p>
                   <pre class="block-code"><code>@@include(highlightJS('example_code/classy-route.js'))</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax? &#x25BE;</a></h4>
                 <div class="hide-this">
                   <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
-                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-module.js'))</code></pre>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-module.js'))</code></pre>
 
                   <p>or on a per-controller basis:</p>
-                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-controller.js'))</code></pre>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-controller.js'))</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">Can I chain Angular Controllers?</a></h4>
+                <h4><a href="#" class="toggle-section">Can I chain Angular Controllers? &#x25BE;</a></h4>
                 <div class="hide-this">
                   <p>Earlier versions of Angular Classy didn't allow chaining (of services, routes and factories etc.) with Classy controllers. This was done to allow you to use Classy controllers inline with directives.</p>
 
@@ -220,7 +226,22 @@
                   <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/chaining.coffee'))</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here?</a></h4>
+                <h4><a href="#" class="toggle-section">What's performance like? &#x25BE;</a></h4>
+
+                <div class="hide-this">
+                  <p>I've done some profiling using the timeline in Chrome Developer Tools and performance seems to be in the same ballpark as a vanilla AngularJS controller.</p>
+                  <p>I've also done <a href="https://twitter.com/DaveJ/status/516211736584937472/photo/1" target="_blank">some synthethic benchmarking</a>, and it turns out that method call performance is as good as vanilla Angular controllers.</p>
+                  <p>By default, Classy follows best practices like putting methods on the prototype (not all Angular programmers do this) so you might even find that Classy performs better in some instances.</p>
+                  <p>But more performance testing is always a good thing so I hope to do more benchmarking in the future.</p>
+                </div>
+
+                <h4><a href="#" class="toggle-section">Sorry, but I don't like the look of Classy controllers! &#x25BE;</a></h4>
+
+                <div class="hide-this">
+                  <p>No need to apologise. I created the library for myself first and foremost, personally I find it helps me write really strucutred and readable controllers. It's definitely opinionated and it won't suit everybody but I'm ok with that. :)</p>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here? &#x25BE;</a></h4>
 
                 <div class="hide-this">
                   <p>Open an issue on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github issues</a> and I'll do my best :-)</p>
@@ -243,7 +264,7 @@
                     </select>
                   </span>
                   <div class="plunkr">
-                    <a href="http://plnkr.co/edit/cZYnaTxyjYqIJccME9NS" target="_blank">View/Edit on Plunkr</a>
+                    <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">View/Edit on Plunker</a>
                   </div>
                 </div>
                 <div class="editor">

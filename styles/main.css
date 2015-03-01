@@ -353,8 +353,15 @@ body > header {
       border-color: #12B728; }
     .code-editor .toolbar .plunkr {
       position: absolute;
-      right: 8px;
+      right: 16px;
       top: 0; }
+      .code-editor .toolbar .plunkr a {
+        font-size: 11px;
+        color: #555;
+        padding: 2px 6px;
+        border-radius: 5px;
+        font-weight: normal;
+        text-transform: uppercase; }
       .code-editor .toolbar .plunkr button {
         height: 19px;
         line-height: 14px;
@@ -438,7 +445,7 @@ body > header {
   .features p {
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
     font-size: 14px;
-    line-height: 19px; }
+    line-height: 20px; }
   .features hr {
     border-color: rgba(0, 0, 0, 0.25); }
   .features li {
@@ -513,6 +520,10 @@ table {
   table tr {
     border-top: 1px solid #ccc;
     background-color: rgba(255, 255, 255, 0.65); }
+
+#plugin-list a {
+  line-height: 22px;
+  font-size: 15px; }
 
 footer {
   width: 90%;

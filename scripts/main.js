@@ -1,5 +1,5 @@
 (function() {
-  var currentLanguage, el, otherlanguage, switchLanguage, timeSince, _i, _len, _ref;
+  var animate, currentLanguage, delayMilliseconds, el, index, otherlanguage, switchLanguage, timeSince, _fn, _fn1, _i, _j, _len, _len1, _ref, _ref1;
 
   currentLanguage = "javascript";
 
@@ -35,18 +35,55 @@
   };
 
   _ref = document.getElementsByClassName('toggle-section');
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    el = _ref[_i];
-    el.onclick = function(event) {
+  _fn = function(el) {
+    return el.onclick = function(event) {
       var target;
+      console.log(event, el);
       event.preventDefault();
-      target = event.target.parentNode.nextSibling;
+      target = el.parentNode.nextSibling;
       while (target && target.nodeType !== 1) {
         target = target.nextSibling;
       }
       return target.classList.toggle('hide-this');
     };
+  };
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    el = _ref[_i];
+    _fn(el);
   }
+
+  animate = true;
+
+  delayMilliseconds = 5000;
+
+  _ref1 = document.querySelectorAll('.javascript-code section');
+  _fn1 = function(el) {
+    console.log(index);
+    window.setTimeout(function() {
+      if (animate) {
+        return el.className = 'active';
+      }
+    }, index * delayMilliseconds);
+    return window.setTimeout(function() {
+      return el.className = '';
+    }, (index * delayMilliseconds) + delayMilliseconds);
+  };
+  for (index = _j = 0, _len1 = _ref1.length; _j < _len1; index = ++_j) {
+    el = _ref1[index];
+    _fn1(el);
+  }
+
+  document.querySelector('.code-editor').addEventListener('mouseover', function(e) {
+    var _k, _len2, _ref2, _results;
+    animate = false;
+    _ref2 = document.querySelectorAll('.javascript-code section');
+    _results = [];
+    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+      el = _ref2[_k];
+      _results.push(el.className = '');
+    }
+    return _results;
+  });
 
   timeSince = function(date) {
     var interval, intervalType, seconds;
@@ -89,17 +126,17 @@
   };
 
   window.initClassyPluginList = function(json) {
-    var htmlStr, plugin, pluginNode, plugins, sortedPlugins, tdString, tr, _j, _len1, _ref1, _ref2, _ref3, _results;
+    var htmlStr, plugin, pluginNode, plugins, sortedPlugins, tdString, tr, _k, _len2, _ref2, _ref3, _ref4, _results;
     htmlStr = '';
-    plugins = json != null ? (_ref1 = json.query) != null ? (_ref2 = _ref1.results) != null ? (_ref3 = _ref2.json) != null ? _ref3.json : void 0 : void 0 : void 0 : void 0;
+    plugins = json != null ? (_ref2 = json.query) != null ? (_ref3 = _ref2.results) != null ? (_ref4 = _ref3.json) != null ? _ref4.json : void 0 : void 0 : void 0 : void 0;
     if (plugins.length) {
       sortedPlugins = plugins.sort(function(a, b) {
         return b.stars - a.stars;
       });
       pluginNode = document.getElementById('plugin-list');
       _results = [];
-      for (_j = 0, _len1 = sortedPlugins.length; _j < _len1; _j++) {
-        plugin = sortedPlugins[_j];
+      for (_k = 0, _len2 = sortedPlugins.length; _k < _len2; _k++) {
+        plugin = sortedPlugins[_k];
         tr = document.createElement('tr');
         tdString = "<td><a href=\"" + plugin.website + "\" target=\"_blank\">" + plugin.name + "</a><br>" + plugin.description + "</td><td>" + plugin.owner + "</td><td>" + (timeSince(plugin.updated)) + " ago</td>";
         tr.innerHTML = tdString;

@@ -32,16 +32,16 @@ If you want to watch an object or collection just use the <code>{object}</code> 
   },</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> Controller methods are defined inside of the <code>methods</code> object.</p>
 <p>Classy automatically makes methods available class-wide (through <code>this.methodName</code>) and also on the <code>$scope</code>
 so you can easily access it using directives like ng-click.</p>
-<p>Prefix the method name with an underscore and Classy wont add it to the $scope.</p>
+<p>Prefix the method name with an underscore and Classy wont add it to the <code>$scope</code>.</p>
 <p>You can also define methods using angular expressions (see <code>_getRemainingCount()</code>).
-Whenever the method is called it will evaluate the expression and return the expression’s result.</p>
+Whenever the expression method is called it will evaluate the expression and return the expression’s result.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">methods:</span> {
 
-    <span class="hljs-object-key">_getRemainingCount:</span> <span class="hljs-string">'items | filter:{ complete: false }'</span>,
+    <span class="hljs-object-key">_getRemaining:</span> <span class="hljs-string">'items | filter:{ complete: false }'</span>,
 
     <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-<span class="hljs-background-line">      this.$.remainingCount = this._getRemainingCount().length;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this.$.remainingCount = this._getRemaining().length;<span class="hljs-hide"> //!</span></span>
 <span class="hljs-background-line">      this.todoStorage.put(this.items);<span class="hljs-hide"> //!</span></span>
     },
 

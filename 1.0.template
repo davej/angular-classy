@@ -62,6 +62,8 @@
 
                 <p>You can now define methods using angular expressions. Whenever the method is called it will evaluate the expression and return the expression's result. Often, an expression will be much more concise and readable than a full method definition.</p>
 
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/1.0/method-expressions.js'))</code></pre>
+
                 <hr>
 
                 <h3>Multiple controllers definition and chaining</h3>
@@ -73,6 +75,11 @@
                 <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/beta/chaining.js'))</code></pre>
 
                 <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/beta/chaining.coffee'))</code></pre>
+
+                <h3>Bugfixes and lots more</h3>
+
+                <p>If you're curious then <a href="https://github.com/davej/angular-classy/releases" target="_blank">have a read through the release notes for the earlier beta and release candidate releases</a>.</p>
+
 
             </div>
 
