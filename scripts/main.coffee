@@ -34,18 +34,19 @@ for el in document.getElementsByClassName('toggle-section')
       target.classList.toggle('hide-this')
 
 animate = true
-delayMilliseconds = 5000
+delayMilliseconds = 10000 # 10 seconds
+delay = [0, 3500, 18000, 36000, 48000, 60000, 85000]
+
 for el, index in document.querySelectorAll('.javascript-code section')
   do (el) ->
-    console.log(index)
     window.setTimeout ->
       if animate
         el.className = 'active'
-    , index * delayMilliseconds
+    , delay[index]
 
     window.setTimeout ->
       el.className = ''
-    , (index * delayMilliseconds) + delayMilliseconds
+    , delay[index + 1]
 
 document.querySelector('.code-editor').addEventListener 'mouseover', (e) ->
   animate = false
@@ -85,11 +86,11 @@ window.initClassyPluginList = (json) ->
   htmlStr = ''
   plugins = json?.query?.results?.json?.json
   if plugins.length
-    sortedPlugins = plugins.sort (a, b) -> b.stars - a.stars
+    # sortedPlugins = plugins.sort (a, b) -> b.stars - a.stars
     pluginNode = document.getElementById('plugin-list')
 
-    for plugin in sortedPlugins
+    for plugin in plugins # sortedPlugins
       tr = document.createElement('tr')
-      tdString = "<td><a href=\"#{plugin.website}\" target=\"_blank\">#{plugin.name}</a><br>#{plugin.description}</td><td>#{plugin.owner}</td><td>#{timeSince(plugin.updated)} ago</td>"
+      tdString = "<td><a href=\"#{plugin.website}\" target=\"_blank\">#{plugin.name}</a><br>#{plugin.description}</td><td>#{plugin.owner}</td><td align='center'>#{plugin.stars}</td>"
       tr.innerHTML = tdString
       pluginNode.appendChild(tr)

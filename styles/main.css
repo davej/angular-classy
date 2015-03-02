@@ -470,7 +470,8 @@ body > header {
   -webkit-flex-align: center;
   -ms-flex-align: center;
   -webkit-align-items: center;
-  align-items: center; }
+  align-items: center;
+  z-index: 99; }
   .code-tip div {
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
     font-size: 13px;

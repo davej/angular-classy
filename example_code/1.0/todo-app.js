@@ -2,7 +2,7 @@
 
 var app = angular.module('app', ['classy']);
 
-// Registers your controller and inject your dependencies.
+// Register your controller and inject your dependencies.
 // Injecting dependencies with Classy plays nice with minifiers, you don't need to annotate
 // your dependencies (i.e. list dependencies twice) and your code remains DRY.
 //
@@ -16,7 +16,7 @@ app.classy.controller({
 
 // **New in 1.0!** The data object is a simple structure that allows you to easily assign properties.
 //
-// You can either use a string representing an [angular expression](https://docs.angularjs.org/guide/expression),
+// You can use a string representing an [angular expression](https://docs.angularjs.org/guide/expression),
 // or you can directly assign any other object/primitive.
 //
 // Classy automatically makes items in the data object available class-wide (and on the `$scope`).

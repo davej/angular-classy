@@ -21,32 +21,34 @@
         <![endif]-->
 
         <header>
-            <h1><img src="images/logo.svg" title="Angular Classy" alt="Angular Classy logo" width="362" height="149"></h1>
+          <h1><img src="images/logo.svg" title="Angular Classy" alt="Angular Classy logo" width="362" height="149"></h1>
         </header>
 
         <div class="main-content">
-
           <div class="special-notice">
-            Classy 1.0 beta just released, <a href="beta.html">check it out here</a>.
+            1.0 released (2<small>nd</small> March 2015).<br> Now supports <a href="#plugins">plugins</a> and other <a href="1.0.html" target="_blank">new features</a>.
           </div>
 
-            <h2>Cleaner class-based controllers for AngularJS</h2>
+            <h2>Add structure to your AngularJS controllers</h2>
 
             <div class="features">
-                <h3><i class="icon-align-left"></i> Structure</h3>
-                <p>As your Angular controller grows, it can start to get unwieldy and difficult to structure.</p>
+                <!-- <h3><i class="icon-align-left"></i> Structure</h3> -->
 
-                <p><strong>Classy</strong> uses a class-based approach and steals some neat ideas from <a href="https://angulardart.org/" target="_blank">AngularDart</a> to make controllers a little nicer.</p>
+                <p>
+                  Angular's controllers are super-simple which is fantastic for getting started (<em>they're just functions</em>).
+                  Because they are just functions, there's lots of different ways to write Angular controllers. This is powerful but can also lead to a <strong>lack of structure</strong>, especially when many people (with many different coding styles) are working on the same codebase.
+                </p>
+                <p>It can be helpful to have something a little more structured and prescriptive. Enter Angular Classy!</p>
 
-                <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller based on the <a href="http://todomvc.com/" target="_blank">TodoMVC</a> project. Take a look, <strong>Classy</strong> keeps your controllers clean and structured.</p>
+                <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller for a simple Todo application. Take a look, <strong>Classy</strong> keeps your controllers clean and manageable.</p>
 
-                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>.</p>
+                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>. You can also see a <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">live example in plunker</a>.</p>
 
                 <hr>
 
-                <h3><i class="icon-pencil"></i> No more annotating your dependencies</h3>
+                <h3><i class="icon-pencil"></i> Injecting Dependencies</h3>
 
-                <p>This is a big-ee. Angular veterans will know that if you want your Angular code to work with minifiers then you have to annotate your dependencies (i.e. list your dependencies twice), like so (<strong>without Classy</strong>):</p>
+                <p>Angular veterans will know that if you want your Angular code to work with minifiers then you have to annotate your dependencies (i.e. list your dependencies twice), like so (<strong>without Classy</strong>):</p>
 
                 <pre class="block-code coffeescript-code hide"><code>app.controller <span class="hljs-string">'AppCtrl'</span>,
   [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'$http'</span>,
@@ -62,10 +64,10 @@
 
 
 
-                <p>Annotating your dependencies is annoying and also it's just not very DRY. If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
+                <p>If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
 
                 <p>In <strong>Classy</strong> you don't need to do that, it works with minifiers and your code remains DRY. Here's what it looks like <strong>with Classy</strong>:</p>
-                                <pre class="block-code coffeescript-code hide">app.classy.controller
+                <pre class="block-code coffeescript-code hide">app.classy.controller
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'AppCtrl'</span>
   <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'$http'</span>]
   <span class="hljs-comment"># ...</span></pre>
@@ -76,34 +78,77 @@
   <span class="hljs-comment">// ...</span>
 });</code></pre>
 
+
+                <h4> Accessing <code>$scope</code> and dependencies</h4>
+
+                <p>Dependencies are available using <code class="inline-code coffeescript-code hide">@DependencyName</code><code class="inline-code javascript-code">this.DependencyName</code>.
+                <p>To access the <code class="inline-code">$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code class="inline-code coffeescript-code hide">@$scope</code><code class="inline-code javascript-code">this.$scope</code> if you prefer.
+
+                <h5><a href="#" class="toggle-section">Want to use <code>controllerAs</code> instead of <code>$scope</code>? &#x25BE;</a></h5>
+                <div class="hide-this">
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <pre class="block-code"><code>app.classy.options.controller = {
+  <span class="hljs-object-key">addToScope:</span> <span class="hljs-literal">false</span>
+};
+</code></pre>
+
+                  <p>or on a per-controller basis:</p>
+                  <pre class="block-code"><code>app.classy.controller({
+  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>,
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'filterFilter'</span>],
+  <span class="hljs-object-key">__options:</span> {
+      <span class="hljs-object-key">addToScope:</span> <span class="hljs-literal">false</span>
+  }
+  <span class="hljs-comment">// ...</span>
+});
+</code></pre>
+                </div>
+
                 <hr>
 
-                <h3><i class="icon-code"></i> <code>$scope</code> convenience</h3>
+                <h3><i class="icon-align-left"></i>Initialisation</h3>
 
-                <h4>Functions are automatically added to the controller's <code>$scope</code></h4>
+                <p>Classy provides a canonical place to init things. It's an <code class="inline-code">init</code> method!</p>
 
-                <p>Most of the time when you add a function to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here's how it used to look <strong>without Classy</strong>:</p>
+                <p>At a glance you can quickly see what your controller does when it initialises, no more searching through your controller. Simples!</p>
 
-                <pre class="block-code coffeescript-code hide"><code>$scope.e<span class="hljs-function"><span class="hljs-title">ditTodo</span> = <span class="hljs-params">(todo)</span> -&gt;</span> <span class="hljs-comment">#...</span></code></pre>
-                <pre class="block-code javascript-code"><code>$scope.editTodo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(todo)</span> </span>{
-  <span class="hljs-comment">//...</span>
+                <h4>Data Initialisation</h4>
+
+                <p>There is also a <code class="inline-code">data</code> property available for defining initial data properties. This will enable you to remove a lot of boilerplate assignment out of your <code class="inline-code">init</code> method.
+                <p>The <code>data</code> object allows you to use the full power of <a href="https://docs.angularjs.org/guide/expression" target="_blank">Angular expressions</a> when defining data properties.</p>
+
+                <pre class="block-code javascript-code"><code><span class="hljs-object-key">data:</span> {
+  <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+}
+</code></pre>
+
+                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">data:</span>
+  <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+</code></pre>
+
+                <h5><a href="#" class="toggle-section">What's the alternative syntax? &#x25BE;</a></h5>
+                <div class="hide-this">
+                  <p>If you prefer you can use a function that returns an object, this allows you to reference other class properties directly (rather than through an angular expression).</p>
+
+                  <pre class="block-code javascript-code"><code><span class="hljs-object-key">data:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-object-key">todos:</span> <span class="hljs-keyword">this</span>.todoStorage.get(),
+    <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span>
+  }
 }</code></pre>
 
-                <p>and now <strong>with Classy</strong>:</p>
-                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">editTodo:</span> <span class="hljs-function"><span class="hljs-params">(todo)</span> -&gt;</span> <span class="hljs-comment">#...</span></code></pre>
-                <pre class="block-code javascript-code"><code><span class="hljs-object-key">editTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(todo)</span> </span>{
-  <span class="hljs-comment">//...</span>
-}</code></pre>
+                  <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">data:</span><span class="hljs-function"> -&gt;</span>
+  <span class="hljs-object-key">todos:</span> <span class="hljs-keyword">this</span>.todoStorage.get()
+  <span class="hljs-object-key">editedTodo:</span> <span class="hljs-literal">null</span></code></pre>
+                </div>
 
 
-                <p>If you don't want the function to be on the <code class="inline-code">$scope</code> then just prefix it with an underscore character (<code>_</code>).</p>
-
-                <h4>Handy shortcut for <code>$scope</code></h4>
-                <p>To access the <code>$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code>this.$scope</code> if you prefer.
 
                 <hr>
 
-                <h3><i class="icon-wristwatch"></i> Special object for <code>$watch</code> listeners</h3>
+                <h3><i class="icon-wristwatch"></i> Watching Properties</h3>
 
                 <p>Instead of polluting your <code class="inline-code">init</code> method with lots of calls to <code class="inline-code">$scope.$watch</code>, you can put them in a watch object instead:</p>
 
@@ -128,7 +173,7 @@
                     <thead>
                         <tr>
                             <th>Keyword</th>
-                            <th>$watch Type</th>
+                            <th>Equivalent <code>$watch</code> Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,98 +199,63 @@
 
                 <hr>
 
-                <h3><i class="icon-resize-small"></i> Only 1KB (gzipped and minified)</h3>
+                <h3><i class="icon-code"></i> Methods</h3>
 
-                <p>it's super tiny so you don't have to worry about it adding weight to your application.</p>
+                <p>Most of the time when you add a method to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here is how methods look <strong>with Classy</strong>:</p>
+
+                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">methods:</span>
+  <span class="hljs-object-key">editTodo:</span> <span class="hljs-function"><span class="hljs-params">(todo)</span> -&gt;</span>
+    <span class="hljs-comment">#...</span>
+  <span class="hljs-object-key">_clearCompletedTodos:</span> <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-comment">#...</span>
+</code></pre>
+                <pre class="block-code javascript-code"><code><span class="hljs-object-key">methods:</span> {
+  <span class="hljs-object-key">editTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(todo)</span> </span>{
+    <span class="hljs-comment">//...</span>
+  },
+  <span class="hljs-object-key">_clearCompletedTodos:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">//...</span>
+  }
+}
+</code></pre>
+
+
+                <p>If you don't want the function to be on the <code class="inline-code">$scope</code> then just prefix it with an underscore character (<code>_</code>).</p>
+
+                <h4>Method Expressions</h4>
+
+                <p>You can now define methods using angular expressions. Whenever the method is called it will evaluate the expression and return the expression's result. Often, an expression will be much more concise and readable than a full method definition.</p>
+
+                <pre class="block-code coffeescript-code hide"><code><span class="hljs-object-key">methods:</span>
+  <span class="hljs-object-key">getLast5CompletedTodos:</span> <span class="hljs-string">'todos | filter:{completed: true} | orderBy:"timestamp" | limitTo:5'</span>
+</code></pre>
+                <pre class="block-code javascript-code"><code><span class="hljs-object-key">methods:</span> {
+  <span class="hljs-object-key">getLast5CompletedTodos:</span> <span class="hljs-string">'todos | filter:{completed: true} | orderBy:"timestamp" | limitTo:5'</span>
+}
+</code></pre>
 
                 <hr>
 
-                <h3><i class="icon-star"></i> Bonus beta features</h3>
+                <h3 id="plugins"><i class="icon-star"></i> Plugins</h3>
 
-                <h4>Named dependencies</h4>
+                <p>Angular Classy now supports plugins so you can extend Classy with useful features that allow you to write <a href="https://github.com/davej/classy-computed" target="_blank">computed properties</a> and even <a href="https://github.com/wuxiaoying/classy-extends" target="_blank">extend controller classes</a>.</p>
 
-                <p>Classy allows you to name dependencies whatever you like, simply pass in an object instead of an array. Use a '.' value if you wish to use the original name for a dependency.</p>
+                <p>If you want to write your own plugins then head on over to <a href="https://github.com/davej/classy-plugins" target="_blank">the classy-plugins repo for more information</a>. This will be expanded with more detail over time, if you have a question then raise an issue.</p>
 
-                <pre class="block-code coffeescript-code hide">app.classy.controller
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'MyCtrl'</span>
-  <span class="hljs-object-key">inject:</span>
-    <span class="hljs-attribute">$scope</span>: <span class="hljs-string">'$'</span>
-    <span class="hljs-object-key">filterFilter:</span> <span class="hljs-string">'filter'</span>
-    <span class="hljs-attribute">$location</span>: <span class="hljs-string">'.'</span>
+                <p>Here is a list of the current Classy plugins (dynamically queried from <a href="http://bower.io/search/?q=classy-plugin" target="_blank">Bower</a>):</p>
 
-  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span>
-    <span class="hljs-comment"># Check if dependencies are defined</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-property">@$</span> <span class="hljs-comment"># ✔ ChildScope {}</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-property">@$scope</span> <span class="hljs-comment"># ✘ undefined</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-property">@$location</span> <span class="hljs-comment"># ✔ LocationHashbangUrl {}</span>
+                <table id="plugin-list">
+                  <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Stars</th>
+                  </tr>
+                </table>
+                <hr>
 
-    <span class="hljs-comment"># Use a dependency</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-property">@filter</span>(<span class="hljs-property">@$</span>.todos, <span class="hljs-object-key">completed:</span> <span class="hljs-literal">true</span>)
-    <span class="hljs-comment"># -&gt; [{"title":"Learn Angular","completed":true}]</span></code></pre>
-                <pre class="block-code javascript-code"><code>app.classy.controller({
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'MyCtrl'</span>,
-  <span class="hljs-object-key">inject:</span> {
-    $<span class="hljs-object-key">scope:</span> <span class="hljs-string">'$'</span>,
-    <span class="hljs-object-key">filterFilter:</span> <span class="hljs-string">'filter'</span>,
-    $<span class="hljs-object-key">location:</span> <span class="hljs-string">'.'</span>
-  },
-  <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-    <span class="hljs-comment">// Check if dependencies are defined</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.$); <span class="hljs-comment">// ✔ ChildScope {}</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.$scope); <span class="hljs-comment">// ✘ undefined</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.$location); <span class="hljs-comment">// ✔ LocationHashbangUrl {}</span>
+                <h3><i class="icon-resize-small"></i> Only 2KB (gzipped and minified)</h3>
 
-    <span class="hljs-comment">// Use a dependency</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.filter(
-      <span class="hljs-keyword">this</span>.$.todos,
-      { <span class="hljs-object-key">completed:</span> <span class="hljs-literal">true</span> }
-    )); <span class="hljs-comment">// [{"title":"Learn Angular","completed":true}]</span>
-  }
-});</code></pre>
-
-                <h4>Reverse-reference controllers</h4>
-
-                <p>This feature is stolen from AngularDart (you may also be familiar with it from Backbone and other MVC frameworks). It's best explained with code.</p>
-                <p>This is how you would typically bind a controller to a view with Angular Classy:</p>
-
-                <pre class="block-code coffeescript-code hide"><code><span class="hljs-comment">&lt;!-- In your HTML --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"footer"</span> <span class="hljs-attribute">ng-controller</span>=<span class="hljs-value">"FooterCtrl"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-
-# In your Coffeescript
-app.classy.controller
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'FooterCtrl'</span>
-  #...</code></pre>
-
-                <pre class="block-code javascript-code"><code><span class="hljs-comment">&lt;!-- In your HTML --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"footer"</span> <span class="hljs-attribute">ng-controller</span>=<span class="hljs-value">"FooterCtrl"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-
-<span class="hljs-comment">// In your JS</span>
-app.classy.controller({
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'FooterCtrl'</span>,
-  <span class="hljs-comment">//...</span>
-});</code></pre>
-
-                <p>If you want to use reverse-reference controllers then you simply give your controller an element selector reference instead of a name, like this:</p>
-
-                <pre class="block-code coffeescript-code hide"><code><span class="hljs-comment">&lt;!-- In your HTML --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"footer"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-
-<span class="hljs-comment"># In your Coffeescript</span>
-app.classy.controller
-  <span class="hljs-object-key">el:</span> <span class="hljs-string">'#footer'</span>
-  <span class="hljs-comment">#...</span></code></pre>
-
-                <pre class="block-code javascript-code"><code><span class="hljs-comment">&lt;!-- In your HTML --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"footer"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
-
-<span class="hljs-comment">// In your JS</span>
-app.classy.controller({
-  <span class="hljs-object-key">el:</span> <span class="hljs-string">'#footer'</span>,
-  <span class="hljs-comment">//...</span>
-});</code></pre>
-
-                <p>Classy will use jQuery as it's selector engine if available, otherwise it will fallback to <code class="inline-code">document.querySelectorAll</code>. There is currently no test coverage for this feature so it's probably best not to use it in production (unless you're a badass).</p>
-
+                <p>it's super tiny so you don't have to worry about it adding weight to your application.</p>
 
                 <hr>
 
@@ -253,7 +263,7 @@ app.classy.controller({
 
                 <p>Click the questions below to expand the answers.</p>
 
-                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive? &#x25BE;</a></h4>
                 <div class="hide-this">
                   <p>You use them the same way you normally would, except you don't need to give the controller a name because the controller does not need to be registered outside of Angular.</p>
                   <pre class="block-code"><code>app.directive(<span class="hljs-string">'classyDirective'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
@@ -268,7 +278,7 @@ app.classy.controller({
 });</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route? &#x25BE;</a></h4>
                 <div class="hide-this">
 
                   <p>Classy controllers are registered just like normal controllers in Angular so you can reference them the same way (it works in ui-router too).</p>
@@ -278,26 +288,91 @@ app.classy.controller({
 });</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax?</a></h4>
+                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax? &#x25BE;</a></h4>
                 <div class="hide-this">
                   <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
                   <pre class="block-code"><code>app.classy.options.controller = {
-    <span class="hljs-object-key">addFnsToScope:</span> <span class="hljs-literal">false</span>
+  <span class="hljs-object-key">addToScope:</span> <span class="hljs-literal">false</span>
 };
-<span class="hljs-comment">// Classy controllers will no longer automatically add functions to the `$scope`</span></code></pre>
+</code></pre>
 
                   <p>or on a per-controller basis:</p>
                   <pre class="block-code"><code>app.classy.controller({
-    <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>,
-    <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'filterFilter'</span>],
-    <span class="hljs-object-key">__options:</span> {
-        <span class="hljs-object-key">addFnsToScope:</span> <span class="hljs-literal">false</span>
-    }
-    <span class="hljs-comment">// ...</span>
-});</code></pre>
+  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>,
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'filterFilter'</span>],
+  <span class="hljs-object-key">__options:</span> {
+      <span class="hljs-object-key">addToScope:</span> <span class="hljs-literal">false</span>
+  }
+  <span class="hljs-comment">// ...</span>
+});
+</code></pre>
                 </div>
 
-                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here?</a></h4>
+                <h4><a href="#" class="toggle-section">Can I chain Angular Controllers? &#x25BE;</a></h4>
+                <div class="hide-this">
+                  <p>Earlier versions of Angular Classy didn't allow chaining (of services, routes and factories etc.) with Classy controllers. This was done to allow you to use Classy controllers inline with directives.</p>
+
+                  <p>We are maintaining support for directives but also introducing a new syntax: <code class="inline-code">classy.controllers</code> (notice the 's' at the end) that takes an array of controllers and supports chaining so now you can do:</p>
+
+                  <pre class="block-code javascript-code"><code>angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>])
+  .classy.controllers([{
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">'BarController'</span>,
+    <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>],
+    <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">this</span>.$.foo = <span class="hljs-string">'bar'</span>;
+    }
+  }, {
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">'BazController'</span>,
+    <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>],
+    <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      <span class="hljs-keyword">this</span>.$.foo = <span class="hljs-string">'baz'</span>;
+    }
+  }])
+  .service(
+    <span class="hljs-comment">// Service here</span>
+  )
+  .config(
+    <span class="hljs-comment">// Config here</span>
+  );</code></pre>
+
+                  <pre class="block-code coffeescript-code hide"><code>angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">"app"</span>, [ <span class="hljs-string">"classy"</span> ])
+  .classy.controllers([
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">"BarController"</span>
+    <span class="hljs-object-key">inject:</span> [ <span class="hljs-string">"$scope"</span> ]
+    <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@$</span>.foo = <span class="hljs-string">"bar"</span>
+  ,
+    <span class="hljs-object-key">name:</span> <span class="hljs-string">"BazController"</span>
+    <span class="hljs-object-key">inject:</span> [ <span class="hljs-string">"$scope"</span> ]
+    <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@$</span>.foo = <span class="hljs-string">"baz"</span>
+  ]).service(
+    <span class="hljs-comment"># Service here</span>
+  ).config(
+    <span class="hljs-comment"># Config here</span>
+  )</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">What's performance like? &#x25BE;</a></h4>
+
+                <div class="hide-this">
+                  <p>I've done some profiling using the timeline in Chrome Developer Tools and performance seems to be in the same ballpark as a vanilla AngularJS controller.</p>
+                  <p>I've also done <a href="https://twitter.com/DaveJ/status/516211736584937472/photo/1" target="_blank">some synthethic benchmarking</a>, and it turns out that method call performance is as good as vanilla Angular controllers.</p>
+                  <p>By default, Classy follows best practices like putting methods on the prototype (not all Angular programmers do this) so you might even find that Classy performs better in some instances.</p>
+                  <p>But more performance testing is always a good thing so I hope to do more benchmarking in the future.</p>
+                </div>
+
+                <h4><a href="#" class="toggle-section">What's on the roadmap for future versions? &#x25BE;</a></h4>
+
+                <div class="hide-this">
+                  <p>Next up I want to take a look at Classy services and directives.</p>
+                </div>
+
+                <h4><a href="#" class="toggle-section">Sorry, but I don't like the look of Classy controllers! &#x25BE;</a></h4>
+
+                <div class="hide-this">
+                  <p>No need to apologise. I created the library for myself first and foremost, personally I find it helps me write really strucutred and readable controllers. It's definitely opinionated and it won't suit everybody but I'm ok with that. :)</p>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here? &#x25BE;</a></h4>
 
                 <div class="hide-this">
                   <p>Open an issue on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github issues</a> and I'll do my best :-)</p>
@@ -319,6 +394,9 @@ app.classy.controller({
                       <option name="coffeescript">Coffeescript</option>
                     </select>
                   </span>
+                  <div class="plunkr">
+                    <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">View/Edit on Plunker</a>
+                  </div>
                 </div>
                 <div class="editor">
                   <pre class="coffeescript-code hide"><code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
@@ -328,77 +406,99 @@ your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 <p>By the way you can use the shortcut app.cC instead of app.classy.controller if you prefer.</p>
 </div></div><div class='highlight'><pre>app.classy.controller
 
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>
+  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>
 
-  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>]</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code. Who’d have thunk it?
-You can access your dependencies using the class-wide @ symbol.
-The $scope is available using @$ (or you can use @$scope if you prefer).</p>
-</div></div><div class='highlight'><pre>  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span>
-<span class="hljs-background-line">    @todos = @$.todos = @todoStorage.get()<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">    @$.newTodo = ''<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">    @$.location = @$location<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>, you can put your watchers in the watch object instead.
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'todoStorage'</span>]</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to easily assign properties.</p>
+<p>You can either use a string representing an <a href="https:#docs.angularjs.org/guide/expression">angular expression</a>,
+or you can directly assign any other object/primitive.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
+<p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
+</div></div><div class='highlight'><pre>  <span class="hljs-object-key">data:</span>
+    <span class="hljs-object-key">todos:</span> <span class="hljs-string">'todoStorage.get()'</span>,</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
+You can access your dependencies using the class-wide <code>@</code> symbol.
+The <code>$scope</code> is available using <code>@$</code> (or you can use <code>@$scope</code> if you prefer).</p>
+</div></div><div class='highlight'><pre>  <span class="hljs-object-key">init:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@_resetEntryField</span>()</pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to <code>$scope.$watch</code>,
+you can put your watchers in the watch object instead.
 If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</p>
 </div></div><div class='highlight'><pre>  <span class="hljs-object-key">watch:</span>
-    <span class="hljs-string">'location.path()'</span>: <span class="hljs-function"><span class="hljs-params">(path)</span> -&gt;</span>
-<span class="hljs-background-line">      @$.statusFilter =<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">        if (path is '/active') then completed: false<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">        else if (path is '/completed') then completed: true<span class="hljs-hide"> #!</span></span>
+    <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span></pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> Controller methods are defined inside of the <code>methods</code> object.</p>
+<p>Classy automatically makes methods available class-wide (through <code>@methodName</code>) and also on the <code>$scope</code>
+so you can easily access it using directives like ng-click.</p>
+<p>Prefix the method name with an underscore and Classy wont add it to the <code>$scope</code>.</p>
+<p>You can also define methods using angular expressions (see <code>_getRemainingCount()</code>).
+Whenever the expression method is called it will evaluate the expression and return the expression’s result.</p>
+</div></div><div class='highlight'><pre>  <span class="hljs-object-key">methods:</span>
 
-    <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span></pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the $scope.
-Classy automatically puts the function in your $scope so you can easily access it using directives like ng-click.</p>
-</div></div><div class='highlight'><pre>  <span class="hljs-object-key">addTodo:</span><span class="hljs-function"> -&gt;</span>
-<span class="hljs-background-line">    newTodo = @$.newTodo.trim()<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">    @todos.push<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">      title: newTodo<span class="hljs-hide"> #!</span></span>
-<span class="hljs-background-line">      completed: false<span class="hljs-hide"> #!</span></span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add</p>
-</div></div><div class='highlight'><pre>  <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-params">(newValue, oldValue)</span> -&gt;</span>
-<span class="hljs-background-line">    @$.remainingCount = @filterFilter(@todos, completed: false).length<span class="hljs-hide"> #!</span></span></pre></div></section></code></pre>
+    <span class="hljs-object-key">_getRemaining:</span> <span class="hljs-string">'items | filter:{ complete: false }'</span>
+
+    <span class="hljs-object-key">_onTodoChange:</span><span class="hljs-function"> -&gt;</span>
+<span class="hljs-background-line">      @$.remainingCount = @_getRemaining().length<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      @todoStorage.put @items<span class="hljs-hide"> #!</span></span>
+
+    <span class="hljs-object-key">addTodo:</span><span class="hljs-function"> -&gt;</span>
+<span class="hljs-background-line">      @$.items.push<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        text: @$.newTodo<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">        complete: false<span class="hljs-hide"> #!</span></span>
+<span class="hljs-background-line">      @_resetEntryField()<span class="hljs-hide"> #!</span></span>
+
+    <span class="hljs-object-key">_resetTodoEntry:</span><span class="hljs-function"> -&gt;</span> <span class="hljs-property">@$</span>.newTodo = <span class="hljs-string">''</span></pre></div></section></code></pre>
                   <pre class="javascript-code"><code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
 </div></div><div class='highlight'><pre>
-<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Registers your controller and inject your dependencies.
+<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Register your controller and inject your dependencies.
 Injecting dependencies with Classy plays nice with minifiers, you don’t need to annotate
 your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
-<p>By the way you can use the shortcut app.cC instead of app.classy.controller if you prefer.</p>
+<p>By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</p>
 </div></div><div class='highlight'><pre>
 app.classy.controller({
 
-  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoCtrl'</span>,
+  <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
 
-  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'$location'</span>, <span class="hljs-string">'todoStorage'</span>, <span class="hljs-string">'filterFilter'</span>],</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code. Who’d have thunk it?
-You can access your dependencies using the class-wide this symbol.
-The $scope is available using this.$ (or you can use this.$scope if you prefer).</p>
+  <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'todoStorage'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to easily assign properties.</p>
+<p>You can use a string representing an <a href="https://docs.angularjs.org/guide/expression">angular expression</a>,
+or you can directly assign any other object/primitive.</p>
+<p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
+<p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">data:</span> {
+    <span class="hljs-object-key">items:</span> <span class="hljs-string">'todoStorage.get()'</span>
+  },</pre></div></section><section><div class="code-tip"><div><p>An init method for your initialization code!
+You can access your dependencies using the class-wide <code>this</code> symbol.
+The <code>$scope</code> is available using <code>this.$</code> (or you can use <code>this.$scope</code> if you prefer).</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-<span class="hljs-background-line">    this.todos = this.$.todos = this.todoStorage.get();<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">    this.$.newTodo = '';<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">    this.$.location = this.$location;<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with lots of calls to $scope.$watch,
+    <span class="hljs-keyword">this</span>._resetEntryField();
+  },</pre></div></section><section><div class="code-tip"><div><p>Instead of polluting your init method with calls to <code>$scope.$watch</code>,
 you can put your watchers in the watch object instead.
-If you want to watch an object or collection just use the {object} or {collection} keyword.</p>
+If you want to watch an object or collection just use the <code>{object}</code> or <code>{collection}</code> keyword.</p>
 </div></div><div class='highlight'><pre>
   <span class="hljs-object-key">watch:</span> {
-    <span class="hljs-string">'location.path()'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(path)</span> </span>{
-<span class="hljs-background-line">      this.$.statusFilter = (path === '/active') ?<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">        { completed: false } : (path === '/completed') ?<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">        { completed: true };<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">    },<span class="hljs-hide"> //!</span></span>
+    <span class="hljs-string">'{object}items'</span>: <span class="hljs-string">'_onTodoChange'</span>
+  },</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> Controller methods are defined inside of the <code>methods</code> object.</p>
+<p>Classy automatically makes methods available class-wide (through <code>this.methodName</code>) and also on the <code>$scope</code>
+so you can easily access it using directives like ng-click.</p>
+<p>Prefix the method name with an underscore and Classy wont add it to the <code>$scope</code>.</p>
+<p>You can also define methods using angular expressions (see <code>_getRemainingCount()</code>).
+Whenever the expression method is called it will evaluate the expression and return the expression’s result.</p>
+</div></div><div class='highlight'><pre>
+  <span class="hljs-object-key">methods:</span> {
 
-    <span class="hljs-string">'{object}todos'</span>: <span class="hljs-string">'_onTodoChange'</span>
-<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Most of the time when you add a function to a controller, you want it available on the <code>$scope</code>.
-Classy automatically puts the function in your <code>$scope</code> so you can easily access it using directives like ng-click.</p>
-</div></div><div class='highlight'><pre>
-  <span class="hljs-object-key">addTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-<span class="hljs-background-line">    var newTodo = this.$.newTodo.trim();<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">    this.todos.push({<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">      title: newTodo,<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">      completed: false<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">    });<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">  },<span class="hljs-hide"> //!</span></span></pre></div></section><section><div class="code-tip"><div><p>Prefix the function name with an underscore and Classy wont add it to the $scope.</p>
-</div></div><div class='highlight'><pre>
-  <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newValue, oldValue)</span> </span>{
-<span class="hljs-background-line">    this.$.remainingCount =<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">      this.filterFilter(this.todos, { completed: false }).length;<span class="hljs-hide"> //!</span></span>
-<span class="hljs-background-line">  }<span class="hljs-hide"> //!</span></span>
+    <span class="hljs-object-key">_getRemaining:</span> <span class="hljs-string">'items | filter:{ complete: false }'</span>,
+
+    <span class="hljs-object-key">_onTodoChange:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.remainingCount = this._getRemaining().length;<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this.todoStorage.put(this.items);<span class="hljs-hide"> //!</span></span>
+    },
+
+    <span class="hljs-object-key">addTodo:</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.items.push({text: this.$.newTodo, complete: false});<span class="hljs-hide"> //!</span></span>
+<span class="hljs-background-line">      this._resetEntryField();<span class="hljs-hide"> //!</span></span>
+    },
+
+    <span class="hljs-object-key">_resetTodoEntry:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-background-line">      this.$.newTodo = '';<span class="hljs-hide"> //!</span></span>
+    }
+
+  }
 
 <span class="hljs-background-line">});<span class="hljs-hide"> //!</span></span></pre></div></section></code></pre>
                 </div>
@@ -440,16 +540,19 @@ Classy automatically puts the function in your <code>$scope</code> so you can ea
              <section class="more-info">
                 <h3><i class="icon-info"></i> More Info</h3>
                 <ul>
-                  <li>Version: 0.4.2 (<a href="https://github.com/davej/angular-classy/blob/master/CHANGELOG.md">Changelog</a>)</li>
-                    <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
-                    <li>Test status:
-                      <a href="https://travis-ci.org/davej/angular-classy">
-                        <img src="https://travis-ci.org/davej/classy-computed.svg">
-                      </a>
-                    </li>
-                    <li>License: MIT</li>
-                    <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
-                    <li>Find Angular Classy useful? <a href="http://twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
+                  <li>Version: 1.0.0 (<a href="https://github.com/davej/angular-classy/releases">Releases/Changelogs</a>)</li>
+                  <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
+                  <li><a class="github-button" href="https://github.com/davej/angular-classy" data-icon="octicon-star" data-count-href="/davej/angular-classy/stargazers" data-count-api="/repos/davej/angular-classy#stargazers_count">Star</a>
+                  </li>
+                  <li>Test status:
+                    <a href="https://travis-ci.org/davej/angular-classy">
+                      <img src="https://travis-ci.org/davej/classy-computed.svg">
+                    </a>
+                  </li>
+                  <li>License: MIT</li>
+                  <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
+                  <li>Find Angular Classy useful? <a href="http://twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
+                  <li>Looking for <a href="/0.4.html">0.4.x instead</a>?</li>
                 </ul>
               </section>
 
@@ -458,11 +561,12 @@ Classy automatically puts the function in your <code>$scope</code> so you can ea
         </div>
 
         <footer>
-            &copy; Dave Jeffery 2014. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
+            &copy; Dave Jeffery 2015. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
         </footer>
 
 
         <script src="scripts/main.js"></script>
+        <script async defer src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22https%3A%2F%2Fbower-component-list.herokuapp.com%2Fkeyword%2Fclassy-plugin%22&amp;format=json&amp;diagnostics=true&amp;callback=initClassyPluginList"></script>
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -471,5 +575,6 @@ Classy automatically puts the function in your <code>$scope</code> so you can ea
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-6949082-2');ga('send','pageview');
         </script>
+        <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
     </body>
 </html>

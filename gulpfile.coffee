@@ -14,7 +14,7 @@ bowerLatest = require('bower-latest')
 highlight.registerLanguage('coffeescript', coffeeSyntax)
 highlight.registerLanguage('javascript', javascriptSyntax)
 classyVersion = null
-templateFiles = [ "index.template", "beta.template", "1.0.template", "upcoming.template" ]
+templateFiles = "*.template"
 
 gulp.task "default", [ "include", "sass" ]
 

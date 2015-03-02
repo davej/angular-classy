@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Angular Classy</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/png" href="favicon.png">
+
+        <link href='http://fonts.googleapis.com/css?family=Signika:600|Inconsolata' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
+    <body>
+        <!--[if lt IE 9]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <header>
+            <h1><img src="images/logo.svg" title="Angular Classy" alt="Angular Classy logo" width="362" height="149"></h1>
+        </header>
+
+        <div class="main-content">
+
+            <h2>Cleaner class-based controllers for AngularJS</h2>
+
+            <div class="features">
+                <h3><i class="icon-align-left"></i> Structure</h3>
+                <p>As your Angular controller grows, it can start to get unwieldy and difficult to structure.</p>
+
+                <p><strong>Classy</strong> uses a class-based approach and steals some neat ideas from <a href="https://angulardart.org/" target="_blank">AngularDart</a> to make controllers a little nicer.</p>
+
+                <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller based on the <a href="http://todomvc.com/" target="_blank">TodoMVC</a> project. Take a look, <strong>Classy</strong> keeps your controllers clean and structured.</p>
+
+                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>.</p>
+
+                <hr>
+
+                <h3><i class="icon-pencil"></i> No more annotating your dependencies</h3>
+
+                <p>This is a big-ee. Angular veterans will know that if you want your Angular code to work with minifiers then you have to annotate your dependencies (i.e. list your dependencies twice), like so (<strong>without Classy</strong>):</p>
+
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/annotation-angular.coffee'))</code></pre>
+
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/annotation-angular.js'))</code></pre>
+
+
+
+                <p>Annotating your dependencies is annoying and also it's just not very DRY. If you want to add/remove a dependancy then you need to remember to do it in two places.</p>
+
+                <p>In <strong>Classy</strong> you don't need to do that, it works with minifiers and your code remains DRY. Here's what it looks like <strong>with Classy</strong>:</p>
+                                <pre class="block-code coffeescript-code hide">@@include(highlightCoffee('example_code/annotation-classy.coffee'))</pre>
+
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/annotation-classy.js'))</code></pre>
+
+                <hr>
+
+                <h3><i class="icon-code"></i> <code>$scope</code> convenience</h3>
+
+                <h4>Functions are automatically added to the controller's <code>$scope</code></h4>
+
+                <p>Most of the time when you add a function to a controller, you want it available on the <code class="inline-code">$scope</code>. This is so that you can easily call it in your html using directives like <code class="inline-code">ng-click</code>. Here's how it used to look <strong>without Classy</strong>:</p>
+
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/scope-angular.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/scope-angular.js'))</code></pre>
+
+                <p>and now <strong>with Classy</strong>:</p>
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/scope-classy.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/scope-classy.js'))</code></pre>
+
+
+                <p>If you don't want the function to be on the <code class="inline-code">$scope</code> then just prefix it with an underscore character (<code>_</code>).</p>
+
+                <h4>Handy shortcut for <code>$scope</code></h4>
+                <p>To access the <code>$scope</code> You can simply write <code class="inline-code coffeescript-code hide">@$.foo = 'bar'</code><code class="inline-code javascript-code">this.$.foo = 'bar';</code> instead of <code class="inline-code coffeescript-code hide">@$scope.foo = 'bar'</code><code class="inline-code javascript-code">this.$scope.foo = 'bar';</code>. Although you can use still use <code>this.$scope</code> if you prefer.
+
+                <hr>
+
+                <h3><i class="icon-wristwatch"></i> Special object for <code>$watch</code> listeners</h3>
+
+                <p>Instead of polluting your <code class="inline-code">init</code> method with lots of calls to <code class="inline-code">$scope.$watch</code>, you can put them in a watch object instead:</p>
+
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/watch-classy.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/watch-classy.js'))</code></pre>
+
+                <p>Notice the <code class="inline-code">{object}</code> keyword in the second listener above. This allows you to easily specify the type of watcher to use. This is much more explicit than Angular's approach. Here is a table of the available keywords:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Keyword</th>
+                            <th>$watch Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <code>{collection}</code> or <code>{shallow}</code>
+                            </td>
+                            <td>
+                                <a href="http://docs.angularjs.org/api/ng.%24rootScope.Scope#methods_%24watch_example_parameters" target="_blank"><code>$watchCollection(..)</code></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <code>{object}</code> or <code>{deep}</code>
+                            </td>
+                            <td>
+                                <a href="http://docs.angularjs.org/api/ng.%24rootScope.Scope#methods_%24watchcollection" target="_blank"><code>$watch(.., objectEquality = true)</code></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <hr>
+
+                <h3><i class="icon-resize-small"></i> Only 1KB (gzipped and minified)</h3>
+
+                <p>it's super tiny so you don't have to worry about it adding weight to your application.</p>
+
+                <hr>
+
+                <h3><i class="icon-star"></i> Bonus beta features</h3>
+
+                <h4>Named dependencies</h4>
+
+                <p>Classy allows you to name dependencies whatever you like, simply pass in an object instead of an array. Use a '.' value if you wish to use the original name for a dependency.</p>
+
+                <pre class="block-code coffeescript-code hide">@@include(highlightCoffee('example_code/named-classy.coffee'))</code></pre>
+                <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/named-classy.js'))</code></pre>
+
+                <h4>Reverse-reference controllers</h4>
+
+                <p>This feature is stolen from AngularDart (you may also be familiar with it from Backbone and other MVC frameworks). It's best explained with code.</p>
+                <p>This is how you would typically bind a controller to a view with Angular Classy:</p>
+
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightHTML('example_code/non-reverse.html'))
+
+@@include(highlightJS('example_code/non-reverse.coffee'))</code></pre>
+
+                <pre class="block-code javascript-code"><code>@@include(highlightHTML('example_code/non-reverse.html'))
+
+@@include(highlightJS('example_code/non-reverse.js'))</code></pre>
+
+                <p>If you want to use reverse-reference controllers then you simply give your controller an element selector reference instead of a name, like this:</p>
+
+                <pre class="block-code coffeescript-code hide"><code>@@include(highlightHTML('example_code/reverse.html'))
+
+@@include(highlightCoffee('example_code/reverse.coffee'))</code></pre>
+
+                <pre class="block-code javascript-code"><code>@@include(highlightHTML('example_code/reverse.html'))
+
+@@include(highlightJS('example_code/reverse.js'))</code></pre>
+
+                <p>Classy will use jQuery as it's selector engine if available, otherwise it will fallback to <code class="inline-code">document.querySelectorAll</code>. There is currently no test coverage for this feature so it's probably best not to use it in production (unless you're a badass).</p>
+
+
+                <hr>
+
+                <h3><i class="icon-help"></i> FAQs</h3>
+
+                <p>Click the questions below to expand the answers.</p>
+
+                <h4><a href="#" class="toggle-section">How do I use Classy Controllers in a directive?</a></h4>
+                <div class="hide-this">
+                  <p>You use them the same way you normally would, except you don't need to give the controller a name because the controller does not need to be registered outside of Angular.</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/classy-directive.js'))</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I reference a Classy controller in a route?</a></h4>
+                <div class="hide-this">
+
+                  <p>Classy controllers are registered just like normal controllers in Angular so you can reference them the same way (it works in ui-router too).</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/classy-route.js'))</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax?</a></h4>
+                <div class="hide-this">
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-module.js'))</code></pre>
+
+                  <p>or on a per-controller basis:</p>
+                  <pre class="block-code"><code>@@include(highlightJS('example_code/controller-as-controller.js'))</code></pre>
+                </div>
+
+                <h4><a href="#" class="toggle-section">How do I ask a question that isn't answered here?</a></h4>
+
+                <div class="hide-this">
+                  <p>Open an issue on <a href="https://github.com/davej/angular-classy/issues?state=open" target="_blank">Github issues</a> and I'll do my best :-)</p>
+                </div>
+
+
+            </div>
+
+            <div class="code-editor-container">
+              <div class="code-editor">
+                <div class="toolbar">
+                  <div class="close"></div>
+                  <div class="minimize"></div>
+                  <div class="zoom"></div>
+                  todo-controller<span class="coffeescript-code hide">.coffee</span><span class="javascript-code">.js</span>
+                  <span class="sub-title">—
+                    <select id="select-language">
+                      <option name="javascript">Javascript</option>
+                      <option name="coffeescript">Coffeescript</option>
+                    </select>
+                  </span>
+                </div>
+                <div class="editor">
+                  <pre class="coffeescript-code hide">@@include('example_code/todo-app.coffee.html')</pre>
+                  <pre class="javascript-code">@@include('example_code/todo-app.js.html')</pre>
+                </div>
+              </div>
+
+              <section class="installation">
+                <h3><i class="icon-download-cloud"></i> Installation</h3>
+                <ol>
+                  <li>
+                      <div><a href="https://github.com/davej/angular-classy/releases/latest/">Download the latest release</a>.</div>
+                      <div style="margin-top:5px;">Or install with bower: <code class="inline-code">bower install angular-classy</code></div>
+                  </li>
+
+                  <li>
+                      Reference Classy <em>after</em> the reference to Angular<br>
+  <pre class="block-code"><code>@@include(highlightHTML('example_code/classy-ref.html'))</code></pre>
+                  </li>
+
+                  <li>
+                      Add Classy to your application module
+  <pre class="block-code coffeescript-code hide"><code>@@include(highlightCoffee('example_code/classy-module.coffee'))</code></pre>
+  <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/classy-module.js'))</code></pre>
+                  </li>
+
+                  <li>That's it, you can create a <code class="inline-code">classy.controller</code> like so:
+  <pre class="block-code coffeescript-code hide">@@include(highlightCoffee('example_code/basic-classy-controller.coffee'))</code></pre>
+  <pre class="block-code javascript-code"><code>@@include(highlightJS('example_code/basic-classy-controller.js'))</code></pre></li>
+                </ol>
+              </section>
+
+             <section class="more-info">
+                <h3><i class="icon-info"></i> More Info</h3>
+                <ul>
+                  <li>Version: 0.4.2 (<a href="https://github.com/davej/angular-classy/blob/master/CHANGELOG.md">Changelog</a>)</li>
+                    <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
+                    <li>Test status:
+                      <a href="https://travis-ci.org/davej/angular-classy">
+                        <img src="https://travis-ci.org/davej/classy-computed.svg">
+                      </a>
+                    </li>
+                    <li>License: MIT</li>
+                    <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
+                    <li>Find Angular Classy useful? <a href="http://twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
+                </ul>
+              </section>
+
+            </div>
+
+        </div>
+
+        <footer>
+            &copy; Dave Jeffery 2014. Licensed under the MIT license. <span class="icons"><a href="https://github.com/davej/angular-classy"><i class="icon-github"></i></a> <a href="https://twitter.com/DaveJ"><i class="icon-twitter"></i></a></span>
+        </footer>
+
+
+        <script src="scripts/main.js"></script>
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-6949082-2');ga('send','pageview');
+        </script>
+    </body>
+</html>

@@ -1,6 +1,6 @@
 <code><section><div class="code-tip"><div><p>Add ‘classy’ to your app modules</p>
 </div></div><div class='highlight'><pre>
-<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Registers your controller and inject your dependencies.
+<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [<span class="hljs-string">'classy'</span>]);</pre></div></section><section><div class="code-tip"><div><p>Register your controller and inject your dependencies.
 Injecting dependencies with Classy plays nice with minifiers, you don’t need to annotate
 your dependencies (i.e. list dependencies twice) and your code remains DRY.</p>
 <p>By the way you can use the shortcut <code>app.cC</code> instead of <code>app.classy.controller</code> if you prefer.</p>
@@ -10,7 +10,7 @@ app.classy.controller({
   <span class="hljs-object-key">name:</span> <span class="hljs-string">'TodoController'</span>,
 
   <span class="hljs-object-key">inject:</span> [<span class="hljs-string">'$scope'</span>, <span class="hljs-string">'todoStorage'</span>],</pre></div></section><section><div class="code-tip"><div><p><strong>New in 1.0!</strong> The data object is a simple structure that allows you to easily assign properties.</p>
-<p>You can either use a string representing an <a href="https://docs.angularjs.org/guide/expression">angular expression</a>,
+<p>You can use a string representing an <a href="https://docs.angularjs.org/guide/expression">angular expression</a>,
 or you can directly assign any other object/primitive.</p>
 <p>Classy automatically makes items in the data object available class-wide (and on the <code>$scope</code>).</p>
 <p>This feature helps to move boilerplate assignments out of the <code>init</code> method.</p>

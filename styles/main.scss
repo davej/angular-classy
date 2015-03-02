@@ -534,6 +534,8 @@ body > header {
   -webkit-align-items: center;
   align-items: center;
 
+  z-index: 99;
+
   // @include animation-name(popOut);
   // @include animation-duration(0.5s);
   // @include animation-fill-mode(forwards);

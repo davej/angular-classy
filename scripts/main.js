@@ -1,5 +1,5 @@
 (function() {
-  var animate, currentLanguage, delayMilliseconds, el, index, otherlanguage, switchLanguage, timeSince, _fn, _fn1, _i, _j, _len, _len1, _ref, _ref1;
+  var animate, currentLanguage, delay, delayMilliseconds, el, index, otherlanguage, switchLanguage, timeSince, _fn, _fn1, _i, _j, _len, _len1, _ref, _ref1;
 
   currentLanguage = "javascript";
 
@@ -54,19 +54,20 @@
 
   animate = true;
 
-  delayMilliseconds = 5000;
+  delayMilliseconds = 10000;
+
+  delay = [0, 3500, 18000, 36000, 48000, 60000, 85000];
 
   _ref1 = document.querySelectorAll('.javascript-code section');
   _fn1 = function(el) {
-    console.log(index);
     window.setTimeout(function() {
       if (animate) {
         return el.className = 'active';
       }
-    }, index * delayMilliseconds);
+    }, delay[index]);
     return window.setTimeout(function() {
       return el.className = '';
-    }, (index * delayMilliseconds) + delayMilliseconds);
+    }, delay[index + 1]);
   };
   for (index = _j = 0, _len1 = _ref1.length; _j < _len1; index = ++_j) {
     el = _ref1[index];
@@ -126,19 +127,16 @@
   };
 
   window.initClassyPluginList = function(json) {
-    var htmlStr, plugin, pluginNode, plugins, sortedPlugins, tdString, tr, _k, _len2, _ref2, _ref3, _ref4, _results;
+    var htmlStr, plugin, pluginNode, plugins, tdString, tr, _k, _len2, _ref2, _ref3, _ref4, _results;
     htmlStr = '';
     plugins = json != null ? (_ref2 = json.query) != null ? (_ref3 = _ref2.results) != null ? (_ref4 = _ref3.json) != null ? _ref4.json : void 0 : void 0 : void 0 : void 0;
     if (plugins.length) {
-      sortedPlugins = plugins.sort(function(a, b) {
-        return b.stars - a.stars;
-      });
       pluginNode = document.getElementById('plugin-list');
       _results = [];
-      for (_k = 0, _len2 = sortedPlugins.length; _k < _len2; _k++) {
-        plugin = sortedPlugins[_k];
+      for (_k = 0, _len2 = plugins.length; _k < _len2; _k++) {
+        plugin = plugins[_k];
         tr = document.createElement('tr');
-        tdString = "<td><a href=\"" + plugin.website + "\" target=\"_blank\">" + plugin.name + "</a><br>" + plugin.description + "</td><td>" + plugin.owner + "</td><td>" + (timeSince(plugin.updated)) + " ago</td>";
+        tdString = "<td><a href=\"" + plugin.website + "\" target=\"_blank\">" + plugin.name + "</a><br>" + plugin.description + "</td><td>" + plugin.owner + "</td><td align='center'>" + plugin.stars + "</td>";
         tr.innerHTML = tdString;
         _results.push(pluginNode.appendChild(tr));
       }
