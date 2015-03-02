@@ -40,9 +40,9 @@
                 </p>
                 <p>It can be helpful to have something a little more structured and prescriptive. Enter Angular Classy!</p>
 
-                <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller for a simple Todo application. Take a look, <strong>Classy</strong> keeps your controllers clean and manageable.</p>
+                <p class="hide-on-small-devices">The code to the right is a <strong>Classy</strong> controller for a simple Todo application. Take a look, <strong>Classy</strong> keeps your controllers clean and manageable.<br> <strong>You can play with a <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">live example on plunker</a>.</strong></p>
 
-                <p class="hide-on-small-devices"><strong>Hover your cursor over the code on the right for comments and explanations</strong>. You can also see a <a href="http://plnkr.co/edit/Jp4O3d?p=preview" target="_blank">live example in plunker</a>.</p>
+                <p class="hide-on-small-devices">Hover your cursor over the code on the right for comments and explanations.</p>
 
                 <hr>
 
@@ -71,7 +71,7 @@
 
                 <h5><a href="#" class="toggle-section">Want to use <code>controllerAs</code> instead of <code>$scope</code>? &#x25BE;</a></h5>
                 <div class="hide-this">
-                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent data/methods from being added to the <code class="inline-code">$scope</code> by simply changing the config. You can do this on a per-module basis:</p>
                   <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-module.js'))</code></pre>
 
                   <p>or on a per-controller basis:</p>
@@ -208,7 +208,7 @@
 
                 <h4><a href="#" class="toggle-section">How do I use classy with the `TodoCtrl as todo` syntax? &#x25BE;</a></h4>
                 <div class="hide-this">
-                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent public functions from being added to the $scope by simply changing the config. You can do this on a per-module basis:</p>
+                  <p>Angular Classy works with controllerAs out-of-the-box, you don't need to do anything. If you want to make things a bit cleaner you can prevent data/methods from being added to the <code class="inline-code">$scope</code> by simply changing the config. You can do this on a per-module basis:</p>
                   <pre class="block-code"><code>@@include(highlightJS('example_code/1.0/controller-as-module.js'))</code></pre>
 
                   <p>or on a per-controller basis:</p>
@@ -319,7 +319,7 @@
                   <li>License: MIT</li>
                   <li>Author: <a href="https://twitter.com/DaveJ">Dave Jeffery</a></li>
                   <li>Find Angular Classy useful? <a href="http://twitter.com/share?text=Angular Classy: Cleaner class-based controllers for AngularJS&amp;url=http://davej.github.io/angular-classy/" target="_blank">Share it on twitter</a>!</li>
-                  <li>Looking for <a href="/0.4.html">0.4.x instead</a>?</li>
+                  <li>Looking for <a href="0.4.html">0.4.x instead</a>?</li>
                 </ul>
               </section>
 
