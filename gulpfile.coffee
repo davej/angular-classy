@@ -24,14 +24,14 @@ pluginNames = []
 gulp.task "getPluginsNames", ->
   buildNames = (es) ->
     es.mapSync (file) ->
-      pluginNames.push path.basename(file.path, ".coffee")
+      pluginNames.push "classy.#{path.basename(file.path, ".coffee")}"
       file
 
-  gulp.src "./src/classy-*.coffee"
+  gulp.src "./src/*.coffee"
     .pipe buildNames(es)
 
 gulp.task "concatAndRegisterPlugins", [ "getPluginsNames" ], ->
-  gulp.src "./src/*classy*.coffee"
+  gulp.src ["./src/core.coffee", "./src/*.coffee"]
     .pipe concat("angular-classy.coffee")
     .pipe insert.append("\nangular.module 'classy', " + JSON.stringify(pluginNames))
     .pipe gulp.dest("./")
@@ -46,6 +46,8 @@ gulp.task "minify", [ "coffeeToJs" ], ->
     .pipe uglify()
     .pipe rename suffix: '.min'
     .pipe gulp.dest("./")
+
+gulp.task "watch", -> gulp.watch "./src/*.coffee", ['minify']
 
 ###
   `test` Action - Uses Karma

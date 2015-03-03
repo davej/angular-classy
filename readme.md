@@ -17,19 +17,11 @@ If you want to edit any of the Classy source files or contribute some code then 
 
 To build Classy run `gulp`. To test Classy run `gulp test`.
 
-## What's next
-
-* ~~Tests~~ **Unit tests now added (based on the TodoMVC controller)**
-* ~~Make it work with Bower~~ **Now works with bower**
-* ~~Make a simple github.io site~~ **[Site now available](http://davej.github.io/angular-classy/)**
-* Performance testing
-* Investigate other Classy Angular stuff (especially services and directives)
-
 ## Thanks
 
 * [@elado](https://github.com/elado) and [this gist](https://gist.github.com/elado/8138516).
 * [@ahmednuaman](https://github.com/ahmednuaman) and his project [Radian](https://github.com/ahmednuaman/radian).
-
+* [@wuxiaoying](https://github.com/wuxiaoying) for contributions and [plugins](http://bower.io/search/?q=owner:wuxiaoying%20classy).
 
 ## License
 

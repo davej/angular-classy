@@ -1,5 +1,5 @@
 ###
-Angular Classy 0.4.1
+Angular Classy 1.0.0
 Dave Jeffery, @DaveJ
 License: MIT
 ###
@@ -8,26 +8,36 @@ License: MIT
 
 'use strict';
 
-defaults =
-  controller: {}
-
-selectorControllerCount = 0
 availablePlugins = {}
-enabledPlugins = {}
+alreadyRegisteredModules = {};
 
-enablePlugins = (reqs) ->
-  for req in reqs
-    for pluginName, plugin of availablePlugins
-      if pluginName is req
-        enabledPlugins[pluginName] = plugin
-        if plugin.options
-          defaults.controller[plugin.name] = angular.copy(plugin.options)
+getActiveClassyPlugins = (name, origModule) ->
+  # TODO: Write a test to ensure that this method gets called the correct amount of times
+  obj = {}
+  alreadyRegisteredModules[name] = true
+  do getNextRequires = (name) ->
+    if alreadyRegisteredModules[name]
+      module = angular.module(name)
+      for pluginName in module.requires
+        plugin = availablePlugins[pluginName]
+        if plugin
+          obj[pluginName] = plugin
+          plugin.name ?= pluginName.replace 'classy.', ''
+          origModule.__classyDefaults ?= {}
+          origModule.__classyDefaults[plugin.name] = angular.copy plugin.options or {}
+        getNextRequires(pluginName)
+    return
+
+  return obj
+
 
 pluginDo = (methodName, params, obj) ->
-  for pluginName, plugin of enabledPlugins
+  plugins = params[0].__plugins or params[0]::__plugins
+  for pluginName, plugin of plugins
     obj?.before?(plugin)
     returnVal = plugin[methodName]?.apply(plugin, params)
     obj?.after?(plugin, returnVal)
+  return
 
 copyAndExtendDeep = (dst) ->
   for obj in arguments
@@ -48,17 +58,21 @@ angular.module = (name, reqs, configFn) ->
   ###
   module = origModuleMethod(name, reqs, configFn)
 
-  # This is super messy.
-  # TODO: Clean this up and test the logic flow properly before moving to master
   if reqs
-    enablePlugins(reqs)
 
-    if 'classy-core' in reqs or 'classy' in reqs
+    if name is 'classy.core' then availablePlugins[name] = {}
+
+    activeClassyPlugins = getActiveClassyPlugins(name, module)
+
+    if activeClassyPlugins['classy.core']
       module.classy =
         plugin:
           controller: (plugin) -> availablePlugins[name] = plugin
+
         options:
           controller: {}
+
+        activePlugins: activeClassyPlugins
 
         controller: (classObj) ->
 
@@ -84,7 +98,6 @@ angular.module = (name, reqs, configFn) ->
       module.cC = module.classy.controller
       module.cCs = module.classy.controllers
 
-
   return module
 
 
@@ -96,14 +109,28 @@ classFns =
       classConstructor::[key] = value
 
     options =
-      copyAndExtendDeep {}, defaults.controller, module.classy.options.controller, classObj.__options
+      copyAndExtendDeep(
+        {},
+        module.__classyDefaults,
+        module.classy.options.controller,
+        classObj.__options
+      )
 
+    shorthandOptions = {}
+    for optionName, option of options
+      if !angular.isObject(option)
+        shorthandOptions[optionName] = option
 
-    pluginDo 'preInitBefore', [classConstructor, classObj, module],
-      before: (plugin) ->
-        plugin.options = options[plugin.name] or {}
+    classConstructor::__plugins = {}
+    for pluginName, plugin of module.classy.activePlugins
+      classConstructor::__plugins[pluginName] = angular.copy(plugin)
+      classConstructor::__plugins[pluginName].classyOptions = options
+      classConstructor::__plugins[pluginName].options = angular.extend(options[plugin.name] or {}, shorthandOptions);
+
+    pluginDo 'preInitBefore', [classConstructor, classObj, module]
     pluginDo 'preInit', [classConstructor, classObj, module]
     pluginDo 'preInitAfter', [classConstructor, classObj, module]
+    return
 
   init: (klass, $inject, module) ->
     injectIndex = 0
@@ -112,13 +139,14 @@ classFns =
       deps[key] = $inject[injectIndex]
       injectIndex++
 
-    pluginDo 'null', [],
+    pluginDo 'null', [klass],
       before: (plugin) ->
         if angular.isArray(plugin.localInject)
           for depName in plugin.localInject
             dep = $inject[injectIndex]
             plugin[depName] = dep
             injectIndex++
+        return
 
     for depName in @localInject
       dep = $inject[injectIndex]
@@ -130,24 +158,27 @@ classFns =
     pluginPromises = []
     pluginDo 'init', [klass, deps, module],
       after: (plugin, returnVal) ->
-        if returnVal && returnVal.then
+        if returnVal?.then
           # Naively assume this is a promise
-          # TODO: Make this smarter than just looking for `.then`
           pluginPromises.push(returnVal)
+        return
 
     initClass = ->
       klass.init?()
       pluginDo 'initAfter', [klass, deps, module]
       @postInit(klass, deps, module)
+      return
 
     if pluginPromises.length
       @$q.all(pluginPromises).then angular.bind(@, initClass)
     else
       angular.bind(@, initClass)()
+    return
 
   postInit: (klass, deps, module) ->
     pluginDo 'postInitBefore', [klass, deps, module]
     pluginDo 'postInit', [klass, deps, module]
     pluginDo 'postInitAfter', [klass, deps, module]
+    return
 
-angular.module('classy-core', [])
+angular.module('classy.core', [])

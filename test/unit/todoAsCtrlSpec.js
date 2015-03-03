@@ -1,8 +1,8 @@
-/*global describe, it, beforeEach, inject, expect*/
+/*global describe, it, beforeEach, inject, expect, module */
 (function () {
 	'use strict';
 
-	describe('Todo Coffee Classy Controller', function () {
+	describe('Todo Javascript Classy Controller', function () {
 		var ctrl, scope;
 		var todoList;
 		var todoStorage = {
@@ -14,7 +14,7 @@
 				this.storage = value;
 			}
 		};
-		var ctrlName = 'ThisDoesNotMapToNgController';
+		var ctrlName = 'TodoAsControllerCtrl as todoCtrl';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
 		beforeEach(module('todomvc'));
@@ -24,22 +24,27 @@
 			ctrl = $controller(ctrlName, { $scope: scope });
 		}));
 
+		it('should not have any controller methods placed on the scope', function () {
+			expect(scope.todos).toBeUndefined();
+			expect(scope.editTodo).toBeUndefined();
+		});
+
 		it('should not have an edited Todo on start', function () {
-			expect(scope.editedTodo).toBeNull();
+			expect(ctrl.editedTodo).toBeNull();
 		});
 
 		it('should not have any Todos on start', function () {
-			expect(scope.todos.length).toBe(0);
+			expect(ctrl.todos.length).toBe(0);
 		});
 
 		it('should have all Todos completed', function () {
 			scope.$digest();
-			expect(scope.allChecked).toBeTruthy();
+			expect(ctrl.allChecked).toBeTruthy();
 		});
 
 		describe('the path', function () {
 			it('should default to "/"', function () {
-				expect(scope.location.path()).toBe('/');
+				expect(ctrl.$location.path()).toBe('/');
 			});
 
 			describe('being at /active', function () {
@@ -50,9 +55,8 @@
 							path: function () { return '/active'; }
 						}
 					});
-
 					scope.$digest();
-					expect(scope.statusFilter.completed).toBeFalsy();
+					expect(ctrl.statusFilter.completed).toBeFalsy();
 				}));
 			});
 
@@ -66,7 +70,7 @@
 					});
 
 					scope.$digest();
-					expect(scope.statusFilter.completed).toBeTruthy();
+					expect(ctrl.statusFilter.completed).toBeTruthy();
 				}));
 			});
 		});
@@ -84,26 +88,26 @@
 			}));
 
 			it('should not add empty Todos', function () {
-				scope.newTodo = '';
-				scope.addTodo();
+				ctrl.newTodo = '';
+				ctrl.addTodo();
 				scope.$digest();
-				expect(scope.todos.length).toBe(0);
+				expect(ctrl.todos.length).toBe(0);
 			});
 
 			it('should not add items consisting only of whitespaces', function () {
-				scope.newTodo = '   ';
-				scope.addTodo();
+				ctrl.newTodo = '   ';
+				ctrl.addTodo();
 				scope.$digest();
-				expect(scope.todos.length).toBe(0);
+				expect(ctrl.todos.length).toBe(0);
 			});
 
 
 			it('should trim whitespace from new Todos', function () {
-				scope.newTodo = '  buy some unicorns  ';
-				scope.addTodo();
+				ctrl.newTodo = '  buy some unicorns  ';
+				ctrl.addTodo();
 				scope.$digest();
-				expect(scope.todos.length).toBe(1);
-				expect(scope.todos[0].title).toBe('buy some unicorns');
+				expect(ctrl.todos.length).toBe(1);
+				expect(ctrl.todos[0].title).toBe('buy some unicorns');
 			});
 		});
 
@@ -137,10 +141,10 @@
 			}));
 
 			it('should count Todos correctly', function () {
-				expect(scope.todos.length).toBe(5);
-				expect(scope.remainingCount).toBe(3);
-				expect(scope.completedCount).toBe(2);
-				expect(scope.allChecked).toBeFalsy();
+				expect(ctrl.todos.length).toBe(5);
+				expect(ctrl.remainingCount).toBe(3);
+				expect(ctrl.completedCount).toBe(2);
+				expect(ctrl.allChecked).toBeFalsy();
 			});
 
 			it('should save Todos to local storage', function () {
@@ -151,36 +155,36 @@
 				var todo = todoList[2];
 				todo.title = '';
 
-				scope.doneEditing(todo);
-				expect(scope.todos.length).toBe(4);
+				ctrl.doneEditing(todo);
+				expect(ctrl.todos.length).toBe(4);
 			});
 
 			it('should trim Todos on saving', function () {
 				var todo = todoList[0];
 				todo.title = ' buy moar unicorns  ';
 
-				scope.doneEditing(todo);
-				expect(scope.todos[0].title).toBe('buy moar unicorns');
+				ctrl.doneEditing(todo);
+				expect(ctrl.todos[0].title).toBe('buy moar unicorns');
 			});
 
 			it('clearCompletedTodos() should clear completed Todos', function () {
-				scope.clearCompletedTodos();
-				expect(scope.todos.length).toBe(3);
+				ctrl.clearCompletedTodos();
+				expect(ctrl.todos.length).toBe(3);
 			});
 
 			it('markAll() should mark all Todos completed', function () {
-				scope.markAll();
+				ctrl.markAll();
 				scope.$digest();
-				expect(scope.completedCount).toBe(5);
+				expect(ctrl.completedCount).toBe(5);
 			});
 
 			it('revertTodo() get a Todo to its previous state', function () {
 				var todo = todoList[0];
-				scope.editTodo(todo);
+				ctrl.editTodo(todo);
 				todo.title = 'Unicorn sparkly skypuffles.';
-				scope.revertEditing(todo);
+				ctrl.revertEditing(todo);
 				scope.$digest();
-				expect(scope.todos[0].title).toBe('Uncompleted Item 0');
+				expect(ctrl.todos[0].title).toBe('Uncompleted Item 0');
 			});
 		});
 	});
