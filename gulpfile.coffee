@@ -7,6 +7,7 @@ coffee = require("gulp-coffee")
 gutil = require('gulp-util')
 uglify = require('gulp-uglify')
 rename = require('gulp-rename')
+closure = require('gulp-jsclosure')
 
 ###
   `default` Action - Builds Angular Classy
@@ -24,30 +25,31 @@ pluginNames = []
 gulp.task "getPluginsNames", ->
   buildNames = (es) ->
     es.mapSync (file) ->
-      pluginNames.push "classy.#{path.basename(file.path, ".coffee")}"
+      pluginNames.push "classy.#{path.basename(file.path, ".js")}"
       file
 
-  gulp.src "./src/*.coffee"
+  gulp.src "./src/*.js"
     .pipe buildNames(es)
 
 gulp.task "concatAndRegisterPlugins", [ "getPluginsNames" ], ->
-  gulp.src ["./src/core.coffee", "./src/*.coffee"]
-    .pipe concat("angular-classy.coffee")
-    .pipe insert.append("\nangular.module 'classy', " + JSON.stringify(pluginNames))
+  gulp.src ["./src/core.js", "./src/*.js"]
+    .pipe concat("angular-classy.js")
+    .pipe insert.append("\nangular.module('classy', " + JSON.stringify(pluginNames) + ");")
+    .pipe closure()
     .pipe gulp.dest("./")
 
-gulp.task "coffeeToJs", [ "concatAndRegisterPlugins" ], ->
-  gulp.src "./angular-classy.coffee"
-    .pipe coffee().on('error', gutil.log)
-    .pipe gulp.dest("./")
+# gulp.task "coffeeToJs", [ "concatAndRegisterPlugins" ], ->
+#   gulp.src "./angular-classy.coffee"
+#     .pipe coffee().on('error', gutil.log)
+#     .pipe gulp.dest("./")
 
-gulp.task "minify", [ "coffeeToJs" ], ->
+gulp.task "minify", [ "concatAndRegisterPlugins" ], ->
   gulp.src "./angular-classy.js"
     .pipe uglify()
     .pipe rename suffix: '.min'
     .pipe gulp.dest("./")
 
-gulp.task "watch", -> gulp.watch "./src/*.coffee", ['minify']
+gulp.task "watch", -> gulp.watch "./src/*.js", ['minify']
 
 ###
   `test` Action - Uses Karma

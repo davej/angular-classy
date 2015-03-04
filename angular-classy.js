@@ -1,450 +1,494 @@
-
+;(function() {
 /*
 Angular Classy 1.0.0
 Dave Jeffery, @DaveJ
 License: MIT
  */
 
-
 /* global angular */
+var availablePlugins = {};
 
-(function() {
-  'use strict';
-  var alreadyRegisteredModules, availablePlugins, classFns, copyAndExtendDeep, getActiveClassyPlugins, origModuleMethod, pluginDo,
-    __hasProp = {}.hasOwnProperty,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var alreadyRegisteredModules = {};
 
-  availablePlugins = {};
+var getActiveClassyPlugins = function(name, origModule) {
+  // TODO: Write a test to ensure that this method gets called the correct amount of times
 
-  alreadyRegisteredModules = {};
+  var getNextRequires = function(name) {
+    if (alreadyRegisteredModules[name]) {
+      var module = angular.module(name);
 
-  getActiveClassyPlugins = function(name, origModule) {
-    var getNextRequires, obj;
-    obj = {};
-    alreadyRegisteredModules[name] = true;
-    (getNextRequires = function(name) {
-      var module, plugin, pluginName, _i, _len, _ref;
-      if (alreadyRegisteredModules[name]) {
-        module = angular.module(name);
-        _ref = module.requires;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          pluginName = _ref[_i];
-          plugin = availablePlugins[pluginName];
-          if (plugin) {
-            obj[pluginName] = plugin;
-            if (plugin.name == null) {
-              plugin.name = pluginName.replace('classy.', '');
-            }
-            if (origModule.__classyDefaults == null) {
-              origModule.__classyDefaults = {};
-            }
-            origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
+      // for pluginName in module.requires
+      for (var i = 0; i < module.requires.length; i++) {
+        var pluginName = module.requires[i];
+        var plugin = availablePlugins[pluginName];
+        if (plugin) {
+          obj[pluginName] = plugin;
+          if (!plugin.name) {
+            plugin.name = pluginName.replace('classy.', '');
           }
-          getNextRequires(pluginName);
+          if (origModule.__classyDefaults == null) {
+            origModule.__classyDefaults = {};
+          }
+          origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
         }
-      }
-    })(name);
-    return obj;
-  };
-
-  pluginDo = function(methodName, params, obj) {
-    var plugin, pluginName, plugins, returnVal, _ref;
-    plugins = params[0].__plugins || params[0].prototype.__plugins;
-    for (pluginName in plugins) {
-      plugin = plugins[pluginName];
-      if (obj != null) {
-        if (typeof obj.before === "function") {
-          obj.before(plugin);
-        }
-      }
-      returnVal = (_ref = plugin[methodName]) != null ? _ref.apply(plugin, params) : void 0;
-      if (obj != null) {
-        if (typeof obj.after === "function") {
-          obj.after(plugin, returnVal);
-        }
+        getNextRequires(pluginName);
       }
     }
   };
 
-  copyAndExtendDeep = function(dst) {
-    var key, obj, value, _i, _len;
-    for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-      obj = arguments[_i];
-      if (obj !== dst) {
-        for (key in obj) {
-          value = obj[key];
-          if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
-            copyAndExtendDeep(dst[key], value);
-          } else {
-            dst[key] = angular.copy(value);
-          }
+  var obj = {};
+  alreadyRegisteredModules[name] = true;
+  getNextRequires(name);
+  return obj;
+};
+
+
+/**
+* Runs a particular stage of the lifecycle for all plugins.
+* Also runs the `before` and `after` callbacks if specified.
+*/
+var pluginDo = function(methodName, params, callbacks) {
+  var plugins = params[0].__plugins || params[0].prototype.__plugins;
+
+  // for plugin of plugins
+  var i, pluginKeys = Object.keys(plugins);
+  for (i = 0; i < pluginKeys.length; i++) {
+    var plugin = plugins[pluginKeys[i]];
+
+    if (callbacks && typeof callbacks.before === 'function') {
+      callbacks.before(plugin);
+    }
+
+    var returnVal;
+    if (plugin && typeof plugin[methodName] === 'function') {
+      returnVal = plugin[methodName].apply(plugin, params)
+    }
+
+    if (callbacks && typeof callbacks.after === 'function') {
+      callbacks.after(plugin, returnVal);
+    }
+  }
+};
+
+
+/**
+* Utility method to take an object and extend it with other objects
+* It does this recursively (deep) on inner objects too.
+*/
+copyAndExtendDeep = function(dst) {
+  var key, obj, value, _i, _len;
+  for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+    obj = arguments[_i];
+    if (obj !== dst) {
+      for (key in obj) {
+        value = obj[key];
+        if (dst[key] && dst[key].constructor && dst[key].constructor === Object) {
+          copyAndExtendDeep(dst[key], value);
+        } else {
+          dst[key] = angular.copy(value);
         }
       }
     }
-    return dst;
-  };
+  }
+  return dst;
+};
 
-  origModuleMethod = angular.module;
+var origModuleMethod = angular.module;
 
-  angular.module = function(name, reqs, configFn) {
+angular.module = function(name, reqs, configFn) {
+  /*
+   * We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
+   * as a requirement. We also need the module name to we can register our classy controllers.
+   * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
+   */
 
-    /*
-     * We have to monkey-patch the `angular.module` method to see if 'classy' has been specified
-     * as a requirement. We also need the module name to we can register our classy controllers.
-     * Unfortunately there doesn't seem to be a more pretty/pluggable way to this.
-     */
-    var activeClassyPlugins, module;
-    module = origModuleMethod(name, reqs, configFn);
-    if (reqs) {
-      if (name === 'classy.core') {
-        availablePlugins[name] = {};
-      }
-      activeClassyPlugins = getActiveClassyPlugins(name, module);
-      if (activeClassyPlugins['classy.core']) {
-        module.classy = {
-          plugin: {
-            controller: function(plugin) {
-              return availablePlugins[name] = plugin;
-            }
-          },
-          options: {
-            controller: {}
-          },
-          activePlugins: activeClassyPlugins,
-          controller: function(classObj) {
-            var classyController;
-            return classyController = (function() {
-              classFns.preInit(classyController, classObj, module);
+  var module = origModuleMethod(name, reqs, configFn);
 
-              function classyController() {
-                classFns.init(this, arguments, module);
-              }
-
-              return classyController;
-
-            })();
-          },
-          controllers: function(controllerArray) {
-            var classObj, _i, _len;
-            for (_i = 0, _len = controllerArray.length; _i < _len; _i++) {
-              classObj = controllerArray[_i];
-              this.controller(classObj);
-            }
-            return module;
-          }
-        };
-        module.cC = module.classy.controller;
-        module.cCs = module.classy.controllers;
-      }
+  if (reqs) {
+    if (name === 'classy.core') {
+      availablePlugins[name] = {};
     }
-    return module;
-  };
 
-  classFns = {
-    localInject: ['$q'],
-    preInit: function(classConstructor, classObj, module) {
-      var key, option, optionName, options, plugin, pluginName, shorthandOptions, value, _ref;
-      for (key in classObj) {
-        if (!__hasProp.call(classObj, key)) continue;
-        value = classObj[key];
-        classConstructor.prototype[key] = value;
-      }
-      options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
-      shorthandOptions = {};
-      for (optionName in options) {
-        option = options[optionName];
-        if (!angular.isObject(option)) {
-          shorthandOptions[optionName] = option;
-        }
-      }
-      classConstructor.prototype.__plugins = {};
-      _ref = module.classy.activePlugins;
-      for (pluginName in _ref) {
-        plugin = _ref[pluginName];
-        classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
-        classConstructor.prototype.__plugins[pluginName].classyOptions = options;
-        classConstructor.prototype.__plugins[pluginName].options = angular.extend(options[plugin.name] || {}, shorthandOptions);
-      }
-      pluginDo('preInitBefore', [classConstructor, classObj, module]);
-      pluginDo('preInit', [classConstructor, classObj, module]);
-      pluginDo('preInitAfter', [classConstructor, classObj, module]);
-    },
-    init: function(klass, $inject, module) {
-      var dep, depName, deps, initClass, injectIndex, key, pluginPromises, _i, _j, _len, _len1, _ref, _ref1;
-      injectIndex = 0;
-      deps = {};
-      _ref = klass.constructor.__classDepNames;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        deps[key] = $inject[injectIndex];
-        injectIndex++;
-      }
-      pluginDo('null', [klass], {
-        before: function(plugin) {
-          var dep, depName, _j, _len1, _ref1;
-          if (angular.isArray(plugin.localInject)) {
-            _ref1 = plugin.localInject;
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              depName = _ref1[_j];
-              dep = $inject[injectIndex];
-              plugin[depName] = dep;
-              injectIndex++;
+    var activeClassyPlugins = getActiveClassyPlugins(name, module);
+    if (activeClassyPlugins['classy.core']) {
+      module.classy = {
+        plugin: {
+          controller: function(plugin) { availablePlugins[name] = plugin; }
+        },
+        options: {
+          controller: {}
+        },
+        activePlugins: activeClassyPlugins,
+        controller: function(classObj) {
+          var classyController;
+          return classyController = (function() {
+            /*
+            * `classyController` contains only a set of proxy functions for `classFns`,
+            * this is because I suspect that performance is better this way.
+            * TODO: Test performance to see if this is the most performant way to do it.
+            */
+
+            // Pre-initialisation (before instance is created)
+            classFns.preInit(classyController, classObj, module);
+
+            function classyController() {
+              // Initialisation (after instance is created)
+              classFns.init(this, arguments, module);
             }
+
+            return classyController;
+          })();
+        },
+        /**
+         * Accepts an array of controllers and returns the module, e.g.:
+         * `module.classy.controllers([xxx, xxx]).config(xxx).run(xxx)`
+         * Requested in issue #29
+         */
+        controllers: function(controllerArray) {
+          // for classObj in controllerArray
+          for (var i = 0; i < controllerArray.length; i++) {
+            this.controller(controllerArray[i]);
           }
+
+          return module;
         }
-      });
-      _ref1 = this.localInject;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        depName = _ref1[_j];
-        dep = $inject[injectIndex];
-        this[depName] = dep;
-        injectIndex++;
-      }
-      pluginDo('initBefore', [klass, deps, module]);
-      pluginPromises = [];
-      pluginDo('init', [klass, deps, module], {
-        after: function(plugin, returnVal) {
-          if (returnVal != null ? returnVal.then : void 0) {
-            pluginPromises.push(returnVal);
-          }
-        }
-      });
-      initClass = function() {
-        if (typeof klass.init === "function") {
-          klass.init();
-        }
-        pluginDo('initAfter', [klass, deps, module]);
-        this.postInit(klass, deps, module);
       };
-      if (pluginPromises.length) {
-        this.$q.all(pluginPromises).then(angular.bind(this, initClass));
-      } else {
-        angular.bind(this, initClass)();
-      }
-    },
-    postInit: function(klass, deps, module) {
-      pluginDo('postInitBefore', [klass, deps, module]);
-      pluginDo('postInit', [klass, deps, module]);
-      pluginDo('postInitAfter', [klass, deps, module]);
+      module.cC = module.classy.controller;
+      module.cCs = module.classy.controllers;
     }
-  };
+  }
+  return module;
+};
 
-  angular.module('classy.core', []);
 
-  angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
-    localInject: ['$parse'],
-    options: {
-      enabled: true,
-      addToScope: true,
-      addToClass: true,
-      privatePrefix: '_',
-      keyName: 'data'
-    },
-    hasPrivatePrefix: function(string) {
-      var prefix;
-      prefix = this.options.privatePrefix;
-      if (!prefix) {
-        return false;
-      } else {
-        return string.slice(0, prefix.length) === prefix;
+var classFns = {
+
+  localInject: ['$q'],
+
+  preInit: function(classConstructor, classObj, module) {
+    /**
+     * Add properties from class object onto the class constructor
+     */
+    // for key of classObj
+    var classKeys = Object.keys(classObj);
+    for (var i = 0; i < classKeys.length; i++) {
+      var key = classKeys[i];
+      if (!classObj.hasOwnProperty(key)) continue;
+      classConstructor.prototype[key] = classObj[key];
+    }
+
+    // TODO: Make this a function
+    // Build Classy Options ...
+    var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
+    var shorthandOptions = {};
+
+    // for optionsName, option in options
+    var optionNames = Object.keys(options);
+    for (var j = 0; j < optionNames.length; j++) {
+      var optionName = optionNames[j];
+      var option = options[optionName];
+      if (!angular.isObject(option)) {
+        shorthandOptions[optionName] = option;
       }
-    },
-    init: function(klass, deps, module) {
-      var data, getter, key, value;
-      if (this.options.enabled && klass.constructor.prototype[this.options.keyName]) {
-        data = angular.copy(klass.constructor.prototype[this.options.keyName]);
-        if (angular.isFunction(data)) {
-          data = data.call(klass);
-        } else if (angular.isObject(data)) {
-          for (key in data) {
-            value = data[key];
-            if (angular.isString(value)) {
-              getter = this.$parse(value);
-              data[key] = getter(klass);
-            } else {
-              data[key] = value;
-            }
+    }
+
+    classConstructor.prototype.__plugins = {};
+
+    // for pluginName, plugin of module.classy.activePlugins
+    var pluginNames = Object.keys(module.classy.activePlugins);
+    for (var k = 0; k < pluginNames.length; k++) {
+      var pluginName = pluginNames[k];
+      var plugin = module.classy.activePlugins[pluginName];
+      classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
+      classConstructor.prototype.__plugins[pluginName].classyOptions = options;
+      classConstructor.prototype.__plugins[pluginName].options = angular.extend(options[plugin.name] || {}, shorthandOptions);
+    }
+    // ... End Build Classy Options
+
+    pluginDo('preInitBefore', [classConstructor, classObj, module]);
+    pluginDo('preInit', [classConstructor, classObj, module]);
+    pluginDo('preInitAfter', [classConstructor, classObj, module]);
+  },
+
+  init: function(klass, $inject, module) {
+    var injectIndex = 0;
+    var deps = {};
+
+    // for key in klass.constructor.__classDepNames
+    for (var i = 0; i < klass.constructor.__classDepNames.length; i++) {
+      var key = klass.constructor.__classDepNames[i];
+      deps[key] = $inject[injectIndex];
+      injectIndex++;
+    }
+    pluginDo('null', [klass], {
+      before: function(plugin) {
+        if (angular.isArray(plugin.localInject)) {
+          // for depName in plugin.localInject
+          for (var j = 0; j < plugin.localInject.length; j++) {
+            var depName = plugin.localInject[j];
+            plugin[depName] = $inject[injectIndex];
+            injectIndex++;
           }
         }
-        for (key in data) {
-          value = data[key];
+      }
+    });
+
+    // for depName in @localInject
+    for (var j = 0; j < this.localInject.length; j++) {
+      var depName = this.localInject[j];
+      var dep = $inject[injectIndex];
+      this[depName] = dep;
+      injectIndex++;
+    }
+    pluginDo('initBefore', [klass, deps, module]);
+    var pluginPromises = [];
+    pluginDo('init', [klass, deps, module], {
+      after: function(plugin, returnVal) {
+        if (returnVal && returnVal.then) {
+          // Naively assume this is a promise
+          pluginPromises.push(returnVal);
+        }
+      }
+    });
+    var initClass = function() {
+      if (typeof klass.init === "function") {
+        klass.init();
+      }
+      pluginDo('initAfter', [klass, deps, module]);
+      this.postInit(klass, deps, module);
+    };
+    if (pluginPromises.length) {
+      this.$q.all(pluginPromises).then(angular.bind(this, initClass));
+    } else {
+      angular.bind(this, initClass)();
+    }
+  },
+  postInit: function(klass, deps, module) {
+    pluginDo('postInitBefore', [klass, deps, module]);
+    pluginDo('postInit', [klass, deps, module]);
+    pluginDo('postInitAfter', [klass, deps, module]);
+  }
+};
+
+angular.module('classy.core', []);
+
+angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
+  localInject: ['$parse'],
+  options: {
+    enabled: true,
+    addToScope: true,
+    addToClass: true,
+    privatePrefix: '_',
+    keyName: 'data'
+  },
+  hasPrivatePrefix: function(string) {
+    var prefix = this.options.privatePrefix;
+    if (!prefix) {
+      return false;
+    } else {
+      return string.slice(0, prefix.length) === prefix;
+    }
+  },
+  init: function(klass, deps, module) {
+    // Adds objects returned by or set to the `$scope`
+    var dataProp = klass.constructor.prototype[this.options.keyName]
+    if (this.options.enabled && dataProp) {
+      var data = angular.copy(dataProp);
+      if (angular.isFunction(data)) {
+        data = data.call(klass);
+      } else if (angular.isObject(data)) {
+        for (var key in data) {
+          var value = data[key];
+          if (angular.isString(value)) {
+            var getter = this.$parse(value);
+            data[key] = getter(klass);
+          } else {
+            data[key] = value;
+          }
+        }
+      }
+      for (var key in data) {
+        var value = data[key];
+        if (this.options.addToClass) {
+          klass[key] = value;
+        }
+        if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
+          deps.$scope[key] = value;
+        }
+      }
+    }
+  }
+});
+
+angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
+  options: {
+    enabled: true,
+    scopeShortcut: '$'
+  },
+  preInit: function(classConstructor, classObj, module) {
+    var depNames = classObj.inject || [];
+    if (angular.isArray(depNames)) {
+      this.inject(classConstructor, depNames, module);
+    }
+  },
+  inject: function(classConstructor, depNames, module) {
+    var pluginDepNames = [];
+    for (var pluginName in module.classy.activePlugins) {
+      var plugin = module.classy.activePlugins[pluginName];
+      if (angular.isArray(plugin.localInject)) {
+        pluginDepNames = pluginDepNames.concat(plugin.localInject);
+      }
+    }
+    pluginDepNames = pluginDepNames.concat(classFns.localInject);
+    classConstructor.__classDepNames = angular.copy(depNames);
+    classConstructor.$inject = depNames.concat(pluginDepNames);
+  },
+  initBefore: function(klass, deps, module) {
+    if (this.options.enabled) {
+      var preDeps = klass.constructor.$inject;
+      for (var i = 0; i < preDeps.length; ++i) {
+        var key = preDeps[i];
+        klass[key] = deps[key];
+        if (key === '$scope' && this.options.scopeShortcut) {
+          klass[this.options.scopeShortcut] = klass[key];
+        }
+      }
+    }
+  }
+});
+
+angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
+  localInject: ['$parse'],
+  options: {
+    enabled: true,
+    addToScope: true,
+    addToClass: true,
+    privatePrefix: '_',
+    ignore: ['constructor', 'init'],
+    keyName: 'methods'
+  },
+  hasPrivatePrefix: function(string) {
+    var prefix;
+    prefix = this.options.privatePrefix;
+    if (!prefix) {
+      return false;
+    } else {
+      return string.slice(0, prefix.length) === prefix;
+    }
+  },
+  init: function(klass, deps, module) {
+    // indexOf shim for IE <= 8
+    var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+    if (this.options.enabled) {
+      var methods = klass.constructor.prototype[this.options.keyName];
+      for (var key in methods) {
+        var method = methods[key];
+
+        var boundMethod;
+        if (angular.isFunction(method) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
+          boundMethod = angular.bind(klass, method);
+        } else if (angular.isString(method)) {
+          var getter = this.$parse(method);
+          boundMethod = function() {
+            return getter(klass);
+          };
+        }
+        if (angular.isFunction(boundMethod)) {
           if (this.options.addToClass) {
-            klass[key] = value;
+            klass[key] = boundMethod;
           }
           if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-            deps.$scope[key] = value;
+            deps.$scope[key] = boundMethod;
           }
         }
       }
     }
-  });
+  }
+});
 
-  angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
-    options: {
-      enabled: true,
-      scopeShortcut: '$'
-    },
-    preInit: function(classConstructor, classObj, module) {
-      var depNames;
-      depNames = classObj.inject || [];
-      if (angular.isArray(depNames)) {
-        this.inject(classConstructor, depNames, module);
-      }
-    },
-    inject: function(classConstructor, depNames, module) {
-      var plugin, pluginDepNames, pluginName, _ref;
-      pluginDepNames = [];
-      _ref = module.classy.activePlugins;
-      for (pluginName in _ref) {
-        plugin = _ref[pluginName];
-        if (angular.isArray(plugin.localInject)) {
-          pluginDepNames = pluginDepNames.concat(plugin.localInject);
-        }
-      }
-      pluginDepNames = pluginDepNames.concat(classFns.localInject);
-      classConstructor.__classDepNames = angular.copy(depNames);
-      classConstructor.$inject = depNames.concat(pluginDepNames);
-    },
-    initBefore: function(klass, deps, module) {
-      var i, key, _i, _len, _ref;
-      if (this.options.enabled) {
-        _ref = klass.constructor.$inject;
-        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-          key = _ref[i];
-          klass[key] = deps[key];
-          if (key === '$scope' && this.options.scopeShortcut) {
-            klass[this.options.scopeShortcut] = klass[key];
-          }
-        }
-      }
+angular.module('classy.register', ['classy.core']).classy.plugin.controller({
+  options: {
+    enabled: true,
+    key: 'name'
+  },
+  preInit: function(classConstructor, classObj, module) {
+    if (this.options.enabled && angular.isString(classObj[this.options.key])) {
+      module.controller(classObj[this.options.key], classConstructor);
     }
-  });
+  }
+});
 
-  angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
-    localInject: ['$parse'],
-    options: {
-      enabled: true,
-      addToScope: true,
-      addToClass: true,
-      privatePrefix: '_',
-      ignore: ['constructor', 'init'],
-      keyName: 'methods'
-    },
-    hasPrivatePrefix: function(string) {
-      var prefix;
-      prefix = this.options.privatePrefix;
-      if (!prefix) {
+angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
+  options: {
+    enabled: true,
+    _watchKeywords: {
+      normal: [],
+      objectEquality: ['{object}', '{deep}'],
+      collection: ['{collection}', '{shallow}']
+    }
+  },
+  isActive: function(klass, deps) {
+    if (this.options.enabled && angular.isObject(klass.watch)) {
+      if (!deps.$scope) {
+        throw new Error("You need to inject `$scope` to use the watch object");
         return false;
-      } else {
-        return string.slice(0, prefix.length) === prefix;
       }
-    },
-    init: function(klass, deps, module) {
-      var boundFn, fn, getter, key, _ref;
-      if (this.options.enabled) {
-        _ref = klass.constructor.prototype[this.options.keyName];
-        for (key in _ref) {
-          fn = _ref[key];
-          if (angular.isFunction(fn) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
-            boundFn = angular.bind(klass, fn);
-          } else if (angular.isString(fn)) {
-            getter = this.$parse(fn);
-            boundFn = function() {
-              return getter(klass);
-            };
-          }
-          if (angular.isFunction(boundFn)) {
-            if (this.options.addToClass) {
-              klass[key] = boundFn;
-            }
-            if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-              deps.$scope[key] = boundFn;
-            }
-          }
-        }
-      }
+      return true;
     }
-  });
-
-  angular.module('classy.register', ['classy.core']).classy.plugin.controller({
-    options: {
-      enabled: true,
-      key: 'name'
+  },
+  watchFns: {
+    normal: function(klass, expression, fn, deps) {
+      return deps.$scope.$watch(expression, angular.bind(klass, fn));
     },
-    preInit: function(classConstructor, classObj, module) {
-      if (this.options.enabled && angular.isString(classObj[this.options.key])) {
-        module.controller(classObj[this.options.key], classConstructor);
-      }
+    objectEquality: function(klass, expression, fn, deps) {
+      return deps.$scope.$watch(expression, angular.bind(klass, fn), true);
+    },
+    collection: function(klass, expression, fn, deps) {
+      return deps.$scope.$watchCollection(expression, angular.bind(klass, fn));
     }
-  });
+  },
+  postInit: function(klass, deps, module) {
+    if (!this.isActive(klass, deps)) {
+      return;
+    }
+    var watchKeywords = this.options._watchKeywords;
 
-  angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
-    options: {
-      enabled: true,
-      _watchKeywords: {
-        normal: [],
-        objectEquality: ['{object}', '{deep}'],
-        collection: ['{collection}', '{shallow}']
+    // for expression, fn of klass.watch
+    for (var expression in klass.watch) {
+      var fn = klass.watch[expression];
+      if (angular.isString(fn)) {
+        fn = klass[fn];
       }
-    },
-    isActive: function(klass, deps) {
-      if (this.options.enabled && angular.isObject(klass.watch)) {
-        if (!deps.$scope) {
-          throw new Error("You need to inject `$scope` to use the watch object");
-          return false;
-        }
-        return true;
-      }
-    },
-    watchFns: {
-      normal: function(klass, expression, fn, deps) {
-        return deps.$scope.$watch(expression, angular.bind(klass, fn));
-      },
-      objectEquality: function(klass, expression, fn, deps) {
-        return deps.$scope.$watch(expression, angular.bind(klass, fn), true);
-      },
-      collection: function(klass, expression, fn, deps) {
-        return deps.$scope.$watchCollection(expression, angular.bind(klass, fn));
-      }
-    },
-    postInit: function(klass, deps, module) {
-      var expression, fn, keyword, watchFn, watchKeywords, watchRegistered, watchType, _i, _len, _ref, _ref1, _ref2;
-      if (!this.isActive(klass, deps)) {
-        return;
-      }
-      watchKeywords = this.options._watchKeywords;
-      _ref = klass.watch;
-      for (expression in _ref) {
-        fn = _ref[expression];
-        if (angular.isString(fn)) {
-          fn = klass[fn];
-        }
-        if (angular.isString(expression) && angular.isFunction(fn)) {
-          watchRegistered = false;
-          _ref1 = this.watchFns;
-          for (watchType in _ref1) {
-            watchFn = _ref1[watchType];
-            if (watchRegistered) {
+      if (angular.isString(expression) && angular.isFunction(fn)) {
+        var watchRegistered = false;
+
+        // Search for keywords that identify it is a non-standard watch
+        // for watchType, watchFn of @watchFns
+        for (var watchType in this.watchFns) {
+          var watchFn = this.watchFns[watchType];
+          if (watchRegistered) {
+            break;
+          }
+          // for keyword in watchKeywords[watchType]
+          var keywords = watchKeywords[watchType];
+          for (var i = 0; i < keywords.length; i++) {
+            var keyword = keywords[i];
+            if (expression.indexOf(keyword) !== -1) {
+              watchFn(klass, expression.replace(keyword, ''), fn, deps);
+              watchRegistered = true;
               break;
             }
-            _ref2 = watchKeywords[watchType];
-            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-              keyword = _ref2[_i];
-              if (expression.indexOf(keyword) !== -1) {
-                watchFn(klass, expression.replace(keyword, ''), fn, deps);
-                watchRegistered = true;
-                break;
-              }
-            }
           }
-          if (!watchRegistered) {
-            this.watchFns.normal(klass, expression, fn, deps);
-          }
+        }
+        if (!watchRegistered) {
+          // If no keywords have been found then register it as a normal watch
+          this.watchFns.normal(klass, expression, fn, deps);
         }
       }
     }
-  });
+  }
+});
 
-  angular.module('classy', ["classy.bindData", "classy.bindDependencies", "classy.bindMethods", "classy.core", "classy.register", "classy.watch"]);
-
-}).call(this);
+angular.module('classy', ["classy.bindData","classy.bindDependencies","classy.bindMethods","classy.core","classy.register","classy.watch"]);
+})();

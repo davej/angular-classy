@@ -46,21 +46,21 @@ var getActiveClassyPlugins = function(name, origModule) {
 * Runs a particular stage of the lifecycle for all plugins.
 * Also runs the `before` and `after` callbacks if specified.
 */
-var pluginDo = function(methodName, params, obj) {
+var pluginDo = function(methodName, params, callbacks) {
   var plugins = params[0].__plugins || params[0].prototype.__plugins;
 
   // for plugin of plugins
   var i, pluginKeys = Object.keys(plugins);
   for (i = 0; i < pluginKeys.length; i++) {
-    var plugin = plugins[i];
+    var plugin = plugins[pluginKeys[i]];
 
     if (callbacks && typeof callbacks.before === 'function') {
       callbacks.before(plugin);
     }
 
     var returnVal;
-    if (typeof plugin[methodStage] === 'function') {
-      returnVal = plugin[methodStage].apply(plugin, params)
+    if (plugin && typeof plugin[methodName] === 'function') {
+      returnVal = plugin[methodName].apply(plugin, params)
     }
 
     if (callbacks && typeof callbacks.after === 'function') {
@@ -165,72 +165,91 @@ var classFns = {
   localInject: ['$q'],
 
   preInit: function(classConstructor, classObj, module) {
-    for (var key in classObj) {
-      if (!classObj.hasOwnProperty(p)) continue;
+    /**
+     * Add properties from class object onto the class constructor
+     */
+    // for key of classObj
+    var classKeys = Object.keys(classObj);
+    for (var i = 0; i < classKeys.length; i++) {
+      var key = classKeys[i];
+      if (!classObj.hasOwnProperty(key)) continue;
       classConstructor.prototype[key] = classObj[key];
     }
+
+    // TODO: Make this a function
+    // Build Classy Options ...
     var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
     var shorthandOptions = {};
 
-    for (var optionName in options) {
+    // for optionsName, option in options
+    var optionNames = Object.keys(options);
+    for (var j = 0; j < optionNames.length; j++) {
+      var optionName = optionNames[j];
       var option = options[optionName];
       if (!angular.isObject(option)) {
         shorthandOptions[optionName] = option;
       }
     }
+
     classConstructor.prototype.__plugins = {};
-    for (var pluginName in module.classy.activePlugins) {
+
+    // for pluginName, plugin of module.classy.activePlugins
+    var pluginNames = Object.keys(module.classy.activePlugins);
+    for (var k = 0; k < pluginNames.length; k++) {
+      var pluginName = pluginNames[k];
       var plugin = module.classy.activePlugins[pluginName];
       classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
       classConstructor.prototype.__plugins[pluginName].classyOptions = options;
       classConstructor.prototype.__plugins[pluginName].options = angular.extend(options[plugin.name] || {}, shorthandOptions);
     }
+    // ... End Build Classy Options
+
     pluginDo('preInitBefore', [classConstructor, classObj, module]);
     pluginDo('preInit', [classConstructor, classObj, module]);
     pluginDo('preInitAfter', [classConstructor, classObj, module]);
   },
-  //GOT HERE
+
   init: function(klass, $inject, module) {
-    var dep, depName, deps, initClass, injectIndex, key, pluginPromises, _i, _j, _len, _len1, _ref, _ref1;
-    injectIndex = 0;
-    deps = {};
-    _ref = klass.constructor.__classDepNames;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      key = _ref[_i];
+    var injectIndex = 0;
+    var deps = {};
+
+    // for key in klass.constructor.__classDepNames
+    for (var i = 0; i < klass.constructor.__classDepNames.length; i++) {
+      var key = klass.constructor.__classDepNames[i];
       deps[key] = $inject[injectIndex];
       injectIndex++;
     }
     pluginDo('null', [klass], {
       before: function(plugin) {
-        var dep, depName, _j, _len1, _ref1;
         if (angular.isArray(plugin.localInject)) {
-          _ref1 = plugin.localInject;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            depName = _ref1[_j];
-            dep = $inject[injectIndex];
-            plugin[depName] = dep;
+          // for depName in plugin.localInject
+          for (var j = 0; j < plugin.localInject.length; j++) {
+            var depName = plugin.localInject[j];
+            plugin[depName] = $inject[injectIndex];
             injectIndex++;
           }
         }
       }
     });
-    _ref1 = this.localInject;
-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-      depName = _ref1[_j];
-      dep = $inject[injectIndex];
+
+    // for depName in @localInject
+    for (var j = 0; j < this.localInject.length; j++) {
+      var depName = this.localInject[j];
+      var dep = $inject[injectIndex];
       this[depName] = dep;
       injectIndex++;
     }
     pluginDo('initBefore', [klass, deps, module]);
-    pluginPromises = [];
+    var pluginPromises = [];
     pluginDo('init', [klass, deps, module], {
       after: function(plugin, returnVal) {
-        if (returnVal != null ? returnVal.then : void 0) {
+        if (returnVal && returnVal.then) {
+          // Naively assume this is a promise
           pluginPromises.push(returnVal);
         }
       }
     });
-    initClass = function() {
+    var initClass = function() {
       if (typeof klass.init === "function") {
         klass.init();
       }
@@ -251,6 +270,3 @@ var classFns = {
 };
 
 angular.module('classy.core', []);
-
-// ---
-// generated by coffee-script 1.9.0
