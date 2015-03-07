@@ -7,6 +7,7 @@ coffee = require("gulp-coffee")
 gutil = require('gulp-util')
 uglify = require('gulp-uglify')
 rename = require('gulp-rename')
+closure = require('gulp-jsclosure')
 
 ###
   `default` Action - Builds Angular Classy
@@ -24,30 +25,31 @@ pluginNames = []
 gulp.task "getPluginsNames", ->
   buildNames = (es) ->
     es.mapSync (file) ->
-      pluginNames.push "classy.#{path.basename(file.path, ".coffee")}"
+      pluginNames.push "classy.#{path.basename(file.path, ".js")}"
       file
 
-  gulp.src "./src/*.coffee"
+  gulp.src "./src/*.js"
     .pipe buildNames(es)
 
 gulp.task "concatAndRegisterPlugins", [ "getPluginsNames" ], ->
-  gulp.src ["./src/core.coffee", "./src/*.coffee"]
-    .pipe concat("angular-classy.coffee")
-    .pipe insert.append("\nangular.module 'classy', " + JSON.stringify(pluginNames))
+  gulp.src ["./src/core.js", "./src/*.js"]
+    .pipe concat("angular-classy.js")
+    .pipe insert.append("\nangular.module('classy', " + JSON.stringify(pluginNames) + ");")
+    .pipe closure()
     .pipe gulp.dest("./")
 
-gulp.task "coffeeToJs", [ "concatAndRegisterPlugins" ], ->
-  gulp.src "./angular-classy.coffee"
-    .pipe coffee().on('error', gutil.log)
-    .pipe gulp.dest("./")
+# gulp.task "coffeeToJs", [ "concatAndRegisterPlugins" ], ->
+#   gulp.src "./angular-classy.coffee"
+#     .pipe coffee().on('error', gutil.log)
+#     .pipe gulp.dest("./")
 
-gulp.task "minify", [ "coffeeToJs" ], ->
+gulp.task "minify", [ "concatAndRegisterPlugins" ], ->
   gulp.src "./angular-classy.js"
     .pipe uglify()
     .pipe rename suffix: '.min'
     .pipe gulp.dest("./")
 
-gulp.task "watch", -> gulp.watch "./src/*.coffee", ['minify']
+gulp.task "watch", ["default"], -> gulp.watch "./src/*.js", ['minify']
 
 ###
   `test` Action - Uses Karma
@@ -58,10 +60,21 @@ gulp.task "watch", -> gulp.watch "./src/*.coffee", ['minify']
 karma = require('node-karma-wrapper')
 
 karmaConfig = './test/karma.conf.js'
+karmaBenchConfig = './test/karma.bench.conf.js'
+
 karmaTest = karma(configFile: karmaConfig)
+karmaBench = karma(configFile: karmaBenchConfig)
+
 karmaPhantom = karma(configFile: karmaConfig, browsers: ['PhantomJS'])
 karmaFirefox = karma(configFile: karmaConfig, browsers: ['Firefox'])
+
+karmaBenchPhantom = karma(configFile: karmaBenchConfig, browsers: ['PhantomJS'])
+karmaBenchFirefox = karma(configFile: karmaBenchConfig, browsers: ['Firefox'])
 
 gulp.task "test", ["default"], (cb) -> karmaTest.simpleRun(cb)
 gulp.task "testFirefox", ["default"], (cb) -> karmaFirefox.simpleRun(cb)
 gulp.task "testPhantom", ["default"], (cb) -> karmaPhantom.simpleRun(cb)
+
+gulp.task "bench", ["default"], (cb) -> karmaBench.simpleRun(cb)
+gulp.task "benchFirefox", ["default"], (cb) -> karmaBenchPhantom.simpleRun(cb)
+gulp.task "benchPhantom", ["default"], (cb) -> karmaBenchFirefox.simpleRun(cb)
