@@ -26,7 +26,8 @@
 
         <div class="main-content">
           <div class="special-notice">
-            1.0 released (2<small>nd</small> March 2015).<br> Now supports <a href="#plugins">plugins</a> and other <a href="1.0.html" target="_blank">new features</a>.
+            1.1 released (7<small>th</small> March 2015).<br> 2x faster than 1.0.<br> Rewritten from coffeescript to javascript.<br><hr>
+            <small>1.0 released (2<small>nd</small> March).<br> Now supports <a href="#plugins">plugins</a> and other <a href="1.0.html" target="_blank">new features</a>.</small>
           </div>
 
             <h2>Add structure to your AngularJS controllers</h2>
@@ -307,7 +308,7 @@
              <section class="more-info">
                 <h3><i class="icon-info"></i> More Info</h3>
                 <ul>
-                  <li>Version: 1.0.0 (<a href="https://github.com/davej/angular-classy/releases">Releases/Changelogs</a>)</li>
+                  <li>Version: 1.1.0 (<a href="https://github.com/davej/angular-classy/releases">Releases/Changelogs</a>)</li>
                   <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
                   <li><a class="github-button" href="https://github.com/davej/angular-classy" data-icon="octicon-star" data-count-href="/davej/angular-classy/stargazers" data-count-api="/repos/davej/angular-classy#stargazers_count">Star</a>
                   </li>

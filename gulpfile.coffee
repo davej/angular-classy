@@ -69,7 +69,7 @@ gulp.task "coffee", ->
   .pipe coffee()
   .pipe gulp.dest("./scripts/")
 
-gulp.task "watch", ->
+gulp.task "watch", ["default"], ->
   gulp.watch("./styles/*.scss", ["sass"])
   gulp.watch("./scripts/main.coffee", ["coffee"])
   gulp.watch(templateFiles, ["include"])
