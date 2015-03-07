@@ -17,7 +17,7 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
   },
   init: function(klass, deps, module) {
     // Adds objects returned by or set to the `$scope`
-    var dataProp = klass.constructor.prototype[this.options.keyName]
+    var dataProp = klass.constructor.prototype[this.options.keyName];
     if (this.options.enabled && dataProp) {
       var data = angular.copy(dataProp);
       if (angular.isFunction(data)) {
@@ -33,13 +33,13 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
           }
         }
       }
-      for (var key in data) {
-        var value = data[key];
+      for (var fnKey in data) {
+        var fnValue = data[fnKey];
         if (this.options.addToClass) {
-          klass[key] = value;
+          klass[fnKey] = fnValue;
         }
-        if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-          deps.$scope[key] = value;
+        if (this.options.addToScope && !this.hasPrivatePrefix(fnKey) && deps.$scope) {
+          deps.$scope[fnKey] = fnValue;
         }
       }
     }

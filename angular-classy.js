@@ -1,6 +1,6 @@
 ;(function() {
 /*
-Angular Classy 1.0.0
+Angular Classy 1.1.0
 Dave Jeffery, @DaveJ
 License: MIT
  */
@@ -26,7 +26,7 @@ var getActiveClassyPlugins = function(name, origModule) {
           if (!plugin.name) {
             plugin.name = pluginName.replace('classy.', '');
           }
-          if (origModule.__classyDefaults == null) {
+          if (!origModule.__classyDefaults) {
             origModule.__classyDefaults = {};
           }
           origModule.__classyDefaults[plugin.name] = angular.copy(plugin.options || {});
@@ -48,23 +48,28 @@ var getActiveClassyPlugins = function(name, origModule) {
 * Also runs the `before` and `after` callbacks if specified.
 */
 var pluginDo = function(methodName, params, callbacks) {
-  var plugins = params[0].__plugins || params[0].prototype.__plugins;
+  // params = [klass, deps, module];
+
+  var plugins = params[2].classy.activePlugins;
+  var options = params[0].__options || params[0].prototype.__options;
 
   // for plugin of plugins
-  var i, pluginKeys = Object.keys(plugins);
-  for (i = 0; i < pluginKeys.length; i++) {
+  var pluginKeys = Object.keys(plugins);
+  for (var i = 0; i < pluginKeys.length; i++) {
     var plugin = plugins[pluginKeys[i]];
+    plugin.options = options[plugin.name] || {};
+    plugin.classyOptions = options;
 
-    if (callbacks && typeof callbacks.before === 'function') {
+    if (callbacks && angular.isFunction(callbacks.before)) {
       callbacks.before(plugin);
     }
 
     var returnVal;
-    if (plugin && typeof plugin[methodName] === 'function') {
-      returnVal = plugin[methodName].apply(plugin, params)
+    if (plugin && methodName && angular.isFunction(plugin[methodName])) {
+      returnVal = plugin[methodName].apply(plugin, params);
     }
 
-    if (callbacks && typeof callbacks.after === 'function') {
+    if (callbacks && angular.isFunction(callbacks.after)) {
       callbacks.after(plugin, returnVal);
     }
   }
@@ -75,7 +80,7 @@ var pluginDo = function(methodName, params, callbacks) {
 * Utility method to take an object and extend it with other objects
 * It does this recursively (deep) on inner objects too.
 */
-copyAndExtendDeep = function(dst) {
+var copyAndExtendDeep = function(dst) {
   var key, obj, value, _i, _len;
   for (_i = 0, _len = arguments.length; _i < _len; _i++) {
     obj = arguments[_i];
@@ -120,8 +125,6 @@ angular.module = function(name, reqs, configFn) {
         },
         activePlugins: activeClassyPlugins,
         controller: function(classObj) {
-          var classyController;
-          return classyController = (function() {
             /*
             * `classyController` contains only a set of proxy functions for `classFns`,
             * this is because I suspect that performance is better this way.
@@ -137,7 +140,6 @@ angular.module = function(name, reqs, configFn) {
             }
 
             return classyController;
-          })();
         },
         /**
          * Accepts an array of controllers and returns the module, e.g.:
@@ -166,9 +168,18 @@ var classFns = {
   localInject: ['$q'],
 
   preInit: function(classConstructor, classObj, module) {
-    /**
-     * Add properties from class object onto the class constructor
-     */
+    this.buildConstructor(classConstructor, classObj);
+    this.buildOptions(classConstructor, classObj, module);
+
+    pluginDo('preInitBefore', [classConstructor, classObj, module]);
+    pluginDo('preInit', [classConstructor, classObj, module]);
+    pluginDo('preInitAfter', [classConstructor, classObj, module]);
+  },
+
+  /**
+   * Add properties from class object onto the class constructor
+   */
+  buildConstructor: function(classConstructor, classObj) {
     // for key of classObj
     var classKeys = Object.keys(classObj);
     for (var i = 0; i < classKeys.length; i++) {
@@ -176,38 +187,38 @@ var classFns = {
       if (!classObj.hasOwnProperty(key)) continue;
       classConstructor.prototype[key] = classObj[key];
     }
+  },
 
-    // TODO: Make this a function
-    // Build Classy Options ...
+  /**
+   * Build options object for all classy plugins
+   */
+  buildOptions: function(classConstructor, classObj, module) {
     var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
     var shorthandOptions = {};
 
-    // for optionsName, option in options
+    // Collect shorthand options
+    var option, optionName;
     var optionNames = Object.keys(options);
     for (var j = 0; j < optionNames.length; j++) {
-      var optionName = optionNames[j];
-      var option = options[optionName];
+      optionName = optionNames[j];
+      option = options[optionNames[j]];
       if (!angular.isObject(option)) {
         shorthandOptions[optionName] = option;
       }
     }
 
-    classConstructor.prototype.__plugins = {};
-
-    // for pluginName, plugin of module.classy.activePlugins
-    var pluginNames = Object.keys(module.classy.activePlugins);
-    for (var k = 0; k < pluginNames.length; k++) {
-      var pluginName = pluginNames[k];
-      var plugin = module.classy.activePlugins[pluginName];
-      classConstructor.prototype.__plugins[pluginName] = angular.copy(plugin);
-      classConstructor.prototype.__plugins[pluginName].classyOptions = options;
-      classConstructor.prototype.__plugins[pluginName].options = angular.extend(options[plugin.name] || {}, shorthandOptions);
+    // Apply shorthand options to plugin options
+    if (Object.keys(shorthandOptions).length) {
+      for (var k = 0; k < optionNames.length; k++) {
+        optionName = optionNames[k];
+        option = options[optionNames[k]];
+        if (angular.isObject(option)) {
+          angular.extend(option, shorthandOptions);
+        }
+      }
     }
-    // ... End Build Classy Options
 
-    pluginDo('preInitBefore', [classConstructor, classObj, module]);
-    pluginDo('preInit', [classConstructor, classObj, module]);
-    pluginDo('preInitAfter', [classConstructor, classObj, module]);
+    classConstructor.prototype.__options = options;
   },
 
   init: function(klass, $inject, module) {
@@ -220,7 +231,7 @@ var classFns = {
       deps[key] = $inject[injectIndex];
       injectIndex++;
     }
-    pluginDo('null', [klass], {
+    pluginDo(null, [klass, deps, module], {
       before: function(plugin) {
         if (angular.isArray(plugin.localInject)) {
           // for depName in plugin.localInject
@@ -233,14 +244,8 @@ var classFns = {
       }
     });
 
-    // for depName in @localInject
-    for (var j = 0; j < this.localInject.length; j++) {
-      var depName = this.localInject[j];
-      var dep = $inject[injectIndex];
-      this[depName] = dep;
-      injectIndex++;
-    }
     pluginDo('initBefore', [klass, deps, module]);
+
     var pluginPromises = [];
     pluginDo('init', [klass, deps, module], {
       after: function(plugin, returnVal) {
@@ -250,17 +255,20 @@ var classFns = {
         }
       }
     });
+
     var initClass = function() {
-      if (typeof klass.init === "function") {
+      if (angular.isFunction(klass.init)) {
         klass.init();
       }
       pluginDo('initAfter', [klass, deps, module]);
       this.postInit(klass, deps, module);
     };
+    var boundClass = angular.bind(this, initClass);
     if (pluginPromises.length) {
-      this.$q.all(pluginPromises).then(angular.bind(this, initClass));
+      // Injected dependency below is $q
+      $inject[injectIndex].all(pluginPromises).then(boundClass);
     } else {
-      angular.bind(this, initClass)();
+      boundClass();
     }
   },
   postInit: function(klass, deps, module) {
@@ -291,7 +299,7 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
   },
   init: function(klass, deps, module) {
     // Adds objects returned by or set to the `$scope`
-    var dataProp = klass.constructor.prototype[this.options.keyName]
+    var dataProp = klass.constructor.prototype[this.options.keyName];
     if (this.options.enabled && dataProp) {
       var data = angular.copy(dataProp);
       if (angular.isFunction(data)) {
@@ -307,13 +315,13 @@ angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
           }
         }
       }
-      for (var key in data) {
-        var value = data[key];
+      for (var fnKey in data) {
+        var fnValue = data[fnKey];
         if (this.options.addToClass) {
-          klass[key] = value;
+          klass[fnKey] = fnValue;
         }
-        if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-          deps.$scope[key] = value;
+        if (this.options.addToScope && !this.hasPrivatePrefix(fnKey) && deps.$scope) {
+          deps.$scope[fnKey] = fnValue;
         }
       }
     }

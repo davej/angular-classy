@@ -49,7 +49,7 @@ gulp.task "minify", [ "concatAndRegisterPlugins" ], ->
     .pipe rename suffix: '.min'
     .pipe gulp.dest("./")
 
-gulp.task "watch", -> gulp.watch "./src/*.js", ['minify']
+gulp.task "watch", ["default"], -> gulp.watch "./src/*.js", ['minify']
 
 ###
   `test` Action - Uses Karma
@@ -60,10 +60,21 @@ gulp.task "watch", -> gulp.watch "./src/*.js", ['minify']
 karma = require('node-karma-wrapper')
 
 karmaConfig = './test/karma.conf.js'
+karmaBenchConfig = './test/karma.bench.conf.js'
+
 karmaTest = karma(configFile: karmaConfig)
+karmaBench = karma(configFile: karmaBenchConfig)
+
 karmaPhantom = karma(configFile: karmaConfig, browsers: ['PhantomJS'])
 karmaFirefox = karma(configFile: karmaConfig, browsers: ['Firefox'])
+
+karmaBenchPhantom = karma(configFile: karmaBenchConfig, browsers: ['PhantomJS'])
+karmaBenchFirefox = karma(configFile: karmaBenchConfig, browsers: ['Firefox'])
 
 gulp.task "test", ["default"], (cb) -> karmaTest.simpleRun(cb)
 gulp.task "testFirefox", ["default"], (cb) -> karmaFirefox.simpleRun(cb)
 gulp.task "testPhantom", ["default"], (cb) -> karmaPhantom.simpleRun(cb)
+
+gulp.task "bench", ["default"], (cb) -> karmaBench.simpleRun(cb)
+gulp.task "benchFirefox", ["default"], (cb) -> karmaBenchPhantom.simpleRun(cb)
+gulp.task "benchPhantom", ["default"], (cb) -> karmaBenchFirefox.simpleRun(cb)
