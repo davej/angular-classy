@@ -6,4 +6,10 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
   - "npm install -g bower"
   - "npm install -g gulp"
-  - "bower install" 
+  - "bower install"
+
+# whitelist - only build these branches
+branches:
+  only:
+    - master
+    - develop
