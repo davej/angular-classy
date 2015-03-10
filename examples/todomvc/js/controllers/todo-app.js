@@ -8,27 +8,18 @@
  */
 
 
-todomvc.classy.controller({
-	name: 'TodoAsControllerCtrl',
-	inject: ['$scope', '$location', 'todoStorage'],
-	__options: {
-		addToScope: false // shorthand for commented out code below
+todomvc.classy.component({
+	selector: 'todo-app',
 
-		// 'bindData': {
-		// 	addToScope: false
-		// },
-		// 'bindMethods': {
-		// 	addToScope: false
-		// }
-	},
+	inject: ['$location', 'todoStorage'],
 
-	data: function() {
-		return {
-			todos: this.todoStorage.get(),
-			newTodo: '',
-			editedTodo: null,
-			location: this.$location
-		};
+	templateUrl: 'js/controllers/todo-app.html',
+
+	data:{
+		todos: 'todoStorage.get()',
+		newTodo: '""',
+		editedTodo: null,
+		location: '$location'
 	},
 
 	init: function() {
@@ -37,25 +28,23 @@ todomvc.classy.controller({
 		}
 	},
 
-	watch: {
-		'todoCtrl.location.path()': function(path) {
+	observe: {
+		'location.path()': function(path) {
 			this.statusFilter = (path === '/active') ?
 				{ completed: false } : (path === '/completed') ?
-				{ completed: true } : null;
+				{ completed: true } : '';
 		},
-		'{object}todoCtrl.todos': '_onTodoChange'
+		'todos{object}': '_onTodoChange'
 	},
 
 	methods: {
 		_getRemainingCount: '(todos | filter:{ completed: false }).length',
 
-		_onTodoChange: function (newValue, oldValue) {
+		_onTodoChange: function () {
 			this.remainingCount = this._getRemainingCount();
 			this.completedCount = this.todos.length - this.remainingCount;
 			this.allChecked = !this.remainingCount;
-			if (newValue !== oldValue) { // This prevents unneeded calls to the local storage
-				this.todoStorage.put(this.todos);
-			}
+			this.todoStorage.put(this.todos);
 		},
 
 		addTodo: function () {

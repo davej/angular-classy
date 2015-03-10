@@ -118,13 +118,13 @@ angular.module = function(name, reqs, configFn) {
     if (activeClassyPlugins['classy.core']) {
       module.classy = {
         plugin: {
-          controller: function(plugin) { availablePlugins[name] = plugin; }
+          component: function(plugin) { availablePlugins[name] = plugin; }
         },
         options: {
-          controller: {}
+          component: {}
         },
         activePlugins: activeClassyPlugins,
-        controller: function(classObj) {
+        component: function(classObj) {
             /*
             * `classyController` contains only a set of proxy functions for `classFns`,
             * this is because I suspect that performance is better this way.
@@ -132,31 +132,31 @@ angular.module = function(name, reqs, configFn) {
             */
 
             // Pre-initialisation (before instance is created)
-            classFns.preInit(classyController, classObj, module);
+            classFns.preInit(classyComponent, classObj, module);
 
-            function classyController() {
+            function classyComponent() {
               // Initialisation (after instance is created)
               classFns.init(this, arguments, module);
             }
 
-            return classyController;
+            return classyComponent;
         },
         /**
          * Accepts an array of controllers and returns the module, e.g.:
          * `module.classy.controllers([xxx, xxx]).config(xxx).run(xxx)`
          * Requested in issue #29
          */
-        controllers: function(controllerArray) {
+         components: function(controllerArray) {
           // for classObj in controllerArray
           for (var i = 0; i < controllerArray.length; i++) {
-            this.controller(controllerArray[i]);
+            this.component(controllerArray[i]);
           }
 
           return module;
         }
       };
-      module.cC = module.classy.controller;
-      module.cCs = module.classy.controllers;
+      module.cC = module.classy.component;
+      module.cCs = module.classy.components;
     }
   }
   return module;
@@ -193,7 +193,7 @@ var classFns = {
    * Build options object for all classy plugins
    */
   buildOptions: function(classConstructor, classObj, module) {
-    var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
+    var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.component, classObj.__options);
     var shorthandOptions = {};
 
     // Collect shorthand options
@@ -280,58 +280,9 @@ var classFns = {
 
 angular.module('classy.core', []);
 
-angular.module('classy.bindData', ['classy.core']).classy.plugin.controller({
-  localInject: ['$parse'],
+angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.component({
   options: {
-    enabled: true,
-    addToScope: true,
-    addToClass: true,
-    privatePrefix: '_',
-    keyName: 'data'
-  },
-  hasPrivatePrefix: function(string) {
-    var prefix = this.options.privatePrefix;
-    if (!prefix) {
-      return false;
-    } else {
-      return string.slice(0, prefix.length) === prefix;
-    }
-  },
-  init: function(klass, deps, module) {
-    // Adds objects returned by or set to the `$scope`
-    var dataProp = klass.constructor.prototype[this.options.keyName];
-    if (this.options.enabled && dataProp) {
-      var data = angular.copy(dataProp);
-      if (angular.isFunction(data)) {
-        data = data.call(klass);
-      } else if (angular.isObject(data)) {
-        for (var key in data) {
-          var value = data[key];
-          if (angular.isString(value)) {
-            var getter = this.$parse(value);
-            data[key] = getter(klass);
-          } else {
-            data[key] = value;
-          }
-        }
-      }
-      for (var fnKey in data) {
-        var fnValue = data[fnKey];
-        if (this.options.addToClass) {
-          klass[fnKey] = fnValue;
-        }
-        if (this.options.addToScope && !this.hasPrivatePrefix(fnKey) && deps.$scope) {
-          deps.$scope[fnKey] = fnValue;
-        }
-      }
-    }
-  }
-});
-
-angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
-  options: {
-    enabled: true,
-    scopeShortcut: '$'
+    enabled: true
   },
   preInit: function(classConstructor, classObj, module) {
     var depNames = classObj.inject || [];
@@ -357,44 +308,26 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
       for (var i = 0; i < preDeps.length; ++i) {
         var key = preDeps[i];
         klass[key] = deps[key];
-        if (key === '$scope' && this.options.scopeShortcut) {
-          klass[this.options.scopeShortcut] = klass[key];
-        }
       }
     }
   }
 });
 
-angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
+angular.module('classy.bindMethods', ['classy.core']).classy.plugin.component({
   localInject: ['$parse'],
   options: {
     enabled: true,
-    addToScope: true,
-    addToClass: true,
-    privatePrefix: '_',
     ignore: ['constructor', 'init'],
     keyName: 'methods'
   },
-  hasPrivatePrefix: function(string) {
-    var prefix;
-    prefix = this.options.privatePrefix;
-    if (!prefix) {
-      return false;
-    } else {
-      return string.slice(0, prefix.length) === prefix;
-    }
-  },
   init: function(klass, deps, module) {
-    // indexOf shim for IE <= 8
-    var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
     if (this.options.enabled) {
       var methods = klass.constructor.prototype[this.options.keyName];
       for (var key in methods) {
         var method = methods[key];
 
         var boundMethod;
-        if (angular.isFunction(method) && !(__indexOf.call(this.options.ignore, key) >= 0)) {
+        if (angular.isFunction(method) && (this.options.ignore.indexOf(key) === -1)) {
           boundMethod = angular.bind(klass, method);
         } else if (angular.isString(method)) {
           var getter = this.$parse(method);
@@ -403,79 +336,109 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.controller({
           };
         }
         if (angular.isFunction(boundMethod)) {
-          if (this.options.addToClass) {
-            klass[key] = boundMethod;
-          }
-          if (this.options.addToScope && !this.hasPrivatePrefix(key) && deps.$scope) {
-            deps.$scope[key] = boundMethod;
-          }
+          klass[key] = boundMethod;
         }
       }
     }
   }
 });
 
-angular.module('classy.register', ['classy.core']).classy.plugin.controller({
+angular.module('classy.data', ['classy.core']).classy.plugin.component({
   options: {
     enabled: true,
-    key: 'name'
+    keyName: 'data'
   },
-  preInit: function(classConstructor, classObj, module) {
-    if (this.options.enabled && angular.isString(classObj[this.options.key])) {
-      module.controller(classObj[this.options.key], classConstructor);
+  preInitBefore: function(classConstructor, classObj) {
+    if (this.isActive(classObj)) {
+      this.localInject = ['$parse'];
+    }
+  },
+  getDataProp: function(proto) {
+    return proto[this.options.keyName];
+  },
+  isActive: function(proto) {
+    return !!(this.options.enabled && this.getDataProp(proto));
+  },
+  init: function(klass, deps, module) {
+    var proto = klass.constructor.prototype;
+    if (this.isActive(proto)) {
+      var data = angular.copy(this.getDataProp(proto));
+      if (angular.isFunction(data)) {
+        data = data.call(klass);
+      } else if (angular.isObject(data)) {
+        for (var key in data) {
+          var value = data[key];
+          if (angular.isString(value)) {
+            var getter = this.$parse(value);
+            data[key] = getter(klass);
+          } else {
+            data[key] = value;
+          }
+        }
+      }
+      for (var fnKey in data) {
+        klass[fnKey] = data[fnKey];
+      }
     }
   }
 });
 
-angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
+angular.module('classy.observe', ['classy.core']).classy.plugin.component({
   options: {
     enabled: true,
+    key: 'observe',
     _watchKeywords: {
       normal: [],
-      objectEquality: ['{object}', '{deep}'],
+      object: ['{object}', '{deep}'],
       collection: ['{collection}', '{shallow}']
     }
   },
-  isActive: function(klass, deps) {
-    if (this.options.enabled && angular.isObject(klass.watch)) {
-      if (!deps.$scope) {
-        throw new Error("You need to inject `$scope` to use the watch object");
-        return false;
-      }
+  isActive: function(klass) {
+    if (this.options.enabled && angular.isObject(klass[this.options.key])) {
       return true;
+    } else {
+      return false;
+    }
+  },
+  preInitBefore: function(classConstructor, classObj) {
+    if (this.isActive(classObj)) {
+      this.localInject = ['$scope'];
     }
   },
   watchFns: {
-    normal: function(klass, expression, fn, deps) {
-      return deps.$scope.$watch(expression, angular.bind(klass, fn));
+    normal: function(scope, expression, fn) {
+      return scope.$watch(expression, fn);
     },
-    objectEquality: function(klass, expression, fn, deps) {
-      return deps.$scope.$watch(expression, angular.bind(klass, fn), true);
+    object: function(scope, expression, fn) {
+      return scope.$watch(expression, fn, true);
     },
-    collection: function(klass, expression, fn, deps) {
-      return deps.$scope.$watchCollection(expression, angular.bind(klass, fn));
+    collection: function(scope, expression, fn) {
+      return scope.$watchCollection(expression, fn);
     }
   },
   postInit: function(klass, deps, module) {
     if (!this.isActive(klass, deps)) {
       return;
     }
+
+    var klassName = Object.getPrototypeOf(klass).name;
     var watchKeywords = this.options._watchKeywords;
+    var observations = klass[this.options.key];
 
     // for expression, fn of klass.watch
-    for (var expression in klass.watch) {
-      var fn = klass.watch[expression];
+    for (var expression in observations) {
+      var fn = observations[expression];
       if (angular.isString(fn)) {
         fn = klass[fn];
       }
       if (angular.isString(expression) && angular.isFunction(fn)) {
-        var watchRegistered = false;
+        var observerRegistered = false;
+        var targetFn = angular.bind(klass, fn);
 
-        // Search for keywords that identify it is a non-standard watch
+        // Search for keywords that identify it as a non-standard watch
         // for watchType, watchFn of @watchFns
         for (var watchType in this.watchFns) {
-          var watchFn = this.watchFns[watchType];
-          if (watchRegistered) {
+          if (observerRegistered) {
             break;
           }
           // for keyword in watchKeywords[watchType]
@@ -483,20 +446,70 @@ angular.module('classy.watch', ['classy.core']).classy.plugin.controller({
           for (var i = 0; i < keywords.length; i++) {
             var keyword = keywords[i];
             if (expression.indexOf(keyword) !== -1) {
-              watchFn(klass, expression.replace(keyword, ''), fn, deps);
-              watchRegistered = true;
+              var watchFn = this.watchFns[watchType];
+
+              expression = klassName + '.' + expression.replace(keyword, '');
+              watchFn(this.$scope, expression, targetFn);
+              observerRegistered = true;
               break;
             }
           }
         }
-        if (!watchRegistered) {
+        if (!observerRegistered) {
           // If no keywords have been found then register it as a normal watch
-          this.watchFns.normal(klass, expression, fn, deps);
+          this.watchFns.normal(this.$scope, klassName + '.' + expression, targetFn);
         }
       }
     }
   }
 });
 
-angular.module('classy', ["classy.bindData","classy.bindDependencies","classy.bindMethods","classy.core","classy.register","classy.watch"]);
+angular.module('classy.register', ['classy.core']).classy.plugin.component({
+  options: {
+    enabled: true,
+    key: 'selector'
+  },
+  toCamelCase: function(str) {
+    return str.replace(/-(\w)/g, function(match) {
+      return match[1].toUpperCase();
+    });
+  },
+  preInit: function(classConstructor, classObj, module) {
+    if (this.options.enabled && angular.isString(classObj[this.options.key])) {
+      var dasherizedName = this.toCamelCase(classObj[this.options.key]);
+      
+      var proto = classConstructor.prototype;
+      if (!proto.name) {
+        proto.name = dasherizedName;
+      }
+
+      var bindToController = {};
+      for (var i = 0; i < classObj.bind; i++) {
+        var bind = classObj.bind[i];
+        bindToController[bind] = '@';
+      }
+
+      var directive = {
+        scope: {},
+        // replace: true,
+        restrict: 'E', // support [attr] etc..
+        controller: classConstructor,
+        controllerAs: proto.name,
+        bindToController: bindToController
+      };
+
+      if (classObj.templateUrl) {
+        directive.templateUrl = classObj.templateUrl;
+      }
+      if (classObj.template) {
+        directive.template = classObj.template;
+      }
+      module.directive(dasherizedName, function() {
+        return directive;
+      });
+    }
+  }
+});
+
+angular.module('classy', ["classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register","classy.bindDependencies","classy.bindMethods","classy.core","classy.data","classy.observe","classy.register"]);
 })();

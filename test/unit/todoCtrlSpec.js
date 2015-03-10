@@ -14,7 +14,7 @@
 				this.storage = value;
 			}
 		};
-		var ctrlName = 'TodoCtrl';
+		var ctrlName = 'todoApp';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
 		beforeEach(module('todomvc'));

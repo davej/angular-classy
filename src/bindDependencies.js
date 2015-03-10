@@ -1,7 +1,6 @@
-angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.controller({
+angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.component({
   options: {
-    enabled: true,
-    scopeShortcut: '$'
+    enabled: true
   },
   preInit: function(classConstructor, classObj, module) {
     var depNames = classObj.inject || [];
@@ -27,9 +26,6 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.control
       for (var i = 0; i < preDeps.length; ++i) {
         var key = preDeps[i];
         klass[key] = deps[key];
-        if (key === '$scope' && this.options.scopeShortcut) {
-          klass[this.options.scopeShortcut] = klass[key];
-        }
       }
     }
   }

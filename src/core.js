@@ -117,13 +117,13 @@ angular.module = function(name, reqs, configFn) {
     if (activeClassyPlugins['classy.core']) {
       module.classy = {
         plugin: {
-          controller: function(plugin) { availablePlugins[name] = plugin; }
+          component: function(plugin) { availablePlugins[name] = plugin; }
         },
         options: {
-          controller: {}
+          component: {}
         },
         activePlugins: activeClassyPlugins,
-        controller: function(classObj) {
+        component: function(classObj) {
             /*
             * `classyController` contains only a set of proxy functions for `classFns`,
             * this is because I suspect that performance is better this way.
@@ -131,31 +131,31 @@ angular.module = function(name, reqs, configFn) {
             */
 
             // Pre-initialisation (before instance is created)
-            classFns.preInit(classyController, classObj, module);
+            classFns.preInit(classyComponent, classObj, module);
 
-            function classyController() {
+            function classyComponent() {
               // Initialisation (after instance is created)
               classFns.init(this, arguments, module);
             }
 
-            return classyController;
+            return classyComponent;
         },
         /**
          * Accepts an array of controllers and returns the module, e.g.:
          * `module.classy.controllers([xxx, xxx]).config(xxx).run(xxx)`
          * Requested in issue #29
          */
-        controllers: function(controllerArray) {
+         components: function(controllerArray) {
           // for classObj in controllerArray
           for (var i = 0; i < controllerArray.length; i++) {
-            this.controller(controllerArray[i]);
+            this.component(controllerArray[i]);
           }
 
           return module;
         }
       };
-      module.cC = module.classy.controller;
-      module.cCs = module.classy.controllers;
+      module.cC = module.classy.component;
+      module.cCs = module.classy.components;
     }
   }
   return module;
@@ -192,7 +192,7 @@ var classFns = {
    * Build options object for all classy plugins
    */
   buildOptions: function(classConstructor, classObj, module) {
-    var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.controller, classObj.__options);
+    var options = copyAndExtendDeep({}, module.__classyDefaults, module.classy.options.component, classObj.__options);
     var shorthandOptions = {};
 
     // Collect shorthand options
