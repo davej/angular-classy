@@ -13,16 +13,17 @@ todomvc.classy.component({
 
 	inject: ['$location', 'todoStorage'],
 
+	bind: {
+		placeholder: 'input-placeholder',
+		appTitle: 'title'
+  },
+
 	templateUrl: 'js/controllers/todo-app.html',
 
-	data:{
-		todos: 'todoStorage.get()',
-		newTodo: '""',
-		editedTodo: null,
-		location: '$location'
-	},
-
 	init: function() {
+		this.todos = this.todoStorage.get();
+		this.newTodo = '';
+		this.location = this.$location;
 		if (this.location.path() === '') {
 			this.location.path('/');
 		}
@@ -38,7 +39,11 @@ todomvc.classy.component({
 	},
 
 	methods: {
-		_getRemainingCount: '(todos | filter:{ completed: false }).length',
+		_getRemainingCount: function() {
+			return this.todos.filter(function(todo) {
+				return todo.completed === false;
+			}).length;
+		},
 
 		_onTodoChange: function () {
 			this.remainingCount = this._getRemainingCount();

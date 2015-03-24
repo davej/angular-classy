@@ -11,17 +11,8 @@ angular.module('classy.bindMethods', ['classy.core']).classy.plugin.component({
       for (var key in methods) {
         var method = methods[key];
 
-        var boundMethod;
         if (angular.isFunction(method) && (this.options.ignore.indexOf(key) === -1)) {
-          boundMethod = angular.bind(klass, method);
-        } else if (angular.isString(method)) {
-          var getter = this.$parse(method);
-          boundMethod = function() {
-            return getter(klass);
-          };
-        }
-        if (angular.isFunction(boundMethod)) {
-          klass[key] = boundMethod;
+          klass[key] = angular.bind(klass, method);
         }
       }
     }

@@ -11,16 +11,16 @@ angular.module('classy.register', ['classy.core']).classy.plugin.component({
   preInit: function(classConstructor, classObj, module) {
     if (this.options.enabled && angular.isString(classObj[this.options.key])) {
       var dasherizedName = this.toCamelCase(classObj[this.options.key]);
-      
+
       var proto = classConstructor.prototype;
       if (!proto.name) {
         proto.name = dasherizedName;
       }
 
       var bindToController = {};
-      for (var i = 0; i < classObj.bind; i++) {
-        var bind = classObj.bind[i];
-        bindToController[bind] = '@';
+      for (var key in classObj.bind) {
+        var value = classObj.bind[key];
+        bindToController[key] = '@' + this.toCamelCase(value);
       }
 
       var directive = {
