@@ -1,5 +1,4 @@
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.component({
-  localInject: ['$parse'],
   options: {
     enabled: true,
     ignore: ['constructor', 'init'],

@@ -4,20 +4,21 @@
 
 	describe('Single Classy Controllers', function () {
 
-		
+
 		beforeEach(module('normal-classy'));
 
 		describe('first controller', function() {
-			var ctrl, scope;
-			var ctrlName = 'hello';
+			var ctrl, el;
 
-			beforeEach(inject(function ($controller, $rootScope) {
-				scope = $rootScope.$new();
-				ctrl = $controller(ctrlName, { $scope: scope });
+			beforeEach(inject(function ($compile, $rootScope) {
+				el = angular.element("<hello></hello>");
+				$compile(el)($rootScope.$new());
+				$rootScope.$digest();
+				ctrl = el.controller('hello');
 			}));
 
 			it('should have foo set to `bar`', function () {
-				expect(scope.foo).toBe('bar');
+				expect(ctrl.foo).toBe('bar');
 			});
 		});
 
@@ -32,34 +33,35 @@
 
 	describe('Multiple Classy Controllers using array', function () {
 
-		
 		beforeEach(module('array-classy'));
 
 		describe('first controller', function() {
-			var ctrl, scope;
-			var ctrlName = 'hello';
+			var ctrl, el;
 
-			beforeEach(inject(function ($controller, $rootScope) {
-				scope = $rootScope.$new();
-				ctrl = $controller(ctrlName, { $scope: scope });
+			beforeEach(inject(function ($compile, $rootScope) {
+				el = angular.element("<hello></hello>");
+				$compile(el)($rootScope.$new());
+				$rootScope.$digest();
+				ctrl = el.controller('hello');
 			}));
 
 			it('should have foo set to `bar`', function () {
-				expect(scope.foo).toBe('bar');
+				expect(ctrl.foo).toBe('bar');
 			});
 		});
 
 		describe('second controller', function() {
-			var ctrl, scope;
-			var ctrlName = 'goodbye';
+			var ctrl, el;
 
-			beforeEach(inject(function ($controller, $rootScope) {
-				scope = $rootScope.$new();
-				ctrl = $controller(ctrlName, { $scope: scope });
+			beforeEach(inject(function ($compile, $rootScope) {
+				el = angular.element("<goodbye></goodbye>");
+				$compile(el)($rootScope.$new());
+				$rootScope.$digest();
+				ctrl = el.controller('goodbye');
 			}));
 
 			it('should have foo set to `baz`', function () {
-				expect(scope.foo).toBe('baz');
+				expect(ctrl.foo).toBe('baz');
 			});
 		});
 

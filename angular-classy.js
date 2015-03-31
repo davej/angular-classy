@@ -314,7 +314,6 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.compone
 });
 
 angular.module('classy.bindMethods', ['classy.core']).classy.plugin.component({
-  localInject: ['$parse'],
   options: {
     enabled: true,
     ignore: ['constructor', 'init'],

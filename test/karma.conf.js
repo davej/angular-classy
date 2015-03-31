@@ -9,7 +9,10 @@ module.exports = function(config) {
       'examples/todomvc/js/app.js',
       'examples/todomvc/js/*/*.js',
       'test/controllers/*.js',
-      'test/unit/*.js'
+      // 'test/unit/*.js',
+      'test/unit/modulesSpec.js',
+      'test/unit/multipleControllersSpec.js',
+      'test/unit/optionsSpec.js',
     ],
     autoWatch: false,
     singleRun: true,

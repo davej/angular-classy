@@ -1,29 +1,16 @@
-angular.module('options-classy', ['classy']).classy.options.controller = {
-  bindData: {
-    addToScope: false,
-    addToClass: false
+angular.module('options-classy', ['classy']).classy.options.component = {
+  register: {
+    key: 'el'
   },
   bindMethods: {
-    addToScope: false,
-    addToClass: false
+    keyName: 'fn'
   }
 };
 
-angular.module('options-classy').classy.controller({
-  name: 'optionsOne',
-  inject: ['$scope'],
+angular.module('options-classy').classy.component({
+  el: 'options-one',
 
-  data: {
-    foo: '"foo"',
-    bar: '"bar"'
-  },
-
-  init: function() {
-    this.baz = 'baz';
-    this.$.baz = 'baz';
-  },
-
-  methods: {
+  fn: {
     fooMethod: function() {
       return;
     },
@@ -33,32 +20,25 @@ angular.module('options-classy').classy.controller({
   }
 });
 
-angular.module('options-classy').classy.controller({
-  name: 'optionsTwo',
+angular.module('options-classy').classy.component({
+  elem: 'options-two',
   // Override module options
   __options: {
-    'bindData': {
-      addToScope: true,
-      addToClass: false
+    register: {
+      key: 'elem'
     },
-    'bindMethods': {
-      addToScope: false,
-      addToClass: true
+    bindMethods: {
+      key: 'funcs'
     }
   },
   inject: ['$scope'],
-
-  data: {
-    foo: '"foo"',
-    bar: '"bar"'
-  },
 
   init: function() {
     this.baz = 'baz';
     this.$.baz = 'baz';
   },
 
-  methods: {
+  funcs: {
     fooMethod: function() {
       return;
     },
@@ -69,13 +49,13 @@ angular.module('options-classy').classy.controller({
 });
 
 
-angular.module('options-classy-shorthand', ['classy']).classy.options.controller = {
+angular.module('options-classy-shorthand', ['classy']).classy.options.component = {
   addToScope: false,
   addToClass: false
 };
 
-angular.module('options-classy-shorthand').classy.controller({
-  name: 'optionsOne',
+angular.module('options-classy-shorthand').classy.component({
+  name: 'options-one',
   inject: ['$scope'],
 
   data: {
@@ -98,8 +78,8 @@ angular.module('options-classy-shorthand').classy.controller({
   }
 });
 
-angular.module('options-classy-shorthand').classy.controller({
-  name: 'optionsTwo',
+angular.module('options-classy-shorthand').classy.component({
+  name: 'options-two',
   // Override module options
   __options: {
     addToScope: true,

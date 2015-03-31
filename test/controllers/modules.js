@@ -9,7 +9,7 @@ var testBarVar;
 	angular.module('app3', ['classy.core']);
 	angular.module('app4', ['app2']);
 
-	angular.module('classy.foo', ['classy.core']).classy.plugin.controller({
+	angular.module('classy.foo', ['classy.core']).classy.plugin.component({
 		name: 'foo',
 
 		options: {
@@ -21,7 +21,7 @@ var testBarVar;
 		}
 	});
 
-	angular.module('classy.bar', ['classy.core']).classy.plugin.controller({
+	angular.module('classy.bar', ['classy.core']).classy.plugin.component({
 		name: 'bar',
 
 		options: {
