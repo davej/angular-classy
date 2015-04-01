@@ -8,19 +8,19 @@ angular.module('options-classy', ['classy']).classy.options.component = {
 };
 
 angular.module('options-classy').classy.component({
+  selector: 'options-one-ignore', // Should be ignored
   el: 'options-one',
-
+  methods: {
+    bazMethod: function() {} // Should be ignored
+  },
   fn: {
-    fooMethod: function() {
-      return;
-    },
-    barMethod: function() {
-      return;
-    }
+    fooMethod: function() {},
+    barMethod: function() {}
   }
 });
 
 angular.module('options-classy').classy.component({
+  el: 'options-two-ignore', // Should be ignored
   elem: 'options-two',
   // Override module options
   __options: {
@@ -28,81 +28,56 @@ angular.module('options-classy').classy.component({
       key: 'elem'
     },
     bindMethods: {
-      key: 'funcs'
+      keyName: 'funcs'
     }
   },
   inject: ['$scope'],
 
   init: function() {
-    this.baz = 'baz';
-    this.$.baz = 'baz';
+    this.$scope.baz = 'baz';
+  },
+
+  fn: {
+    bazMethod: function() {}
   },
 
   funcs: {
-    fooMethod: function() {
-      return;
-    },
-    barMethod: function() {
-      return;
-    }
+    fabMethod: function() {},
+    barMethod: function() {}
   }
 });
 
 
 angular.module('options-classy-shorthand', ['classy']).classy.options.component = {
-  addToScope: false,
-  addToClass: false
+  enabled: false
 };
 
 angular.module('options-classy-shorthand').classy.component({
-  name: 'options-one',
-  inject: ['$scope'],
-
-  data: {
-    foo: '"foo"',
-    bar: '"bar"'
-  },
+  elem: 'options-one',
 
   init: function() {
     this.baz = 'baz';
-    this.$.baz = 'baz';
   },
 
   methods: {
-    fooMethod: function() {
-      return;
-    },
-    barMethod: function() {
-      return;
-    }
+    fooMethod: function() {},
+    barMethod: function() {}
   }
 });
 
 angular.module('options-classy-shorthand').classy.component({
-  name: 'options-two',
+  elem: 'options-two',
   // Override module options
   __options: {
-    addToScope: true,
-    addToClass: false
-  },
-  inject: ['$scope'],
-
-  data: {
-    foo: '"foo"',
-    bar: '"bar"'
+    enabled: true
   },
 
   init: function() {
     this.baz = 'baz';
-    this.$.baz = 'baz';
   },
 
   methods: {
-    fooMethod: function() {
-      return;
-    },
-    barMethod: function() {
-      return;
-    }
+    fooMethod: function() {},
+    barMethod: function() {}
   }
 });

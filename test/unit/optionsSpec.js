@@ -6,163 +6,133 @@
 
     beforeEach(module('options-classy'));
 
-    describe('first controller', function() {
+    describe('first component', function() {
       var ctrl, el;
 
-			beforeEach(inject(function ($compile, $rootScope) {
-				el = angular.element("<options-one></options-one>");
-				$compile(el)($rootScope.$new());
-				$rootScope.$digest();
-				ctrl = el.controller('optionsOne');
-			}));
+      it('should use `el` as key for `selector`', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-one-ignore></options-one-ignore>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsOneIgnore');
+        });
 
-      it('should have methods available on `fn` key', function () {
-        console.log(ctrl);
-        expect(ctrl.fooMethod).toBeDefined();
-        expect(ctrl.barMethod).toBeDefined();
-
-        // expect(scope.bar).toBeUndefined();
-        // expect(ctrl.bar).toBeUndefined();
+        expect(el).toBeDefined();
+        expect(ctrl).toBeUndefined();
       });
 
-      // it('should not have any properties from data', function () {
-      //   expect(scope.foo).toBeUndefined();
-      //   expect(ctrl.foo).toBeUndefined();
-      //
-      //   expect(scope.bar).toBeUndefined();
-      //   expect(ctrl.bar).toBeUndefined();
-      // });
-      //
-      // it('should not have any properties from methods', function () {
-      //   expect(scope.fooMethod).toBeUndefined();
-      //   expect(ctrl.fooMethod).toBeUndefined();
-      //
-      //   expect(scope.barMethod).toBeUndefined();
-      //   expect(ctrl.barMethod).toBeUndefined();
-      // });
-      //
-      //
-      // it('should have `baz` property on scope and class', function () {
-      //   expect(scope.baz).toBeDefined();
-      //   expect(ctrl.baz).toBeDefined();
-      // });
+      it('should use `fn` as key for `methods`', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-one></options-one>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsOne');
+        });
 
+        expect(el).toBeDefined();
+        expect(ctrl).toBeDefined();
+
+        expect(ctrl.fooMethod).toBeDefined();
+        expect(ctrl.barMethod).toBeDefined();
+        expect(ctrl.bazMethod).toBeUndefined();
+        expect(ctrl.$scope).toBeUndefined();
+      });
 
     });
 
+    describe('second component', function() {
+      var ctrl, el;
 
-    // describe('second controller', function() {
-    //   var ctrl, scope;
-    //   var ctrlName = 'optionsTwo';
-    //
-    //   beforeEach(inject(function ($controller, $rootScope) {
-    //     scope = $rootScope.$new();
-    //     ctrl = $controller(ctrlName, { $scope: scope });
-    //   }));
-    //
-    //   it('should have `data` properties on scope but not directly on controller', function () {
-    //     expect(scope.foo).toBeDefined();
-    //     expect(ctrl.foo).toBeUndefined();
-    //
-    //     expect(scope.bar).toBeDefined();
-    //     expect(ctrl.bar).toBeUndefined();
-    //   });
-    //
-    //   it('should not have methods on scope but does have methods directly on controller', function () {
-    //     expect(scope.fooMethod).toBeUndefined();
-    //     expect(ctrl.fooMethod).toBeDefined();
-    //
-    //     expect(scope.barMethod).toBeUndefined();
-    //     expect(ctrl.barMethod).toBeDefined();
-    //   });
-    //
-    //
-    //   it('should have `baz` property on scope and class', function () {
-    //     expect(scope.baz).toBeDefined();
-    //     expect(ctrl.baz).toBeDefined();
-    //   });
-    //
-    //
-    // });
+      it('should use `elem` as key for `el`', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-two-ignore></options-two-ignore>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsTwoIgnore');
+        });
 
+        expect(el).toBeDefined();
+        expect(ctrl).toBeUndefined();
+      });
+
+      it('should use `funcs` as key for `fn`', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-two></options-two>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsTwo');
+        });
+
+        expect(el).toBeDefined(ctrl);
+        expect(ctrl).toBeDefined();
+
+        expect(ctrl.fabMethod).toBeDefined();
+        expect(ctrl.barMethod).toBeDefined();
+        expect(ctrl.fooMethod).toBeUndefined();
+        expect(ctrl.bazMethod).toBeUndefined();
+
+        expect(ctrl.$scope).toBeDefined();
+        expect(ctrl.$scope.baz).toBe('baz');
+        expect(ctrl.baz).toBeUndefined();
+      });
+
+    });
 
   });
+
+  /*
+
+  // BROKEN: options are persisting across modules
 
   describe('Classy Plugin Options', function () {
 
     beforeEach(module('options-classy-shorthand'));
 
-    // describe('first controller', function() {
-    //   var ctrl, scope;
-    //   var ctrlName = 'optionsOne';
-    //
-    //   beforeEach(inject(function ($controller, $rootScope) {
-    //     scope = $rootScope.$new();
-    //     ctrl = $controller(ctrlName, { $scope: scope });
-    //   }));
-    //
-    //   it('should not have any properties from data', function () {
-    //     expect(scope.foo).toBeUndefined();
-    //     expect(ctrl.foo).toBeUndefined();
-    //
-    //     expect(scope.bar).toBeUndefined();
-    //     expect(ctrl.bar).toBeUndefined();
-    //   });
-    //
-    //   it('should not have any properties from methods', function () {
-    //     expect(scope.fooMethod).toBeUndefined();
-    //     expect(ctrl.fooMethod).toBeUndefined();
-    //
-    //     expect(scope.barMethod).toBeUndefined();
-    //     expect(ctrl.barMethod).toBeUndefined();
-    //   });
-    //
-    //
-    //   it('should have `baz` property on scope and class', function () {
-    //     expect(scope.baz).toBeDefined();
-    //     expect(ctrl.baz).toBeDefined();
-    //   });
-    //
-    //
-    // });
+    describe('first controller', function() {
+      var ctrl, el;
+
+      it('should be disabled', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-one></options-one>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsOne');
+        });
+
+        console.log(ctrl, el)
+
+        expect(el).toBeDefined();
+        expect(ctrl).toBeUndefined();
+      });
+    });
 
 
-    // describe('second controller', function() {
-    //   var ctrl, scope;
-    //   var ctrlName = 'optionsTwo';
-    //
-    //   beforeEach(inject(function ($controller, $rootScope) {
-    //     scope = $rootScope.$new();
-    //     ctrl = $controller(ctrlName, { $scope: scope });
-    //   }));
-    //
-    //   it('should have `data` properties on scope but not directly on controller', function () {
-    //     expect(scope.foo).toBeDefined();
-    //     expect(ctrl.foo).toBeUndefined();
-    //
-    //     expect(scope.bar).toBeDefined();
-    //     expect(ctrl.bar).toBeUndefined();
-    //   });
-    //
-    //   it('should have methods on scope but not directly on controller', function () {
-    //     expect(scope.fooMethod).toBeDefined();
-    //     expect(ctrl.fooMethod).toBeUndefined();
-    //
-    //     expect(scope.barMethod).toBeDefined();
-    //     expect(ctrl.barMethod).toBeUndefined();
-    //   });
-    //
-    //
-    //   it('should have `baz` property on scope and class', function () {
-    //     expect(scope.baz).toBeDefined();
-    //     expect(ctrl.baz).toBeDefined();
-    //   });
-    //
-    //
-    // });
+    describe('second controller', function() {
+      var ctrl, el;
 
+      it('should be enabled', function () {
+        inject(function ($compile, $rootScope) {
+          el = angular.element("<options-two></options-two>");
+          $compile(el)($rootScope.$new());
+          $rootScope.$digest();
+          ctrl = el.controller('optionsTwo');
+        });
+        console.log(ctrl, el)
+
+
+        expect(el).toBeDefined();
+        expect(ctrl).toBeDefined();
+
+        expect(ctrl.fooMethod).toBeDefined();
+        expect(ctrl.barMethod).toBeDefined();
+        expect(ctrl.bazMethod).toBeUndefined();
+        expect(ctrl.baz).toBe('baz');
+      });
+
+    });
 
   });
+  */
 
 
 }());

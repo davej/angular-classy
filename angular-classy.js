@@ -304,7 +304,7 @@ angular.module('classy.bindDependencies', ['classy.core']).classy.plugin.compone
   },
   initBefore: function(klass, deps, module) {
     if (this.options.enabled) {
-      var preDeps = klass.constructor.$inject;
+      var preDeps = klass.constructor.__classDepNames;
       for (var i = 0; i < preDeps.length; ++i) {
         var key = preDeps[i];
         klass[key] = deps[key];
