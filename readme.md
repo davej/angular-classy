@@ -1,4 +1,4 @@
-# Angular Classy [![Build Status](https://travis-ci.org/davej/angular-classy.png)](https://travis-ci.org/davej/angular-classy)
+# Angular Classy [![Build Status](https://travis-ci.org/davej/angular-classy.svg?branch=master)](https://travis-ci.org/davej/angular-classy)
 
 #### Cleaner class-based controllers for AngularJS
 
