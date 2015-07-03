@@ -1,5 +1,7 @@
 # Angular Classy [![Build Status](https://travis-ci.org/davej/angular-classy.svg?branch=master)](https://travis-ci.org/davej/angular-classy)
 
+[![Join the chat at https://gitter.im/davej/angular-classy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/davej/angular-classy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 #### Cleaner class-based controllers for AngularJS
 
 Check out the [Angular Classy website](http://davej.github.io/angular-classy/) to see what it's all about.
