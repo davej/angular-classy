@@ -8,6 +8,7 @@ gutil = require('gulp-util')
 uglify = require('gulp-uglify')
 rename = require('gulp-rename')
 closure = require('gulp-jsclosure')
+sourcemaps = require('gulp-sourcemaps')
 
 ###
   `default` Action - Builds Angular Classy
@@ -38,15 +39,12 @@ gulp.task "concatAndRegisterPlugins", [ "getPluginsNames" ], ->
     .pipe closure()
     .pipe gulp.dest("./")
 
-# gulp.task "coffeeToJs", [ "concatAndRegisterPlugins" ], ->
-#   gulp.src "./angular-classy.coffee"
-#     .pipe coffee().on('error', gutil.log)
-#     .pipe gulp.dest("./")
-
 gulp.task "minify", [ "concatAndRegisterPlugins" ], ->
   gulp.src "./angular-classy.js"
+    .pipe sourcemaps.init()
     .pipe uglify()
     .pipe rename suffix: '.min'
+    .pipe sourcemaps.write("./")
     .pipe gulp.dest("./")
 
 gulp.task "watch", ["default"], -> gulp.watch "./src/*.js", ['minify']
