@@ -12,6 +12,7 @@ todomvc.classy.controller({
 	name: 'TodoAsControllerCtrl',
 	inject: ['$scope', '$location', 'todoStorage'],
 	__options: {
+		bindWatchToClass: true,
 		addToScope: false // shorthand for commented out code below
 
 		// 'bindData': {
@@ -38,12 +39,12 @@ todomvc.classy.controller({
 	},
 
 	watch: {
-		'todoCtrl.location.path()': function(path) {
+		'location.path()': function(path) {
 			this.statusFilter = (path === '/active') ?
 				{ completed: false } : (path === '/completed') ?
 				{ completed: true } : null;
 		},
-		'{object}todoCtrl.todos': '_onTodoChange'
+		'{object}todos': '_onTodoChange'
 	},
 
 	methods: {
