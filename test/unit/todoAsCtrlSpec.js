@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	describe('Todo Javascript Classy Controller', function () {
+	describe('Todo Javascript Classy ControllerAs', function () {
 		var ctrl, scope;
 		var todoList;
 		var todoStorage = {
@@ -14,6 +14,7 @@
 				this.storage = value;
 			}
 		};
+		todoStorage.storage = [];
 		var ctrlName = 'TodoAsControllerCtrl as todoCtrl';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
@@ -21,26 +22,30 @@
 
 		beforeEach(inject(function ($controller, $rootScope) {
 			scope = $rootScope.$new();
-			ctrl = $controller(ctrlName, { $scope: scope });
+			ctrl = $controller(ctrlName, { $scope: scope, todoStorage: todoStorage });
 		}));
 
-		it('should not have any controller methods placed on the scope', function () {
-			expect(scope.todos).toBeUndefined();
-			expect(scope.editTodo).toBeUndefined();
+
+		describe('init', function() {
+			it('should not have any controller methods placed on the scope', function () {
+				expect(scope.todos).toBeUndefined();
+				expect(scope.editTodo).toBeUndefined();
+			});
+
+			it('should not have an edited Todo on start', function () {
+				expect(ctrl.editedTodo).toBeNull();
+			});
+
+			it('should not have any Todos on start', function () {
+				expect(ctrl.todos.length).toBe(0);
+			});
+
+			it('should have all Todos completed', function () {
+				scope.$digest();
+				expect(ctrl.allChecked).toBeTruthy();
+			});
 		});
 
-		it('should not have an edited Todo on start', function () {
-			expect(ctrl.editedTodo).toBeNull();
-		});
-
-		it('should not have any Todos on start', function () {
-			expect(ctrl.todos.length).toBe(0);
-		});
-
-		it('should have all Todos completed', function () {
-			scope.$digest();
-			expect(ctrl.allChecked).toBeTruthy();
-		});
 
 		describe('the path', function () {
 			it('should default to "/"', function () {
@@ -79,7 +84,6 @@
 			var ctrl;
 
 			beforeEach(inject(function ($controller) {
-				todoStorage.storage = [];
 				ctrl = $controller(ctrlName, {
 					$scope: scope,
 					todoStorage: todoStorage

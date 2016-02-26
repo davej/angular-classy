@@ -14,6 +14,7 @@
 				this.storage = value;
 			}
 		};
+		todoStorage.storage = [];
 		var ctrlName = 'TodoCtrl';
 
 			// Load the module containing the app, only 'ng' is loaded by default.
@@ -21,7 +22,7 @@
 
 		beforeEach(inject(function ($controller, $rootScope) {
 			scope = $rootScope.$new();
-			ctrl = $controller(ctrlName, { $scope: scope });
+			ctrl = $controller(ctrlName, { $scope: scope, todoStorage: todoStorage });
 		}));
 
 		it('should not have an edited Todo on start', function () {
@@ -74,7 +75,6 @@
 			var ctrl;
 
 			beforeEach(inject(function ($controller) {
-				todoStorage.storage = [];
 				ctrl = $controller(ctrlName, {
 					$scope: scope,
 					todoStorage: todoStorage

@@ -12,7 +12,7 @@ module.exports = function(config) {
       'test/unit/*.js'
     ],
     autoWatch: false,
-    singleRun: true,
-    browsers: ['Firefox']
+    singleRun: false,
+    browsers: ['Firefox', 'PhantomJS']
   });
 };
