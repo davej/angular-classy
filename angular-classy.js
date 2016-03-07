@@ -1,10 +1,10 @@
 ;(function() {
 /*
-Angular Classy 1.2.2
+Angular Classy 1.2.3
 Dave Jeffery, @DaveJ
 License: MIT
  */
-var classyVersion = '1.2.2';
+var classyVersion = '1.2.3';
 
 /* global angular */
 var availablePlugins = {};
