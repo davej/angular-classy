@@ -9,6 +9,12 @@ uglify = require('gulp-uglify')
 rename = require('gulp-rename')
 closure = require('gulp-jsclosure')
 sourcemaps = require('gulp-sourcemaps')
+replace = require('gulp-replace')
+fs = require('fs')
+
+bower = fs.readFileSync('./bower.json')
+bowerJSON = JSON.parse(bower)
+version = bowerJSON.version
 
 ###
   `default` Action - Builds Angular Classy
@@ -37,6 +43,7 @@ gulp.task "concatAndRegisterPlugins", [ "getPluginsNames" ], ->
     .pipe concat("angular-classy.js")
     .pipe insert.append("\nangular.module('classy', " + JSON.stringify(pluginNames) + ");")
     .pipe closure()
+    .pipe replace('%%VERSION%%', version)
     .pipe gulp.dest("./")
 
 gulp.task "minify", [ "concatAndRegisterPlugins" ], ->
