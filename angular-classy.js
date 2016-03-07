@@ -1,9 +1,10 @@
 ;(function() {
 /*
-Angular Classy 1.1.0
+Angular Classy 1.2.2
 Dave Jeffery, @DaveJ
 License: MIT
  */
+var classyVersion = '1.2.2';
 
 /* global angular */
 var availablePlugins = {};
@@ -117,6 +118,7 @@ angular.module = function(name, reqs, configFn) {
     var activeClassyPlugins = getActiveClassyPlugins(name, module);
     if (activeClassyPlugins['classy.core']) {
       module.classy = {
+        version: classyVersion,
         plugin: {
           controller: function(plugin) { availablePlugins[name] = plugin; }
         },
