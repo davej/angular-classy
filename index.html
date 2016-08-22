@@ -509,13 +509,14 @@ Whenever the expression method is called it will evaluate the expression and ret
                 <ol>
                   <li>
                       <div><a href="https://github.com/davej/angular-classy/releases/latest/">Download the latest release</a>.</div>
-                      <div style="margin-top:5px;">Or install with bower: <code class="inline-code">bower install angular-classy</code></div>
+                      <div style="margin-top:5px;"><em>Or</em>, install with bower: <code class="inline-code">bower install angular-classy</code></div>
                   </li>
 
                   <li>
                       Reference Classy <em>after</em> the reference to Angular<br>
   <pre class="block-code"><code><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"bower_components/angular/angular.js"</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"bower_components/angular-classy/angular-classy.min.js"</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span></code></pre>
+                      If you're using npm, then you can do
                   </li>
 
                   <li>
@@ -535,12 +536,31 @@ Whenever the expression method is called it will evaluate the expression and ret
   <span class="hljs-object-key">init:</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ }
 });</code></pre></li>
                 </ol>
+                <hr>
+                <h4>Using with npm</h4>
+                <ol>
+                  <li>Install with npm: <code class="inline-code">npm install angular-classy</code></li>
+                  <li>
+                    Add Classy to your application module:
+                    <pre class="block-code coffeescript-code hide"><code>angular = <span class="hljs-built_in">require</span> <span class="hljs-string">'angular'</span>
+classy = <span class="hljs-built_in">require</span> <span class="hljs-string">'angular-classy'</span>
+
+app = angular.<span class="hljs-built_in">module</span> <span class="hljs-string">'app'</span>, [classy]
+</code></pre>
+                    <pre class="block-code javascript-code"><code><span class="hljs-keyword">var</span> angular = <span class="hljs-built_in">require</span>(<span class="hljs-string">'angular'</span>);
+<span class="hljs-keyword">var</span> classy = <span class="hljs-built_in">require</span>(<span class="hljs-string">'angular-classy'</span>);
+
+<span class="hljs-keyword">var</span> app = angular.module(<span class="hljs-string">'app'</span>, [classy]);
+</code></pre>
+                  </li>
+                </ol>
+
               </section>
 
              <section class="more-info">
                 <h3><i class="icon-info"></i> More Info</h3>
                 <ul>
-                  <li>Version: 1.1.0 (<a href="https://github.com/davej/angular-classy/releases">Releases/Changelogs</a>)</li>
+                  <li>Version: 1.2.4 (<a href="https://github.com/davej/angular-classy/releases">Releases/Changelogs</a>)</li>
                   <li><a href="https://github.com/davej/angular-classy">Github Repo</a></li>
                   <li><a class="github-button" href="https://github.com/davej/angular-classy" data-icon="octicon-star" data-count-href="/davej/angular-classy/stargazers" data-count-api="/repos/davej/angular-classy#stargazers_count">Star</a>
                   </li>
