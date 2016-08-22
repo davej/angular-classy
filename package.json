@@ -1,5 +1,13 @@
 {
   "name": "angular-classy",
+  "version": "1.2.3",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "angular-classy.js",
+    "angular-classy.min.js",
+    "angular-classy.min.js.map"
+  ],
   "scripts": {
     "test": "gulp test",
     "start": "gulp"
